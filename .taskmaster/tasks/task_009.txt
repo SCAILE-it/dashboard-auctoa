@@ -1,0 +1,18 @@
+# Task ID: 9
+# Title: Google Analytics 4 Data API Integration
+# Status: pending
+# Dependencies: 6
+# Priority: medium
+# Description: Fetch GA4 metrics (users, sessions, bounce rate, avg session duration, traffic sources) and persist.
+# Details:
+- Use @google-analytics/data ^5.7.0 with a service account; grant property read.
+- Reports: runReport with dimensions date, sessionDefaultChannelGroup, pagePath; metrics users, sessions, averageSessionDuration, bounceRate, conversions if configured.
+- Store to ga4_page_metrics and optionally a sources table.
+- Implement sampling awareness; paginate rows; respect API quotas.
+- UI: traffic sources stacked bar, behavior flow (simplified step chart), page performance table.
+- Add custom event tracking on frontend via gtag or GA4 Measurement Protocol only if needed internally (avoid mixing with prod site unless specified).
+
+# Test Strategy:
+- Cross-check totals with GA4 UI for the same date range.
+- Unit test mapping and deduping.
+- Validate charts render with empty states and large dataset performance.

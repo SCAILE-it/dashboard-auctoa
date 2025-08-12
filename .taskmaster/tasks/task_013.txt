@@ -1,0 +1,21 @@
+# Task ID: 13
+# Title: n8n Workflow Automation for Data Collection
+# Status: pending
+# Dependencies: 6, 7, 8, 9, 10, 11, 12
+# Priority: medium
+# Description: Configure n8n workflows to orchestrate pulls from sources and push to API webhooks.
+# Details:
+- Deploy n8n (cloud or self-host). Create credentials for Google APIs, Ads, chatbot, and News.
+- Workflows:
+  - Scheduled daily GSC/GA4 pulls -> transform -> POST to /api/{gsc,ga4} bulk endpoints.
+  - Chatbot webhook receiver -> sanitize PII -> POST to /api/chatbot.
+  - Ads sync every 4 hours.
+  - Alerts RSS poll every 6 hours.
+- Include retry nodes, error branches to send notifications (email/Slack) and write to system_health.
+- Secure n8n to API via HMAC signature header checked in API routes.
+- Document workflows and environment variables.
+
+# Test Strategy:
+- Run workflows in test mode; verify API receives signed payloads.
+- Force errors to ensure retries and error notifications function.
+- Confirm dedupe logic prevents duplicates on replays.

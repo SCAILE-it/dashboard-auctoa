@@ -1,0 +1,19 @@
+# Task ID: 10
+# Title: Google Ads API Integration for Campaign Performance
+# Status: pending
+# Dependencies: 6
+# Priority: medium
+# Description: Integrate Google Ads API to retrieve campaign KPIs and ROI metrics.
+# Details:
+- Use google-ads-api v17 SDK or REST; requires developer token, OAuth, customer ID with read perms.
+- Query via GAQL for campaigns: clicks, impressions, cost_micros, conversions, conversion_rate, date.
+- Persist in gads_campaign_stats; compute ROI if revenue available (else show CPA).
+- Handle paging and partial failures; respect per-customer rate limits.
+- UI: campaign table with sorting, cost and conversion trends, budget utilization gauge.
+- Secure refresh tokens; rotate credentials; store only on server.
+- Implement incremental sync by date; backfill last 90 days.
+
+# Test Strategy:
+- Validate sample queries in the Ads UI vs API.
+- Unit test GAQL builders and error handling.
+- Simulate quota errors and ensure retries/backoff.

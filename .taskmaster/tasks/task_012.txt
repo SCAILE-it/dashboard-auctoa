@@ -1,0 +1,17 @@
+# Task ID: 12
+# Title: Real-time Updates, Live Activity Feed, and Data Freshness Indicators
+# Status: pending
+# Dependencies: 5, 6, 7, 8, 9, 10, 11
+# Priority: medium
+# Description: Enable live synchronization and visibility into recent actions and system status.
+# Details:
+- Use Supabase Realtime channels on activity_feed and system_health tables to push updates to clients.
+- Log significant events: sync start/finish, errors, user actions (exports, filters saved).
+- Display a Live Activity Feed component subscribing via supabase.channel('activity').
+- Data freshness badges per section: compute last_sync from system_health; color-code.
+- For real-time ingestion, integrate n8n workflows to POST to /api hooks which write and emit activity events.
+
+# Test Strategy:
+- Simulate insert into activity_feed and verify UI updates without refresh.
+- Unit test freshness calculation.
+- Chaos test: send burst of events and ensure UI throttles rendering.

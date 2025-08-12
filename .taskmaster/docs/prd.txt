@@ -1,0 +1,192 @@
+# Auctoa Analytics Dashboard - Product Requirements Document
+
+## Project Overview
+Build a modern, clean, and visually appealing internal analytics dashboard for Auctoa that aggregates data from multiple sources and provides actionable insights for business performance monitoring.
+
+## Core Objectives
+- Create a centralized dashboard for monitoring Auctoa's key performance metrics
+- Aggregate data from Google Search Console, Google Analytics, chatbot interactions, and other sources
+- Provide clean, modern UI/UX that's easy to navigate and visually appealing
+- Enable real-time data visualization and reporting
+- Support future scalability for additional data sources
+
+## Technical Requirements
+
+### Frontend Technology Stack
+- **Framework**: Next.js 15+ with App Router
+- **Language**: TypeScript for type safety
+- **Styling**: Tailwind CSS with shadcn/ui component library
+- **Icons**: Lucide React for consistent iconography
+- **Charts**: Chart.js or Recharts for data visualization
+- **State Management**: React hooks (useState, useEffect, useContext as needed)
+
+### Backend & Data Integration
+- **API Routes**: Next.js API routes for data fetching
+- **Database**: Supabase for data storage and querying
+- **Authentication**: NextAuth.js for secure access control
+- **Data Sources Integration**:
+  - Google Search Console API (search performance data)
+  - Google Analytics 4 API (website traffic and user behavior)
+  - Chatbot tracking system (conversation analytics)
+  - Google Alerts/News API (industry insights)
+  - Google Ads API (campaign performance)
+
+### Data Automation
+- **n8n Workflows**: Automated data collection and processing
+- **Real-time Updates**: Live data synchronization
+- **Data Validation**: Error handling and data quality checks
+
+## User Interface Requirements
+
+### Design Principles
+- **Modern & Clean**: Contemporary design with plenty of white space
+- **Professional**: Enterprise-grade appearance suitable for business use
+- **Intuitive Navigation**: Clear information hierarchy and easy-to-use interface
+- **Responsive Design**: Works perfectly on desktop, tablet, and mobile
+- **Accessibility**: WCAG compliant with proper contrast and keyboard navigation
+
+### Core Dashboard Components
+
+#### 1. Navigation & Layout
+- **Sidebar Navigation**: Collapsible sidebar with main sections
+- **Top Header**: User profile, search functionality, notifications
+- **Breadcrumbs**: Clear navigation path indication
+- **Responsive Layout**: Adaptive grid system
+
+#### 2. Key Metrics Overview
+- **KPI Cards**: Large, prominent display of critical metrics
+  - Search clicks (with trend indicators)
+  - Website impressions
+  - Unique visitors
+  - Chatbot conversations
+  - Conversion rates
+- **Trend Indicators**: Visual arrows and percentage changes
+- **Time Period Selectors**: Day, week, month, quarter views
+
+#### 3. Data Visualization
+- **Interactive Charts**: 
+  - Line charts for trends over time
+  - Bar charts for comparative data
+  - Pie charts for distribution metrics
+  - Heatmaps for user behavior patterns
+- **Drill-down Capability**: Click to explore detailed data
+- **Export Functionality**: Download charts and reports
+
+#### 4. Data Source Sections
+- **Search Performance Dashboard**:
+  - Top performing keywords
+  - Click-through rates
+  - Search impressions
+  - Position tracking
+- **Website Analytics**:
+  - Traffic sources
+  - User behavior flow
+  - Page performance metrics
+  - Bounce rates and session duration
+- **Chatbot Analytics**:
+  - Conversation volume
+  - Common queries and intents
+  - Response accuracy metrics
+  - User satisfaction scores
+- **Campaign Performance**:
+  - Google Ads metrics
+  - ROI and conversion tracking
+  - Budget utilization
+
+#### 5. Real-time Features
+- **Live Activity Feed**: Recent user actions and system updates
+- **Alerts & Notifications**: Automated alerts for significant changes
+- **Status Indicators**: System health and data freshness indicators
+
+## Technical Implementation Phases
+
+### Phase 1: Foundation Setup
+- Project initialization with Next.js and TypeScript
+- Tailwind CSS and shadcn/ui component library setup
+- Basic project structure and folder organization
+- Development environment configuration
+
+### Phase 2: Core Layout & Navigation
+- Responsive layout structure with sidebar and header
+- Navigation components with active states
+- Basic routing setup for different dashboard sections
+- Mobile-responsive design implementation
+
+### Phase 3: UI Component Development
+- Reusable card components for metrics display
+- Chart components with responsive behavior
+- Form components for filters and settings
+- Loading states and error handling components
+
+### Phase 4: Data Integration Foundation
+- API route structure for different data sources
+- Database schema design for Supabase
+- Authentication system implementation
+- Basic data fetching and state management
+
+### Phase 5: Google Search Console Integration
+- API authentication and connection setup
+- Data fetching for search performance metrics
+- Search analytics dashboard implementation
+- Real-time data updates and caching
+
+### Phase 6: Google Analytics Integration
+- GA4 API setup and authentication
+- Website traffic data integration
+- User behavior analytics implementation
+- Custom event tracking setup
+
+### Phase 7: Chatbot Analytics
+- Chatbot data source connection
+- Conversation analytics dashboard
+- Intent analysis and reporting
+- Performance metrics tracking
+
+### Phase 8: Advanced Features
+- Google Ads API integration
+- n8n workflow automation setup
+- Advanced filtering and date range selection
+- Export and reporting functionality
+
+### Phase 9: Performance & Polish
+- Performance optimization and caching
+- Advanced animations and micro-interactions
+- Cross-browser testing and bug fixes
+- Accessibility improvements
+
+### Phase 10: Deployment & Monitoring
+- Production deployment setup (Vercel/Netlify)
+- CI/CD pipeline configuration
+- Monitoring and analytics setup
+- Documentation and user guides
+
+## Success Criteria
+- Clean, modern interface that's intuitive to use
+- All data sources successfully integrated and displaying real-time data
+- Responsive design working across all device sizes
+- Fast loading times (<3 seconds for dashboard)
+- Zero accessibility violations
+- Comprehensive test coverage
+- Production-ready deployment
+
+## Future Enhancements
+- Advanced AI-powered insights and recommendations
+- Custom alert system with email/SMS notifications
+- Multi-user support with role-based permissions
+- API for third-party integrations
+- Advanced reporting and dashboard customization
+- Mobile app version
+
+## Technical Constraints
+- Must work in modern browsers (Chrome, Firefox, Safari, Edge)
+- Responsive design required for mobile devices
+- Must handle large datasets efficiently
+- Security best practices for API integrations
+- GDPR compliance for data handling
+
+## Timeline Considerations
+- Prioritize frontend development and visual design first
+- Start with chatbot data integration as it's most readily available
+- Google Search Console integration as second priority
+- Iterative development with regular user feedback
+- Focus on core functionality before advanced features

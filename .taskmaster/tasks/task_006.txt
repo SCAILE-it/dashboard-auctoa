@@ -1,0 +1,19 @@
+# Task ID: 6
+# Title: API Route Structure and Data Access Layer
+# Status: pending
+# Dependencies: 5
+# Priority: high
+# Description: Implement Next.js Route Handlers for each data domain and a shared data-access layer with caching.
+# Details:
+- Create /app/api/{kpis,gsc,ga4,chatbot,gads,alerts,activity,exports}/route.ts with GET handlers.
+- Use a repository pattern: lib/repos/{kpiRepo,gscRepo,gaRepo,chatbotRepo,gadsRepo,alertsRepo}.ts reading/writing Supabase.
+- Add input validation with zod ^3.23 (e.g., date ranges, pagination, filters).
+- Server-side caching: fetch cache 'force-cache' for static ranges; revalidateTag for data updates. Use Next.js cache tags (revalidateTag) and route segment config for dynamic.
+- Implement error handling and standardized API response envelopes {data, meta, error}.
+- Include drill-down parameters (e.g., query, page_path, campaign_id) and sorting.
+- Rate limit internal APIs using upstash/ratelimit or simple token bucket in memory for now.
+
+# Test Strategy:
+- Unit test each handler with supertest/next-test-api-route-handler.
+- Validate zod schemas reject invalid inputs.
+- Confirm caching works by observing revalidateTag behavior after writes.

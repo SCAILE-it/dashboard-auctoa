@@ -1,0 +1,27 @@
+# Task ID: 5
+# Title: Supabase Schema Design and Client Setup
+# Status: pending
+# Dependencies: 1, 4
+# Priority: high
+# Description: Create schemas for metrics, data sources, and logs; configure Supabase client for server and edge.
+# Details:
+- Install @supabase/supabase-js ^2.45.0.
+- Schema: tables
+  - data_sources(id, name, type, auth_config jsonb, enabled boolean, created_at)
+  - metrics_kpi(id, date, kpi_type enum('search_clicks','impressions','unique_visitors','chatbot_conversations','conversion_rate'), value numeric, meta jsonb, source varchar, created_at)
+  - gsc_search_stats(date, query, clicks, impressions, ctr, position)
+  - ga4_page_metrics(date, page_path, sessions, users, bounce_rate, avg_session_duration)
+  - chatbot_conversations(date, intent, conversations, satisfaction, accuracy)
+  - gads_campaign_stats(date, campaign_id, name, clicks, impressions, cost_micros, conversions, conv_rate)
+  - alerts_news(date, source, title, topic, sentiment, url)
+  - activity_feed(id, occurred_at timestamptz, type, message, meta jsonb)
+  - system_health(id, component, status, last_sync, details)
+  - export_jobs(id, user_id, params jsonb, status, file_url)
+- Add RLS policies: allow read/write for authenticated; stricter per table if needed.
+- Create indexes on date and query/campaign_id for performance.
+- Add Supabase service role key on server only; anon key for client read if necessary; use Edge-friendly client for Route Handlers.
+
+# Test Strategy:
+- Run migration scripts via Supabase SQL editor; verify tables and RLS.
+- Insert/select sample rows; measure query performance.
+- Ensure server-side code can connect with service key; client only uses anon key if needed.

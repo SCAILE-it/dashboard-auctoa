@@ -1,0 +1,19 @@
+# Task ID: 4
+# Title: Authentication with NextAuth.js and Supabase Adapter
+# Status: pending
+# Dependencies: 1, 3
+# Priority: high
+# Description: Secure internal access via NextAuth with OAuth (Google) and email link; protect routes and APIs.
+# Details:
+- Install next-auth ^5, set up Route Handlers in app/api/auth/[...nextauth]/route.ts.
+- Use Supabase as session/user adapter or keep NextAuth default with Prisma; PRD mandates Supabase for DB, so use @auth/supabase-adapter or custom tables in Supabase.
+- Providers: Google OAuth (internal domain allowlist) and Email (magic link) via Supabase SMTP or Resend.
+- Session strategy: jwt with encryption; set secure cookies; NEXTAUTH_URL set for prod.
+- Protect App Router segments with middleware.ts to require auth for /(dashboard) routes.
+- Restrict API routes by verifying session in route handlers.
+- Add role field for future RBAC (enum: admin, analyst, viewer).
+
+# Test Strategy:
+- Unit test auth callbacks (signIn, jwt, session) with mocked requests.
+- Manual sign-in flows; verify unauthorized users redirected.
+- Validate CSRF and cookie secure flags in prod build.

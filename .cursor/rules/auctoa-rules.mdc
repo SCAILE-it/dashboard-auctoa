@@ -1,0 +1,243 @@
+
+---
+description: Auctoa Dashboard Development Guidelines and Git Workflow
+globs: **/*
+alwaysApply: true
+---
+
+# Auctoa Analytics Dashboard - Development Rules
+
+## **Project Overview & Context**
+- Building a modern, clean, visually appealing analytics dashboard for Auctoa
+- Aggregates data from Google Search Console, Google Analytics, chatbot interactions
+- Focus on professional UI/UX with enterprise-grade appearance
+- Tech stack: Next.js 15+, TypeScript, Tailwind CSS, shadcn/ui, Supabase
+
+## **Design & UI Standards**
+
+### **Visual Design Principles**
+- **Modern & Clean**: Contemporary design with plenty of white space
+- **Professional Appearance**: Enterprise-grade, suitable for business use
+- **Consistent Color Scheme**: Use design tokens and maintain color consistency
+- **Typography Hierarchy**: Clear font sizes, weights, and spacing
+- **Responsive Design**: Mobile-first approach, works on all devices
+
+### **Component Guidelines**
+- Always use shadcn/ui components as the foundation
+- Create reusable components in `src/components/ui/`
+- Use Tailwind CSS for styling with consistent spacing (4, 6, 8, 12, 16, 24)
+- Implement hover effects and smooth transitions (duration-200, duration-300)
+- Add proper loading states and error handling for all components
+
+### **Code Quality Standards**
+```typescript
+// ✅ DO: Use TypeScript interfaces for props
+interface DashboardCardProps {
+  title: string
+  value: number
+  trend: 'up' | 'down'
+  icon: React.ElementType
+}
+
+// ✅ DO: Use proper component structure
+export default function DashboardCard({ title, value, trend, icon: Icon }: DashboardCardProps) {
+  return (
+    <Card className="hover:shadow-lg transition-shadow duration-200">
+      {/* Component content */}
+    </Card>
+  )
+}
+
+// ❌ DON'T: Use any types or skip interfaces
+// ❌ DON'T: Use inline styles instead of Tailwind classes
+```
+
+## **File Organization**
+```
+src/
+├── app/                 # Next.js app router pages
+├── components/
+│   ├── ui/             # shadcn/ui components
+│   ├── layout/         # Layout components (Header, Sidebar, etc.)
+│   ├── dashboard/      # Dashboard-specific components
+│   └── charts/         # Chart and visualization components
+├── lib/                # Utilities and configurations
+├── hooks/              # Custom React hooks
+└── types/              # TypeScript type definitions
+```
+
+## **Data Integration Priorities**
+1. **Chatbot Analytics** (First priority - most readily available)
+2. **Google Search Console** (Second priority - key business metrics)
+3. **Google Analytics** (Third priority - comprehensive insights)
+4. **Additional Sources** (Google Ads, n8n workflows)
+
+## **Performance Standards**
+- Page load times under 3 seconds
+- Use Next.js Image component for all images
+- Implement proper loading states for async operations
+- Use React.memo() for expensive components
+- Optimize bundle size with dynamic imports when needed
+
+## **Accessibility Requirements**
+- Proper ARIA labels on interactive elements
+- Keyboard navigation support
+- Color contrast ratio of 4.5:1 minimum
+- Screen reader friendly component structure
+- Focus indicators on all interactive elements
+
+## **Git Workflow & Commit Standards**
+
+### **Task Completion Workflow**
+After completing each task, always follow this pattern:
+
+1. **Review Changes**: Check that all requirements are met
+2. **Test Functionality**: Ensure everything works as expected
+3. **Commit Changes**: Use conventional commit format
+4. **Update Task Status**: Mark task as complete in Taskmaster
+
+### **Commit Message Format**
+Use conventional commits with this structure:
+```
+<type>(scope): <description>
+
+[optional body]
+
+[optional footer]
+```
+
+**Types:**
+- `feat`: New feature implementation
+- `fix`: Bug fix
+- `style`: UI/styling changes
+- `refactor`: Code refactoring without functionality change
+- `perf`: Performance improvements
+- `test`: Adding or updating tests
+- `docs`: Documentation updates
+- `chore`: Maintenance tasks
+
+**Examples:**
+```bash
+# Feature implementation
+git commit -m "feat(dashboard): implement modern metrics cards with hover animations
+
+- Add gradient backgrounds and shadow effects
+- Implement smooth transitions and micro-interactions
+- Create responsive grid layout for all screen sizes
+- Add trend indicators with color-coded arrows"
+
+# UI improvements
+git commit -m "style(sidebar): enhance navigation with gradient header
+
+- Add glass morphism effects with backdrop blur
+- Implement collapsible functionality with smooth animations
+- Add status indicators and badge notifications
+- Improve typography and spacing consistency"
+
+# API integration
+git commit -m "feat(api): integrate Google Search Console data
+
+- Set up API authentication and connection
+- Implement data fetching for search performance metrics
+- Add error handling and loading states
+- Create real-time data updates with caching"
+```
+
+### **Git Commit Reminder Template**
+After each task completion, use this checklist:
+
+```
+🎯 TASK COMPLETE - Time to Commit!
+
+✅ Check completed work meets requirements
+✅ Test functionality on different screen sizes
+✅ Verify no console errors or warnings
+✅ Update task status in Taskmaster
+
+📝 Commit Message Template:
+git commit -m "<type>(scope): <clear description>
+
+- <specific change 1>
+- <specific change 2>
+- <specific change 3>"
+
+🚀 Example for current task:
+git commit -m "feat(dashboard): complete modern dashboard layout
+
+- Implement responsive sidebar with gradient header
+- Add professional metric cards with animations
+- Create activity feed with real-time updates
+- Add glassmorphism effects and smooth transitions"
+```
+
+## **Development Best Practices**
+
+### **Component Development**
+- Start with mobile-first responsive design
+- Use semantic HTML elements
+- Implement proper error boundaries
+- Add loading skeletons for better UX
+- Test components in isolation
+
+### **State Management**
+- Use React hooks for local state
+- Implement proper data fetching patterns
+- Add optimistic updates where appropriate
+- Handle loading and error states consistently
+
+### **Testing Strategy**
+- Write unit tests for utility functions
+- Add integration tests for API routes
+- Test responsive design on multiple devices
+- Validate accessibility with screen readers
+
+## **Code Review Checklist**
+Before committing any code, verify:
+- [ ] TypeScript types are properly defined
+- [ ] Components are responsive and accessible
+- [ ] No console errors or warnings
+- [ ] Consistent styling with design system
+- [ ] Proper error handling implemented
+- [ ] Loading states are user-friendly
+- [ ] Code is properly commented where needed
+- [ ] Performance is optimized
+
+## **Common Patterns**
+
+### **API Route Structure**
+```typescript
+// ✅ DO: Proper API route with error handling
+export async function GET(request: NextRequest) {
+  try {
+    const data = await fetchAnalyticsData()
+    return NextResponse.json({ data, success: true })
+  } catch (error) {
+    return NextResponse.json(
+      { error: 'Failed to fetch data', success: false },
+      { status: 500 }
+    )
+  }
+}
+```
+
+### **Component Error Handling**
+```typescript
+// ✅ DO: Proper error and loading states
+const [data, setData] = useState(null)
+const [loading, setLoading] = useState(true)
+const [error, setError] = useState(null)
+
+if (loading) return <DashboardSkeleton />
+if (error) return <ErrorMessage error={error} />
+if (!data) return <EmptyState />
+```
+
+## **Task Completion Reminders**
+- Always run `npm run lint` before committing
+- Test on mobile and desktop viewports
+- Verify dark mode compatibility (if implemented)
+- Update relevant documentation
+- Take screenshot of new features for reference
+- Mark Taskmaster task as complete
+- Write descriptive git commit message
+- Consider if changes need testing by others

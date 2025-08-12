@@ -1,0 +1,19 @@
+# Task ID: 14
+# Title: Visualization Components with Chart.js/Recharts and Drill-down
+# Status: pending
+# Dependencies: 3, 6, 7, 8, 9, 10, 11
+# Priority: medium
+# Description: Build reusable chart wrappers and dashboard sections with interactivity, filters, and exports.
+# Details:
+- Choose Recharts ^2.12.7 for composability or Chart.js ^4.4.3 with react-chartjs-2; pick one to avoid bloat. Recommend Recharts for React SSR friendliness.
+- Create ChartWrapper with loading, error, empty, legend toggle, and responsive container.
+- Components: LineChart (time series), BarChart (comparisons), PieChart (distribution), Heatmap (calendar heatmap using d3-scale + SVG).
+- Implement click handlers to set filters/context and navigate to drill-down routes with query params.
+- Time period selectors: day/week/month/quarter using date-fns ^3; maintain in URL state.
+- Export: client-side PNG export via html-to-image ^1.11; CSV export via json2csv; server export jobs for large reports using /api/exports with background job stub.
+- KPI Cards with trend computation: compare current period vs previous; show percentage delta with arrows (lucide icons).
+
+# Test Strategy:
+- Snapshot test components.
+- Interaction tests with Playwright: drill-down navigation, filter persistence.
+- Validate export files open correctly and data matches visible charts.

@@ -1,0 +1,21 @@
+# Task ID: 15
+# Title: Performance, Accessibility, Deployment, and Monitoring
+# Status: pending
+# Dependencies: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14
+# Priority: high
+# Description: Optimize performance, ensure WCAG compliance, set up CI/CD, and deploy to production with monitoring.
+# Details:
+- Performance: enable Next.js image optimization; use React Server Components for data fetching where possible; cache heavy queries; implement pagination/virtualization for large tables (react-virtualized or react-aria-components list).
+- Use edge runtime for lightweight APIs if feasible; add HTTP compression and proper cache headers.
+- Accessibility: run automated axe checks; ensure keyboard traps absent; provide alt text, aria labels; prefers-reduced-motion.
+- CI/CD: GitHub Actions to run lint, type-check, test, build; preview deploys.
+- Deployment: Vercel for Next.js 15; configure env vars and secrets; custom domain and HTTPS.
+- Monitoring: Vercel Analytics, Sentry ^8 for FE/BE error tracking, Logflare/Better Stack for logs; uptime monitoring.
+- Documentation: README, runbooks for API creds rotation, incident response.
+- Success criteria checks: page load <3s on 3G/Slow 4G, zero critical a11y issues, integration health dashboards.
+
+# Test Strategy:
+- Lighthouse CI in GitHub Actions; budget thresholds.
+- Sentry test errors appear in dashboard.
+- Manual cross-browser testing in Chrome, Firefox, Safari, Edge; responsive device matrix.
+- Load test critical APIs with k6 to validate scalability.

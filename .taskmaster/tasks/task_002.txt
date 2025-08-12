@@ -1,0 +1,81 @@
+# Task ID: 2
+# Title: Design System Setup: Theme, Typography, Colors, WCAG Baseline
+# Status: pending
+# Dependencies: 1
+# Priority: high
+# Description: Establish a cohesive design system with Tailwind tokens, shadcn theme, and accessibility foundations, emphasizing modern, clean, and visually appealing design as the top priority.
+# Details:
+CRITICAL DESIGN REQUIREMENTS:
+- Modern, clean interface with plenty of white space
+- Professional color scheme and typography
+- Enterprise-grade visual aesthetics
+- Smooth animations and micro-interactions
+- Intuitive information hierarchy
+- Mobile-responsive design patterns
+- Accessibility compliance (WCAG)
+
+IMPLEMENTATION:
+- Use Tailwind CSS variables for color tokens (primary, secondary, accent, success, warning, danger, muted, background, foreground) with HSL.
+- Generate light/dark palettes; ensure contrast ratios ≥ 4.5:1 for body text while maintaining visual appeal.
+- Configure shadcn theme with CSS variables; include focus states and motion-safe animations that enhance user experience.
+- Set base typography scale, spacing, radii; import Inter or Geist via next/font for professional typography.
+- Establish comprehensive spacing scales that promote ample white space and clean layouts.
+- Create design tokens for elevation (shadows), borders, and transitions that reinforce the modern aesthetic.
+- Create reusable UI patterns with emphasis on visual polish: KPI Card, Section Header, Stat Delta (trend up/down with colors), Empty State, Skeleton Loader.
+- Implement subtle micro-interactions and transitions to enhance perceived quality.
+- Document components in a Storybook 8 setup for visual regression (optional but recommended for internal).
+- Add aria attributes and keyboard navigation patterns to nav components.
+- Design component variants that maintain visual consistency while offering flexibility.
+
+# Test Strategy:
+- Use axe-core/Playwright to check for zero critical accessibility violations.
+- Manually test keyboard navigation and focus order.
+- Visual regression snapshots of components in Storybook.
+- Conduct design reviews focused on visual appeal, white space usage, and professional appearance.
+- Test animations and transitions for smoothness across devices.
+- Verify information hierarchy through user testing or expert review.
+- Ensure responsive design patterns maintain visual integrity across breakpoints.
+
+# Subtasks:
+## 1. Create color token system with professional palette [pending]
+### Dependencies: None
+### Description: Develop a sophisticated color system with primary, secondary, and accent colors that convey enterprise-grade professionalism while maintaining accessibility.
+### Details:
+
+
+## 2. Establish typography system with clear hierarchy [pending]
+### Dependencies: None
+### Description: Configure typography scales that create clear visual hierarchy and maintain readability, using Inter or Geist font with appropriate weight and size variations.
+### Details:
+
+
+## 3. Design spacing and layout system [pending]
+### Dependencies: None
+### Description: Create spacing scales and layout patterns that emphasize white space and clean composition, establishing consistent margins, paddings, and gaps.
+### Details:
+
+
+## 4. Implement animation and transition system [pending]
+### Dependencies: None
+### Description: Develop subtle, professional animations and micro-interactions that enhance the UI without being distracting, with motion-safe alternatives.
+### Details:
+
+
+## 5. Create core UI component patterns [pending]
+### Dependencies: None
+### Description: Design and implement visually polished versions of KPI Card, Section Header, Stat Delta, Empty State, and Skeleton Loader components.
+### Details:
+
+
+## 6. Configure responsive design tokens [pending]
+### Dependencies: None
+### Description: Establish responsive breakpoints and container queries that maintain visual integrity and professional appearance across all device sizes.
+### Details:
+
+
+## 7. Document design system in Storybook [pending]
+### Dependencies: None
+### Description: Create comprehensive documentation of the design system components, tokens, and usage guidelines in Storybook 8.
+### Details:
+
+

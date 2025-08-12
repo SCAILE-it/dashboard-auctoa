@@ -1,0 +1,63 @@
+# Task ID: 3
+# Title: Core Layout, Routing, and Navigation
+# Status: pending
+# Dependencies: 1, 2
+# Priority: high
+# Description: Implement visually stunning, responsive layout with sidebar, header, breadcrumbs, and section routes using App Router, emphasizing clean design principles and professional visual hierarchy.
+# Details:
+- App Router structure: app/(dashboard)/layout.tsx with Sidebar, Header, Breadcrumbs; pages: /, /search-performance, /website-analytics, /chatbot-analytics, /campaign-performance, /settings.
+- Design Focus: Clean, modern layout with abundant white space; professional enterprise-grade visual hierarchy; intuitive information architecture.
+- Sidebar: collapsible, icons via lucide-react; active route highlighting; mobile Sheet for small screens; elegant design with smooth transition animations.
+- Header: polished user menu, search input (debounced), notifications dropdown; consistent visual styling.
+- Breadcrumbs: derive from segment; add aria-label; integrate seamlessly with overall design.
+- Responsive grid system using Tailwind (grid-cols-12) and container queries with mobile-first approach.
+- Animations: Implement smooth navigation transitions between routes; subtle hover effects; loading state animations.
+- Visual Consistency: Maintain consistent spacing, typography, and color usage across all sections.
+- Error boundary and loading.tsx for each route with visually appealing states.
+- Add NotFound and global toasts with design-consistent styling.
+
+# Test Strategy:
+- Lighthouse check for responsive behavior and visual performance.
+- Verify routing works and loading/error states render per route with smooth transitions.
+- Keyboard navigation across sidebar/header with screen reader labels.
+- Test visual consistency across different viewport sizes.
+- Validate animation performance on lower-end devices.
+- Ensure design maintains integrity across all major breakpoints.
+
+# Subtasks:
+## 1. Create base layout structure with visual hierarchy [pending]
+### Dependencies: None
+### Description: Implement app/(dashboard)/layout.tsx with Sidebar, Header, and Breadcrumbs components focusing on clean design and white space
+### Details:
+
+
+## 2. Design and implement elegant sidebar [pending]
+### Dependencies: None
+### Description: Create collapsible sidebar with Lucide icons, active route highlighting, and smooth transition animations
+### Details:
+
+
+## 3. Develop polished header component [pending]
+### Dependencies: None
+### Description: Build header with user menu, debounced search input, and notifications dropdown with consistent styling
+### Details:
+
+
+## 4. Implement responsive grid system [pending]
+### Dependencies: None
+### Description: Create mobile-first responsive grid using Tailwind and container queries with attention to visual consistency
+### Details:
+
+
+## 5. Add route transitions and animations [pending]
+### Dependencies: None
+### Description: Implement smooth navigation animations and transitions between routes for a polished user experience
+### Details:
+
+
+## 6. Create visually appealing loading and error states [pending]
+### Dependencies: None
+### Description: Design and implement loading.tsx and error boundary components for each route with consistent styling
+### Details:
+
+

@@ -1,0 +1,17 @@
+# Task ID: 11
+# Title: Google Alerts/News API Integration
+# Status: pending
+# Dependencies: 6
+# Priority: low
+# Description: Pull industry insights via Google Alerts (via RSS) or News API alternative; store and display.
+# Details:
+- If using Google Alerts: create alerts and fetch RSS feeds periodically; parse with rss-parser ^3.13.0.
+- Alternative: GNews/NewsAPI.org with API key; store title, source, url, date, topic, sentiment.
+- Add simple sentiment with sentiment npm or HuggingFace inference API (optional lightweight).
+- Display latest headlines list with filters; link out to source.
+- Persist to alerts_news; dedupe by url hash.
+
+# Test Strategy:
+- Unit test RSS parsing and dedupe.
+- Validate UI renders and links work.
+- Check rate limits and caching headers respected.

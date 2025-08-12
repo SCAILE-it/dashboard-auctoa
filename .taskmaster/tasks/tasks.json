@@ -1,0 +1,413 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Initialize Next.js 15 Project with TypeScript, Tailwind, shadcn/ui",
+        "description": "Scaffold the Next.js 15 App Router project with TypeScript, Tailwind CSS, and shadcn/ui; set up project conventions and base config.",
+        "details": "- Use Node 20 LTS. npx create-next-app@latest auctoa-analytics --ts --eslint --src-dir --app --tailwind --import-alias @/*\n- Verify Next.js 15 canary/stable; enable experimental App Router features if needed in next.config.mjs.\n- Tailwind: configure tailwind.config.ts with shadcn/ui preset and dark mode 'class'.\n- Install shadcn/ui CLI (latest) and initialize; import base components (button, card, input, select, dialog, dropdown-menu, navigation-menu, sheet, toast, tooltip, chart primitives if available).\n- Install lucide-react ^0.447.0.\n- Set up absolute imports @/* and module path mapping in tsconfig.json.\n- Configure ESLint with next/core-web-vitals, TypeScript rules; Prettier.\n- Add commit hooks: Husky + lint-staged; configure pnpm work if desired; use pnpm as package manager.\n- Set up environment variables via .env.local.example (NEXTAUTH_SECRET, NEXTAUTH_URL, SUPABASE_URL, SUPABASE_ANON_KEY, GOOGLE creds, GA4, GADS, GSC, NEWS/Alerts, CHATBOT API, N8N_WEBHOOK_URL).",
+        "testStrategy": "- Run npm run build and npm run lint to ensure zero errors.\n- Validate shadcn components render in a sample page.\n- Confirm Tailwind classes apply and dark mode toggles.\n- Ensure TypeScript strict mode compiles without errors.",
+        "priority": "high",
+        "dependencies": [],
+        "status": "done",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Scaffold Next.js 15 project with TypeScript and App Router",
+            "description": "Create a new Next.js 15 project using create-next-app with TypeScript, App Router, Tailwind, ESLint, and src dir.",
+            "dependencies": [],
+            "details": "Use Node 20 LTS. Run: npx create-next-app@latest auctoa-analytics --ts --eslint --src-dir --app --tailwind --import-alias @/* . Verify Next.js 15 installed and App Router is enabled by default in /app. Confirm next.config.ts support if desired.",
+            "status": "done",
+            "testStrategy": "Run pnpm dev to ensure app starts; check /app/page.tsx renders; run pnpm build without errors."
+          },
+          {
+            "id": 2,
+            "title": "Configure Next.js 15 settings and experimental flags",
+            "description": "Set up next.config.ts/mjs with Next.js 15 options and any required experimental App Router features.",
+            "dependencies": [
+              "1.1"
+            ],
+            "details": "Migrate to next.config.ts and type with NextConfig. Enable or confirm features as needed (e.g., caching, route handlers). Add basePath, experimental or future flags only if required by dependencies. Commit configuration.",
+            "status": "done",
+            "testStrategy": "Run pnpm build to validate config types; ensure no deprecation warnings; verify dev server starts with new config."
+          },
+          {
+            "id": 3,
+            "title": "Install and configure Tailwind CSS with shadcn/ui preset",
+            "description": "Set Tailwind dark mode, content paths, and integrate shadcn/ui preset in tailwind.config.ts.",
+            "dependencies": [
+              "1.1"
+            ],
+            "details": "Set darkMode: 'class'. Configure content to scan ./app/**/*.{ts,tsx}, ./components/**/*.{ts,tsx}, ./src/**/*.{ts,tsx}. Add shadcn/ui preset if available, or extend theme tokens to match shadcn requirements. Create globals.css with @tailwind base, components, utilities and CSS variables for themes.",
+            "status": "done",
+            "testStrategy": "Add a sample page using Tailwind classes and toggle dark mode via class on html; verify styles apply and no purge issues."
+          },
+          {
+            "id": 4,
+            "title": "Install shadcn/ui, base components, and icon library",
+            "description": "Initialize shadcn/ui CLI, configure component path, and add core components with lucide-react.",
+            "dependencies": [
+              "1.1",
+              "1.2",
+              "1.3"
+            ],
+            "details": "Install shadcn/ui CLI and init. Configure components directory (e.g., components/ui). Add components: button, card, input, select, dialog, dropdown-menu, navigation-menu, sheet, toast, tooltip, and chart primitives if available. Install lucide-react ^0.447.0. Create a sample page rendering imported components to verify.",
+            "status": "done",
+            "testStrategy": "Render multiple shadcn components on a sample route; ensure no CSS or type errors; verify icons render."
+          },
+          {
+            "id": 5,
+            "title": "Set up project tooling: TypeScript paths, ESLint/Prettier, Husky, lint-staged, env templates, and pnpm",
+            "description": "Configure tsconfig paths (@/*), ESLint with next/core-web-vitals and TypeScript rules, Prettier, commit hooks, and .env.local.example.",
+            "dependencies": [
+              "1.1"
+            ],
+            "details": "Update tsconfig.json compilerOptions.paths to map @/* to ./src/* (or project structure). Configure ESLint extends: next/core-web-vitals and TypeScript rules; add Prettier config and plugin. Install Husky and lint-staged; set pre-commit to run eslint --fix and prettier --check on staged files. Ensure pnpm is set as package manager. Add .env.local.example with NEXTAUTH_SECRET, NEXTAUTH_URL, SUPABASE_URL, SUPABASE_ANON_KEY, GOOGLE creds, GA4, GADS, GSC, NEWS/Alerts, CHATBOT API, N8N_WEBHOOK_URL.",
+            "status": "done",
+            "testStrategy": "Run pnpm lint with zero errors; commit a change and verify pre-commit hooks run; TypeScript build in strict mode passes; verify absolute imports compile."
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Design System Setup: Theme, Typography, Colors, WCAG Baseline",
+        "description": "Establish a cohesive design system with Tailwind tokens, shadcn theme, and accessibility foundations, emphasizing modern, clean, and visually appealing design as the top priority.",
+        "status": "done",
+        "dependencies": [
+          1
+        ],
+        "priority": "high",
+        "details": "CRITICAL DESIGN REQUIREMENTS:\n- Modern, clean interface with plenty of white space\n- Professional color scheme and typography\n- Enterprise-grade visual aesthetics\n- Smooth animations and micro-interactions\n- Intuitive information hierarchy\n- Mobile-responsive design patterns\n- Accessibility compliance (WCAG)\n\nIMPLEMENTATION:\n- Use Tailwind CSS variables for color tokens (primary, secondary, accent, success, warning, danger, muted, background, foreground) with HSL.\n- Generate light/dark palettes; ensure contrast ratios ≥ 4.5:1 for body text while maintaining visual appeal.\n- Configure shadcn theme with CSS variables; include focus states and motion-safe animations that enhance user experience.\n- Set base typography scale, spacing, radii; import Inter or Geist via next/font for professional typography.\n- Establish comprehensive spacing scales that promote ample white space and clean layouts.\n- Create design tokens for elevation (shadows), borders, and transitions that reinforce the modern aesthetic.\n- Create reusable UI patterns with emphasis on visual polish: KPI Card, Section Header, Stat Delta (trend up/down with colors), Empty State, Skeleton Loader.\n- Implement subtle micro-interactions and transitions to enhance perceived quality.\n- Document components in a Storybook 8 setup for visual regression (optional but recommended for internal).\n- Add aria attributes and keyboard navigation patterns to nav components.\n- Design component variants that maintain visual consistency while offering flexibility.",
+        "testStrategy": "- Use axe-core/Playwright to check for zero critical accessibility violations.\n- Manually test keyboard navigation and focus order.\n- Visual regression snapshots of components in Storybook.\n- Conduct design reviews focused on visual appeal, white space usage, and professional appearance.\n- Test animations and transitions for smoothness across devices.\n- Verify information hierarchy through user testing or expert review.\n- Ensure responsive design patterns maintain visual integrity across breakpoints.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create color token system with professional palette",
+            "description": "Develop a sophisticated color system with primary, secondary, and accent colors that convey enterprise-grade professionalism while maintaining accessibility.",
+            "status": "done",
+            "dependencies": [],
+            "details": "<info added on 2025-08-12T12:52:04.121Z>\nEnhanced color token system with professional palette\n\nIMPROVEMENTS MADE:\n- Upgraded primary color to modern blue (#1d4ed8) with proper OKLCH values\n- Enhanced secondary colors with blue-gray tones for enterprise look\n- Added analytics orange accent color for highlights\n- Converted all status colors (success, warning, danger) to OKLCH for consistency\n- Added new 'info' color category for informational states\n- Improved dark mode color variants with proper contrast ratios\n- All colors now follow OKLCH color space for better perceptual uniformity\n\nCOLORS ESTABLISHED:\n- Primary: Modern blue with high contrast\n- Secondary: Light blue-gray for subtle backgrounds\n- Accent: Analytics orange for key highlights\n- Status: Success (emerald), Warning (amber), Danger (red), Info (blue)\n- Chart colors: 5-color palette for data visualization\n\nThe color system is now enterprise-grade and ready for professional analytics dashboard use.\n</info added on 2025-08-12T12:52:04.121Z>",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Establish typography system with clear hierarchy",
+            "description": "Configure typography scales that create clear visual hierarchy and maintain readability, using Inter or Geist font with appropriate weight and size variations.",
+            "status": "done",
+            "dependencies": [],
+            "details": "<info added on 2025-08-12T12:53:05.414Z>\n✅ Established professional typography system with clear hierarchy\n\nTYPOGRAPHY ENHANCEMENTS:\n- Added Inter font family as primary typeface (professional, readable)\n- Added JetBrains Mono for code/monospace content\n- Created complete typography scale (xs to 4xl) with proper sizing\n- Established line height system (tight, normal, relaxed)\n- Set up font weight hierarchy (400-700)\n- Enhanced body typography with proper font features and smoothing\n\nHIERARCHY CLASSES CREATED:\n- Heading styles (h1-h6) with appropriate sizing and weights\n- Semantic text utilities (.text-display, .text-headline, .text-title, etc.)\n- Analytics-specific classes (.text-metric, .text-metric-large) with tabular numbers\n- Professional spacing and tracking for optimal readability\n\nACCESSIBILITY FEATURES:\n- Optimized font rendering for clarity\n- Proper contrast ratios maintained\n- Tabular numbers for consistent metric display\n- Tracking adjustments for better readability at different sizes\n\nThe typography system now provides clear visual hierarchy and enterprise-level professionalism for the analytics dashboard.\n</info added on 2025-08-12T12:53:05.414Z>",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Design spacing and layout system",
+            "description": "Create spacing scales and layout patterns that emphasize white space and clean composition, establishing consistent margins, paddings, and gaps.",
+            "status": "done",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Implement animation and transition system",
+            "description": "Develop subtle, professional animations and micro-interactions that enhance the UI without being distracting, with motion-safe alternatives.",
+            "status": "done",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Create core UI component patterns",
+            "description": "Design and implement visually polished versions of KPI Card, Section Header, Stat Delta, Empty State, and Skeleton Loader components.",
+            "status": "done",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          },
+          {
+            "id": 6,
+            "title": "Configure responsive design tokens",
+            "description": "Establish responsive breakpoints and container queries that maintain visual integrity and professional appearance across all device sizes.",
+            "status": "done",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          },
+          {
+            "id": 7,
+            "title": "Document design system in Storybook",
+            "description": "Create comprehensive documentation of the design system components, tokens, and usage guidelines in Storybook 8.",
+            "status": "done",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Core Layout, Routing, and Navigation",
+        "description": "Implement visually stunning, responsive layout with sidebar, header, breadcrumbs, and section routes using App Router, emphasizing clean design principles and professional visual hierarchy.",
+        "status": "done",
+        "dependencies": [
+          1,
+          2
+        ],
+        "priority": "high",
+        "details": "- App Router structure: app/(dashboard)/layout.tsx with Sidebar, Header, Breadcrumbs; pages: /, /search-performance, /website-analytics, /chatbot-analytics, /campaign-performance, /settings.\n- Design Focus: Clean, modern layout with abundant white space; professional enterprise-grade visual hierarchy; intuitive information architecture.\n- Sidebar: collapsible, icons via lucide-react; active route highlighting; mobile Sheet for small screens; elegant design with smooth transition animations.\n- Header: polished user menu, search input (debounced), notifications dropdown; consistent visual styling.\n- Breadcrumbs: derive from segment; add aria-label; integrate seamlessly with overall design.\n- Responsive grid system using Tailwind (grid-cols-12) and container queries with mobile-first approach.\n- Animations: Implement smooth navigation transitions between routes; subtle hover effects; loading state animations.\n- Visual Consistency: Maintain consistent spacing, typography, and color usage across all sections.\n- Error boundary and loading.tsx for each route with visually appealing states.\n- Add NotFound and global toasts with design-consistent styling.",
+        "testStrategy": "- Lighthouse check for responsive behavior and visual performance.\n- Verify routing works and loading/error states render per route with smooth transitions.\n- Keyboard navigation across sidebar/header with screen reader labels.\n- Test visual consistency across different viewport sizes.\n- Validate animation performance on lower-end devices.\n- Ensure design maintains integrity across all major breakpoints.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create base layout structure with visual hierarchy",
+            "description": "Implement app/(dashboard)/layout.tsx with Sidebar, Header, and Breadcrumbs components focusing on clean design and white space",
+            "status": "done",
+            "dependencies": [],
+            "details": "<info added on 2025-08-12T13:07:56.586Z>\nCOMPLETED: Base layout structure implemented with (dashboard) route group, main layout.tsx, Sidebar, and Header.\n\nWhat was built:\n- Route group app/(dashboard) with pages: /, /analytics, /search, /chatbot, /settings\n- Main layout with clean visual hierarchy and component separation\n- Sidebar (collapsible, active route highlight, smooth animations)\n- Header (search, notifications dropdown, user menu)\n- Responsive main content container with consistent padding\n\nTechnical decisions:\n- Tailwind-based professional gray/white scheme\n- lucide-react icons; animations via Tailwind transitions\n- Placeholder user and notifications for MVP\n- Collapsible sidebar retains icon visibility when collapsed\n\nNext steps:\n- Proceed to Subtask 3.5 for responsive behavior and mobile navigation (Sidebar Sheet on small screens, header adaptations, keyboard focus management)\n</info added on 2025-08-12T13:07:56.586Z>\n<info added on 2025-08-12T13:23:50.955Z>\n✅ COMPLETED: Base layout structure with professional dark mode support\n\n**What was accomplished:**\n- ✅ Complete dashboard layout with collapsible sidebar and professional header\n- ✅ Working navigation between all dashboard sections (Overview, Analytics, Search, Chatbot, Settings)\n- ✅ Professional dark mode implementation with proper color schemes\n- ✅ State persistence for dark mode preference using localStorage\n- ✅ Responsive design with smooth transitions and hover effects\n- ✅ Clean, enterprise-grade visual hierarchy throughout all components\n\n**Technical achievements:**\n- Proper Tailwind dark mode classes across all layout components\n- Semantic color usage (bg-background, text-muted-foreground, etc.)\n- Professional sidebar with active route highlighting\n- Header with search, notifications, dark mode toggle, and user menu\n- Consistent border and spacing systems\n\n**Ready for next phase:** Data integration from Supabase\n</info added on 2025-08-12T13:23:50.955Z>",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Design and implement elegant sidebar",
+            "description": "Create collapsible sidebar with Lucide icons, active route highlighting, and smooth transition animations",
+            "status": "done",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Develop polished header component",
+            "description": "Build header with user menu, debounced search input, and notifications dropdown with consistent styling",
+            "status": "done",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Implement responsive grid system",
+            "description": "Create mobile-first responsive grid using Tailwind and container queries with attention to visual consistency",
+            "status": "done",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Add route transitions and animations",
+            "description": "Implement smooth navigation animations and transitions between routes for a polished user experience",
+            "status": "done",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          },
+          {
+            "id": 6,
+            "title": "Create visually appealing loading and error states",
+            "description": "Design and implement loading.tsx and error boundary components for each route with consistent styling",
+            "status": "done",
+            "dependencies": [],
+            "details": "",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Authentication with NextAuth.js and Supabase Adapter",
+        "description": "Secure internal access via NextAuth with OAuth (Google) and email link; protect routes and APIs.",
+        "details": "- Install next-auth ^5, set up Route Handlers in app/api/auth/[...nextauth]/route.ts.\n- Use Supabase as session/user adapter or keep NextAuth default with Prisma; PRD mandates Supabase for DB, so use @auth/supabase-adapter or custom tables in Supabase.\n- Providers: Google OAuth (internal domain allowlist) and Email (magic link) via Supabase SMTP or Resend.\n- Session strategy: jwt with encryption; set secure cookies; NEXTAUTH_URL set for prod.\n- Protect App Router segments with middleware.ts to require auth for /(dashboard) routes.\n- Restrict API routes by verifying session in route handlers.\n- Add role field for future RBAC (enum: admin, analyst, viewer).",
+        "testStrategy": "- Unit test auth callbacks (signIn, jwt, session) with mocked requests.\n- Manual sign-in flows; verify unauthorized users redirected.\n- Validate CSRF and cookie secure flags in prod build.",
+        "priority": "high",
+        "dependencies": [
+          1,
+          3
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 5,
+        "title": "Supabase Schema Design and Client Setup",
+        "description": "Create schemas for metrics, data sources, and logs; configure Supabase client for server and edge.",
+        "details": "- Install @supabase/supabase-js ^2.45.0.\n- Schema: tables\n  - data_sources(id, name, type, auth_config jsonb, enabled boolean, created_at)\n  - metrics_kpi(id, date, kpi_type enum('search_clicks','impressions','unique_visitors','chatbot_conversations','conversion_rate'), value numeric, meta jsonb, source varchar, created_at)\n  - gsc_search_stats(date, query, clicks, impressions, ctr, position)\n  - ga4_page_metrics(date, page_path, sessions, users, bounce_rate, avg_session_duration)\n  - chatbot_conversations(date, intent, conversations, satisfaction, accuracy)\n  - gads_campaign_stats(date, campaign_id, name, clicks, impressions, cost_micros, conversions, conv_rate)\n  - alerts_news(date, source, title, topic, sentiment, url)\n  - activity_feed(id, occurred_at timestamptz, type, message, meta jsonb)\n  - system_health(id, component, status, last_sync, details)\n  - export_jobs(id, user_id, params jsonb, status, file_url)\n- Add RLS policies: allow read/write for authenticated; stricter per table if needed.\n- Create indexes on date and query/campaign_id for performance.\n- Add Supabase service role key on server only; anon key for client read if necessary; use Edge-friendly client for Route Handlers.",
+        "testStrategy": "- Run migration scripts via Supabase SQL editor; verify tables and RLS.\n- Insert/select sample rows; measure query performance.\n- Ensure server-side code can connect with service key; client only uses anon key if needed.",
+        "priority": "high",
+        "dependencies": [
+          1,
+          4
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 6,
+        "title": "API Route Structure and Data Access Layer",
+        "description": "Implement Next.js Route Handlers for each data domain and a shared data-access layer with caching.",
+        "details": "- Create /app/api/{kpis,gsc,ga4,chatbot,gads,alerts,activity,exports}/route.ts with GET handlers.\n- Use a repository pattern: lib/repos/{kpiRepo,gscRepo,gaRepo,chatbotRepo,gadsRepo,alertsRepo}.ts reading/writing Supabase.\n- Add input validation with zod ^3.23 (e.g., date ranges, pagination, filters).\n- Server-side caching: fetch cache 'force-cache' for static ranges; revalidateTag for data updates. Use Next.js cache tags (revalidateTag) and route segment config for dynamic.\n- Implement error handling and standardized API response envelopes {data, meta, error}.\n- Include drill-down parameters (e.g., query, page_path, campaign_id) and sorting.\n- Rate limit internal APIs using upstash/ratelimit or simple token bucket in memory for now.",
+        "testStrategy": "- Unit test each handler with supertest/next-test-api-route-handler.\n- Validate zod schemas reject invalid inputs.\n- Confirm caching works by observing revalidateTag behavior after writes.",
+        "priority": "high",
+        "dependencies": [
+          5
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 7,
+        "title": "Chatbot Analytics Integration (Priority Source)",
+        "description": "Ingest chatbot interaction data and expose analytics endpoints and UI widgets.",
+        "details": "- Identify chatbot source (e.g., Intercom, Dialogflow CX, custom logs). Implement n8n webhook or periodic pull to Supabase tables chatbot_conversations.\n- Metrics: conversation volume by date, top intents, response accuracy, satisfaction (CSAT), resolution rate.\n- UI: KPI cards and charts (line for volume trend, bar for intents, pie for resolutions).\n- Pseudo-code ingestion:\n  fetchChatbotData(range){ const rows = api.list(range); supabase.upsert('chatbot_conversations', rows, on conflict (date,intent)); }\n- Ensure timestamps in UTC; dedupe by (date,intent).\n- Add server actions to trigger manual resync.\n- Implement drill-down to view sample transcripts if available (store only metadata to remain GDPR-compliant).",
+        "testStrategy": "- Seed with synthetic data; verify charts and KPIs compute correctly.\n- Backfill historical data and confirm totals match chatbot platform reports.\n- Test PII redaction and data retention policy.",
+        "priority": "high",
+        "dependencies": [
+          6
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 8,
+        "title": "Google Search Console API Integration",
+        "description": "Connect to GSC Search Analytics API for queries, clicks, impressions, CTR, position; store and visualize.",
+        "details": "- Use OAuth 2.0 service account or OAuth client; for internal dashboard, use service account with site delegated access or 3LO with admin consent.\n- Library: googleapis ^137.0.0.\n- Endpoint: searchconsole.searchanalytics.query with dimensions ['query','date','page'] as needed; pageSize limit.\n- Ingestion job writes to gsc_search_stats; map fields.\n- Implement caching: store daily aggregates; re-fetch recent 3 days to correct late data.\n- UI components: top keywords table (clicks, impressions, CTR, position), trends line chart.\n- Add rate limiting and exponential backoff for 429s.\n- Secure credentials with Google Cloud Secret Manager or Vercel encrypted env vars.",
+        "testStrategy": "- Connect to a test property and validate totals for a date range match GSC UI within expected variance.\n- Unit test transform functions.\n- Handle no-data and permission errors gracefully in UI.",
+        "priority": "high",
+        "dependencies": [
+          6
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 9,
+        "title": "Google Analytics 4 Data API Integration",
+        "description": "Fetch GA4 metrics (users, sessions, bounce rate, avg session duration, traffic sources) and persist.",
+        "details": "- Use @google-analytics/data ^5.7.0 with a service account; grant property read.\n- Reports: runReport with dimensions date, sessionDefaultChannelGroup, pagePath; metrics users, sessions, averageSessionDuration, bounceRate, conversions if configured.\n- Store to ga4_page_metrics and optionally a sources table.\n- Implement sampling awareness; paginate rows; respect API quotas.\n- UI: traffic sources stacked bar, behavior flow (simplified step chart), page performance table.\n- Add custom event tracking on frontend via gtag or GA4 Measurement Protocol only if needed internally (avoid mixing with prod site unless specified).",
+        "testStrategy": "- Cross-check totals with GA4 UI for the same date range.\n- Unit test mapping and deduping.\n- Validate charts render with empty states and large dataset performance.",
+        "priority": "medium",
+        "dependencies": [
+          6
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 10,
+        "title": "Google Ads API Integration for Campaign Performance",
+        "description": "Integrate Google Ads API to retrieve campaign KPIs and ROI metrics.",
+        "details": "- Use google-ads-api v17 SDK or REST; requires developer token, OAuth, customer ID with read perms.\n- Query via GAQL for campaigns: clicks, impressions, cost_micros, conversions, conversion_rate, date.\n- Persist in gads_campaign_stats; compute ROI if revenue available (else show CPA).\n- Handle paging and partial failures; respect per-customer rate limits.\n- UI: campaign table with sorting, cost and conversion trends, budget utilization gauge.\n- Secure refresh tokens; rotate credentials; store only on server.\n- Implement incremental sync by date; backfill last 90 days.",
+        "testStrategy": "- Validate sample queries in the Ads UI vs API.\n- Unit test GAQL builders and error handling.\n- Simulate quota errors and ensure retries/backoff.",
+        "priority": "medium",
+        "dependencies": [
+          6
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 11,
+        "title": "Google Alerts/News API Integration",
+        "description": "Pull industry insights via Google Alerts (via RSS) or News API alternative; store and display.",
+        "details": "- If using Google Alerts: create alerts and fetch RSS feeds periodically; parse with rss-parser ^3.13.0.\n- Alternative: GNews/NewsAPI.org with API key; store title, source, url, date, topic, sentiment.\n- Add simple sentiment with sentiment npm or HuggingFace inference API (optional lightweight).\n- Display latest headlines list with filters; link out to source.\n- Persist to alerts_news; dedupe by url hash.",
+        "testStrategy": "- Unit test RSS parsing and dedupe.\n- Validate UI renders and links work.\n- Check rate limits and caching headers respected.",
+        "priority": "low",
+        "dependencies": [
+          6
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 12,
+        "title": "Real-time Updates, Live Activity Feed, and Data Freshness Indicators",
+        "description": "Enable live synchronization and visibility into recent actions and system status.",
+        "details": "- Use Supabase Realtime channels on activity_feed and system_health tables to push updates to clients.\n- Log significant events: sync start/finish, errors, user actions (exports, filters saved).\n- Display a Live Activity Feed component subscribing via supabase.channel('activity').\n- Data freshness badges per section: compute last_sync from system_health; color-code.\n- For real-time ingestion, integrate n8n workflows to POST to /api hooks which write and emit activity events.",
+        "testStrategy": "- Simulate insert into activity_feed and verify UI updates without refresh.\n- Unit test freshness calculation.\n- Chaos test: send burst of events and ensure UI throttles rendering.",
+        "priority": "medium",
+        "dependencies": [
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 13,
+        "title": "n8n Workflow Automation for Data Collection",
+        "description": "Configure n8n workflows to orchestrate pulls from sources and push to API webhooks.",
+        "details": "- Deploy n8n (cloud or self-host). Create credentials for Google APIs, Ads, chatbot, and News.\n- Workflows:\n  - Scheduled daily GSC/GA4 pulls -> transform -> POST to /api/{gsc,ga4} bulk endpoints.\n  - Chatbot webhook receiver -> sanitize PII -> POST to /api/chatbot.\n  - Ads sync every 4 hours.\n  - Alerts RSS poll every 6 hours.\n- Include retry nodes, error branches to send notifications (email/Slack) and write to system_health.\n- Secure n8n to API via HMAC signature header checked in API routes.\n- Document workflows and environment variables.",
+        "testStrategy": "- Run workflows in test mode; verify API receives signed payloads.\n- Force errors to ensure retries and error notifications function.\n- Confirm dedupe logic prevents duplicates on replays.",
+        "priority": "medium",
+        "dependencies": [
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 14,
+        "title": "Visualization Components with Chart.js/Recharts and Drill-down",
+        "description": "Build reusable chart wrappers and dashboard sections with interactivity, filters, and exports.",
+        "details": "- Choose Recharts ^2.12.7 for composability or Chart.js ^4.4.3 with react-chartjs-2; pick one to avoid bloat. Recommend Recharts for React SSR friendliness.\n- Create ChartWrapper with loading, error, empty, legend toggle, and responsive container.\n- Components: LineChart (time series), BarChart (comparisons), PieChart (distribution), Heatmap (calendar heatmap using d3-scale + SVG).\n- Implement click handlers to set filters/context and navigate to drill-down routes with query params.\n- Time period selectors: day/week/month/quarter using date-fns ^3; maintain in URL state.\n- Export: client-side PNG export via html-to-image ^1.11; CSV export via json2csv; server export jobs for large reports using /api/exports with background job stub.\n- KPI Cards with trend computation: compare current period vs previous; show percentage delta with arrows (lucide icons).",
+        "testStrategy": "- Snapshot test components.\n- Interaction tests with Playwright: drill-down navigation, filter persistence.\n- Validate export files open correctly and data matches visible charts.",
+        "priority": "medium",
+        "dependencies": [
+          3,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 15,
+        "title": "Performance, Accessibility, Deployment, and Monitoring",
+        "description": "Optimize performance, ensure WCAG compliance, set up CI/CD, and deploy to production with monitoring.",
+        "details": "- Performance: enable Next.js image optimization; use React Server Components for data fetching where possible; cache heavy queries; implement pagination/virtualization for large tables (react-virtualized or react-aria-components list).\n- Use edge runtime for lightweight APIs if feasible; add HTTP compression and proper cache headers.\n- Accessibility: run automated axe checks; ensure keyboard traps absent; provide alt text, aria labels; prefers-reduced-motion.\n- CI/CD: GitHub Actions to run lint, type-check, test, build; preview deploys.\n- Deployment: Vercel for Next.js 15; configure env vars and secrets; custom domain and HTTPS.\n- Monitoring: Vercel Analytics, Sentry ^8 for FE/BE error tracking, Logflare/Better Stack for logs; uptime monitoring.\n- Documentation: README, runbooks for API creds rotation, incident response.\n- Success criteria checks: page load <3s on 3G/Slow 4G, zero critical a11y issues, integration health dashboards.",
+        "testStrategy": "- Lighthouse CI in GitHub Actions; budget thresholds.\n- Sentry test errors appear in dashboard.\n- Manual cross-browser testing in Chrome, Firefox, Safari, Edge; responsive device matrix.\n- Load test critical APIs with k6 to validate scalability.",
+        "priority": "high",
+        "dependencies": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14
+        ],
+        "status": "pending",
+        "subtasks": []
+      }
+    ],
+    "metadata": {
+      "created": "2025-08-11T12:31:27.500Z",
+      "updated": "2025-08-12T13:11:23.166Z",
+      "description": "Tasks for master context"
+    }
+  }
+}

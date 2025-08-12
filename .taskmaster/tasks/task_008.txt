@@ -1,0 +1,20 @@
+# Task ID: 8
+# Title: Google Search Console API Integration
+# Status: pending
+# Dependencies: 6
+# Priority: high
+# Description: Connect to GSC Search Analytics API for queries, clicks, impressions, CTR, position; store and visualize.
+# Details:
+- Use OAuth 2.0 service account or OAuth client; for internal dashboard, use service account with site delegated access or 3LO with admin consent.
+- Library: googleapis ^137.0.0.
+- Endpoint: searchconsole.searchanalytics.query with dimensions ['query','date','page'] as needed; pageSize limit.
+- Ingestion job writes to gsc_search_stats; map fields.
+- Implement caching: store daily aggregates; re-fetch recent 3 days to correct late data.
+- UI components: top keywords table (clicks, impressions, CTR, position), trends line chart.
+- Add rate limiting and exponential backoff for 429s.
+- Secure credentials with Google Cloud Secret Manager or Vercel encrypted env vars.
+
+# Test Strategy:
+- Connect to a test property and validate totals for a date range match GSC UI within expected variance.
+- Unit test transform functions.
+- Handle no-data and permission errors gracefully in UI.

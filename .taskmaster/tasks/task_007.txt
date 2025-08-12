@@ -1,0 +1,20 @@
+# Task ID: 7
+# Title: Chatbot Analytics Integration (Priority Source)
+# Status: pending
+# Dependencies: 6
+# Priority: high
+# Description: Ingest chatbot interaction data and expose analytics endpoints and UI widgets.
+# Details:
+- Identify chatbot source (e.g., Intercom, Dialogflow CX, custom logs). Implement n8n webhook or periodic pull to Supabase tables chatbot_conversations.
+- Metrics: conversation volume by date, top intents, response accuracy, satisfaction (CSAT), resolution rate.
+- UI: KPI cards and charts (line for volume trend, bar for intents, pie for resolutions).
+- Pseudo-code ingestion:
+  fetchChatbotData(range){ const rows = api.list(range); supabase.upsert('chatbot_conversations', rows, on conflict (date,intent)); }
+- Ensure timestamps in UTC; dedupe by (date,intent).
+- Add server actions to trigger manual resync.
+- Implement drill-down to view sample transcripts if available (store only metadata to remain GDPR-compliant).
+
+# Test Strategy:
+- Seed with synthetic data; verify charts and KPIs compute correctly.
+- Backfill historical data and confirm totals match chatbot platform reports.
+- Test PII redaction and data retention policy.
