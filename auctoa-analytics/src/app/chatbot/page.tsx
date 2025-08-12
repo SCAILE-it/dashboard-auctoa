@@ -7,6 +7,7 @@ import { KPICard, DashboardSection, KPIGrid } from "@/components/dashboard";
 import { enhancedChatbotKPIs } from "@/lib/auctoa-data";
 import { useAuctoaData } from "@/lib/hooks/useAuctoaData";
 
+
 export default function ChatbotPage() {
   const { data: auctoaData, loading: dataLoading, error, refetch } = useAuctoaData();
   const [manualLoading, setManualLoading] = useState(false);
