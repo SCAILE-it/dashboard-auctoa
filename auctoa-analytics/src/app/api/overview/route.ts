@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getOverview } from '@/lib/overview';
 import type { Granularity } from '@/types/analytics';
 
 export async function GET(request: NextRequest) {
@@ -46,6 +45,9 @@ export async function GET(request: NextRequest) {
     }
     
     console.log(`🚀 [API] Overview request: ${from} to ${to} (${granularity})`);
+    
+    // Dynamic import to avoid build-time Supabase initialization
+    const { getOverview } = await import('@/lib/overview');
     
     // Fetch aggregated overview data
     const overview = await getOverview({ from, to, granularity });
