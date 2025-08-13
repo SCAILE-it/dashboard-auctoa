@@ -2,6 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import type { Granularity } from '@/types/analytics';
 
 export async function GET(request: NextRequest) {
+  // Add CORS headers to bypass Vercel protection
+  const headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+  };
+
   try {
     const { searchParams } = new URL(request.url);
     
@@ -17,7 +25,7 @@ export async function GET(request: NextRequest) {
           error: 'Missing required parameters', 
           details: 'Both "from" and "to" date parameters are required (YYYY-MM-DD format)' 
         },
-        { status: 400 }
+        { status: 400, headers }
       );
     }
     
@@ -29,7 +37,7 @@ export async function GET(request: NextRequest) {
           error: 'Invalid date format', 
           details: 'Dates must be in YYYY-MM-DD format' 
         },
-        { status: 400 }
+        { status: 400, headers }
       );
     }
     
@@ -40,7 +48,7 @@ export async function GET(request: NextRequest) {
           error: 'Invalid granularity', 
           details: 'Granularity must be either "day" or "week"' 
         },
-        { status: 400 }
+        { status: 400, headers }
       );
     }
     
@@ -63,7 +71,7 @@ export async function GET(request: NextRequest) {
         sources: ['chatbot', 'gsc', 'ga4'],
         dataFreshness: 'live'
       }
-    });
+    }, { headers });
     
   } catch (error) {
     console.error('❌ [API] Overview error:', error);
@@ -75,7 +83,19 @@ export async function GET(request: NextRequest) {
         details: error instanceof Error ? error.message : 'Unknown error occurred',
         timestamp: new Date().toISOString()
       },
-      { status: 500 }
+      { status: 500, headers }
     );
   }
+}
+
+// Handle OPTIONS requests for CORS preflight
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    },
+  });
 }
