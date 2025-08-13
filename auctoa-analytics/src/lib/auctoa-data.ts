@@ -4,7 +4,7 @@ import { Users, MessageSquare, Home, TrendingUp, Clock, CheckCircle, Target, Bar
 export const enhancedChatbotKPIs = [
   {
     id: 'total-conversations',
-    title: 'Active Sessions',
+    title: 'Total Conversations',
     value: '0',
     icon: MessageSquare,
     trend: {
@@ -13,7 +13,7 @@ export const enhancedChatbotKPIs = [
       isNeutral: false
     },
     source: 'chatbot',
-    description: 'Unique conversation sessions this month'
+    description: 'Total number of chatbot conversations'
   },
   {
     id: 'avg-messages-per-session',

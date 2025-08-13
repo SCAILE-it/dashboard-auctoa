@@ -3,10 +3,13 @@
 import { useState } from "react";
 import { MessageSquare, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { KPICard, DashboardSection, KPIGrid } from "@/components/dashboard";
+import { DashboardSection } from "@/components/dashboard";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
+import { ChatbotCharts } from "@/components/charts/ChatbotCharts";
+import { AnalyticsKPIs } from "@/components/analytics/AnalyticsKPIs";
 import { enhancedChatbotKPIs } from "@/lib/auctoa-data";
 import { useAuctoaData } from "@/lib/hooks/useAuctoaData";
+import { useOverviewData } from "@/lib/hooks/useOverviewData";
 import { useAnalyticsState } from "@/lib/hooks/useAnalyticsState";
 
 
@@ -18,10 +21,13 @@ export default function ChatbotPage() {
   
   // Fetch data with current date range
   const { data: auctoaData, loading: dataLoading, error, refetch } = useAuctoaData(dateRange);
+  
+  // Fetch overview data for charts
+  const { data: overviewData, loading: overviewLoading, refetch: refetchOverview } = useOverviewData(dateRange);
 
   const handleRefresh = () => {
     setManualLoading(true);
-    refetch().finally(() => setManualLoading(false));
+    Promise.all([refetch(), refetchOverview()]).finally(() => setManualLoading(false));
   };
 
   const loading = dataLoading || manualLoading;
@@ -122,7 +128,7 @@ export default function ChatbotPage() {
       {/* Page header with controls */}
       <div className="space-y-4">
         <div className="flex justify-between items-start">
-          <div>
+      <div>
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Chatbot Analytics</h2>
             <p className="text-gray-600 dark:text-gray-400">AI conversation metrics and lead generation performance</p>
           </div>
@@ -167,24 +173,10 @@ export default function ChatbotPage() {
       </div>
 
       {/* KPIs Section */}
-      <DashboardSection 
-        title="Conversation Metrics" 
-        description="Chatbot engagement and conversion tracking"
-        icon={MessageSquare}
-      >
-        <KPIGrid columns={4}>
-          {chatbotKPIs.map((kpi) => (
-            <KPICard 
-              key={kpi.id}
-              title={kpi.title}
-              value={kpi.value}
-              icon={kpi.icon}
-              trend={kpi.trend}
-              loading={loading}
-            />
-          ))}
-        </KPIGrid>
-      </DashboardSection>
+      <AnalyticsKPIs 
+        kpis={chatbotKPIs}
+        loading={loading}
+      />
 
       {/* Charts Section - Visual Analytics */}
       <DashboardSection 
@@ -192,42 +184,22 @@ export default function ChatbotPage() {
         description="Visual overview of chatbot performance over time"
         icon={MessageSquare}
       >
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Main Conversation Chart */}
-          <div className="lg:col-span-2">
-            <div className="bg-card rounded-lg border p-6 h-[400px] flex items-center justify-center">
-              <div className="text-center text-muted-foreground">
-                <div className="w-16 h-16 bg-muted rounded-lg mx-auto mb-3 flex items-center justify-center">
-                  📊
-                </div>
-                <h3 className="font-medium mb-1">Conversation Volume Chart</h3>
-                <p className="text-sm">Coming next: Time series visualization of daily/weekly conversations</p>
-              </div>
-            </div>
-          </div>
-          
-          {/* Response Time Chart */}
-          <div className="bg-card rounded-lg border p-6 h-[300px] flex items-center justify-center">
+        {overviewData ? (
+          <ChatbotCharts 
+            data={overviewData} 
+            loading={overviewLoading || manualLoading}
+          />
+        ) : (
+          <div className="bg-card rounded-lg border p-12 flex items-center justify-center">
             <div className="text-center text-muted-foreground">
-              <div className="w-12 h-12 bg-muted rounded-lg mx-auto mb-2 flex items-center justify-center">
-                ⏱️
+              <div className="w-16 h-16 bg-muted rounded-lg mx-auto mb-4 flex items-center justify-center">
+                📊
               </div>
-              <h3 className="font-medium mb-1">Response Time</h3>
-              <p className="text-sm">Average response time trends</p>
+              <h3 className="font-medium mb-2">Loading Charts...</h3>
+              <p className="text-sm">Fetching real-time data from Supabase</p>
             </div>
           </div>
-          
-          {/* Conversion Funnel Chart */}
-          <div className="bg-card rounded-lg border p-6 h-[300px] flex items-center justify-center">
-            <div className="text-center text-muted-foreground">
-              <div className="w-12 h-12 bg-muted rounded-lg mx-auto mb-2 flex items-center justify-center">
-                🔄
-              </div>
-              <h3 className="font-medium mb-1">Conversion Funnel</h3>
-              <p className="text-sm">Lead generation funnel</p>
-            </div>
-          </div>
-        </div>
+        )}
       </DashboardSection>
 
       {/* Real-time Data Status */}
@@ -295,7 +267,7 @@ export default function ChatbotPage() {
               </div>
             )}
           </div>
-        </div>
+      </div>
       </DashboardSection>
     </div>
   );
