@@ -78,8 +78,8 @@ export function useAuctoaData() {
       setLoading(true);
       setError(null);
       
-      console.log('Fetching Auctoa data from API...');
-      const response = await fetch('/api/auctoa/chatbot-metrics');
+      console.log('Fetching Auctoa data from NEW adapter API...');
+      const response = await fetch('/api/chatbot-v2');
       
       if (!response.ok) {
         const errorText = await response.text();
