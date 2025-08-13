@@ -37,7 +37,7 @@ export default function ChatbotPage() {
           ...kpi,
           value: auctoaData.metrics.totalConversations.current.toString(),
           trend: {
-            value: `${auctoaData.metrics.totalConversations.trend}%`,
+            value: auctoaData.metrics.totalConversations.trend, // Already includes %
             isPositive: parseFloat(auctoaData.metrics.totalConversations.trend) >= 0,
             isNeutral: false
           }
@@ -47,7 +47,7 @@ export default function ChatbotPage() {
           ...kpi,
           value: auctoaData.metrics.avgMessagesPerSession.current,
           trend: {
-            value: `${auctoaData.metrics.avgMessagesPerSession.trend}%`,
+            value: auctoaData.metrics.avgMessagesPerSession.trend, // Already includes %
             isPositive: parseFloat(auctoaData.metrics.avgMessagesPerSession.trend) >= 0,
             isNeutral: false
           }
@@ -57,7 +57,7 @@ export default function ChatbotPage() {
           ...kpi,
           value: auctoaData.metrics.userEngagement.current, // Already has %
           trend: {
-            value: `${auctoaData.metrics.userEngagement.trend}%`,
+            value: auctoaData.metrics.userEngagement.trend, // Already includes %
             isPositive: parseFloat(auctoaData.metrics.userEngagement.trend) >= 0,
             isNeutral: false
           }
@@ -67,7 +67,7 @@ export default function ChatbotPage() {
           ...kpi,
           value: auctoaData.metrics.chatToFormConversion.current, // Already has %
           trend: {
-            value: `${auctoaData.metrics.chatToFormConversion.trend}%`,
+            value: auctoaData.metrics.chatToFormConversion.trend, // Already includes %
             isPositive: parseFloat(auctoaData.metrics.chatToFormConversion.trend) >= 0,
             isNeutral: false
           }
@@ -77,7 +77,7 @@ export default function ChatbotPage() {
           ...kpi,
           value: auctoaData.metrics.propertyRequests.current.toString(),
           trend: {
-            value: `${auctoaData.metrics.propertyRequests.trend}%`,
+            value: auctoaData.metrics.propertyRequests.trend, // Already includes %
             isPositive: parseFloat(auctoaData.metrics.propertyRequests.trend) >= 0,
             isNeutral: false
           }
@@ -87,7 +87,7 @@ export default function ChatbotPage() {
           ...kpi,
           value: auctoaData.metrics.propertyCompletionRate.current, // Already has %
           trend: {
-            value: `${auctoaData.metrics.propertyCompletionRate.trend}%`,
+            value: auctoaData.metrics.propertyCompletionRate.trend, // Already includes %
             isPositive: parseFloat(auctoaData.metrics.propertyCompletionRate.trend) >= 0,
             isNeutral: false
           }
@@ -97,7 +97,7 @@ export default function ChatbotPage() {
           ...kpi,
           value: auctoaData.metrics.activeCities.current.toString(),
           trend: {
-            value: `${auctoaData.metrics.activeCities.trend}%`,
+            value: auctoaData.metrics.activeCities.trend, // Already includes %
             isPositive: parseFloat(auctoaData.metrics.activeCities.trend) >= 0,
             isNeutral: false
           }
@@ -107,7 +107,7 @@ export default function ChatbotPage() {
           ...kpi,
           value: auctoaData.metrics.weeklyActivity.current, // Already has %
           trend: {
-            value: `${auctoaData.metrics.weeklyActivity.trend}%`,
+            value: auctoaData.metrics.weeklyActivity.trend, // Already includes %
             isPositive: parseFloat(auctoaData.metrics.weeklyActivity.trend) >= 0,
             isNeutral: false
           }
