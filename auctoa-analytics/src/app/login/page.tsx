@@ -6,8 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-// Force dynamic rendering
-export const dynamic = 'force-dynamic';
+// Temporarily remove dynamic forcing for debugging
 
 
 export default function LoginPage() {

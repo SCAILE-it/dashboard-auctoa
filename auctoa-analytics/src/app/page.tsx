@@ -9,8 +9,7 @@ import {
   Activity
 } from "lucide-react";
 
-// Force dynamic rendering
-export const dynamic = 'force-dynamic';
+// Temporarily remove dynamic forcing for debugging
 
 // Import our dashboard components
 import { 
