@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Header } from "@/components/layout/header";
 import { isAuthenticated } from "@/lib/auth";
@@ -10,6 +10,7 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
   const [isAuth, setIsAuth] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     const checkAuth = () => {
@@ -48,7 +49,7 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
 
   // If not authenticated and not on login page, redirect
   if (!isAuth && pathname !== '/login') {
-    window.location.href = '/login';
+    router.push('/login');
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
         <div className="text-center">
