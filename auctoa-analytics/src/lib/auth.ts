@@ -1,5 +1,5 @@
 // Simple client-side authentication
-export const AUTH_PASSWORD = "auctoa2025";
+export const AUTH_PASSWORD = process.env.NEXT_PUBLIC_AUTH_PASSWORD || "auctoa2025";
 export const AUTH_STORAGE_KEY = "auctoa-auth";
 
 export function isAuthenticated(): boolean {

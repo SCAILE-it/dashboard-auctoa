@@ -80,7 +80,7 @@ export async function getChatbotSeries({
     
     // Calculate response time and completion metrics
     const totalMessages = chats.length;
-    const avgMessagesPerSession = totalConversations > 0 ? totalMessages / totalConversations : 0;
+    // const avgMessagesPerSession = totalConversations > 0 ? totalMessages / totalConversations : 0;
     const completionRate = totalConversations > 0 ? completedSessions.length / totalConversations : 0;
 
     // Estimate average response time (simplified calculation)
@@ -208,9 +208,9 @@ export async function getFunnel({
  * Generate time series data points based on granularity
  */
 function generateTimeSeries(
-  chats: any[],
-  forms: any[],
-  properties: any[],
+  chats: Array<{ timestamp: string; session_id: string }>,
+  forms: Array<{ created_at: string }>,
+  properties: Array<{ timestamp: string }>,
   fromDate: Date,
   toDate: Date,
   granularity: Granularity
@@ -268,9 +268,9 @@ function generateTimeSeries(
  * Generate funnel time series data
  */
 function generateFunnelSeries(
-  chats: any[],
-  forms: any[],
-  properties: any[],
+  chats: Array<{ timestamp: string; session_id: string }>,
+  forms: Array<{ created_at: string }>,
+  properties: Array<{ timestamp: string; status?: string }>,
   fromDate: Date,
   toDate: Date
 ): ChatbotFunnelPoint[] {

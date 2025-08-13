@@ -19,7 +19,7 @@ export interface FormResponse {
   created_at: string
   label: string
   language: string
-  response: any // JSON data
+  response: Record<string, unknown> // JSON data
   portal: string
 }
 
@@ -30,7 +30,7 @@ export interface PropertyRequest {
   address: string
   state: string
   bodenrichtwert: string
-  form_data: any // JSON data
+  form_data: Record<string, unknown> // JSON data
 }
 
 export interface WatchLead {

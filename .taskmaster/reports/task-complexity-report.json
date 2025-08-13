@@ -1,0 +1,93 @@
+{
+	"meta": {
+		"generatedAt": "2025-08-13T09:20:55.742Z",
+		"tasksAnalyzed": 10,
+		"totalTasks": 25,
+		"analysisCount": 10,
+		"thresholdScore": 5,
+		"projectName": "Taskmaster",
+		"usedResearch": true
+	},
+	"complexityAnalysis": [
+		{
+			"taskId": 16,
+			"taskTitle": "Implement Data Adapter Pattern for All Sources",
+			"complexityScore": 8,
+			"recommendedSubtasks": 6,
+			"expansionPrompt": "Break down adapter implementation for each source (Chatbot, GSC, GA4), type-safe interface design, Supabase/GA4 API integration, mocking with MSW, error handling, and unit test coverage.",
+			"reasoning": "This task involves designing and implementing multiple adapters, integrating with different APIs (Supabase, GA4), ensuring type safety, and mocking data for development. Each adapter has unique data sources and error handling requirements, increasing cyclomatic and cognitive complexity. Industry best practices recommend modularization, strong typing, and comprehensive testing for maintainability and reliability."
+		},
+		{
+			"taskId": 17,
+			"taskTitle": "Develop Overview Aggregation Logic",
+			"complexityScore": 7,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "Decompose into parallel data fetching, delta calculation logic, KPI unification, locale-aware formatting, and integration testing with adapters.",
+			"reasoning": "Aggregating data from multiple adapters, calculating deltas, and ensuring locale-aware output introduces moderate complexity. The need for robust error handling and integration testing further increases the effort. Best practices suggest isolating aggregation, calculation, and formatting logic for testability and maintainability."
+		},
+		{
+			"taskId": 18,
+			"taskTitle": "Build Date Range Picker and Granularity Toggle Controls",
+			"complexityScore": 6,
+			"recommendedSubtasks": 4,
+			"expansionPrompt": "Split into UI component development, state management (Zustand/useSearchParams), URL persistence, and accessibility/i18n implementation.",
+			"reasoning": "Building interactive controls with state persistence, accessibility, and localization requires careful UI/UX design and integration with routing/state libraries. Complexity is moderate due to the need for responsive design and robust state handling."
+		},
+		{
+			"taskId": 19,
+			"taskTitle": "Integrate Source Badges and Enhanced KPI Cards",
+			"complexityScore": 5,
+			"recommendedSubtasks": 3,
+			"expansionPrompt": "Divide into badge component creation, KPI card logic (delta/mini-KPI), and responsive grid layout implementation.",
+			"reasoning": "This task is primarily UI-focused with some data logic for KPIs and deltas. Complexity is lower but requires attention to visual consistency, responsive design, and correct calculation logic."
+		},
+		{
+			"taskId": 20,
+			"taskTitle": "Implement Recharts-Based Time Series Visualizations",
+			"complexityScore": 7,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "Separate into chart component scaffolding, data mapping, granularity toggling, responsive styling, and tooltip/legend integration.",
+			"reasoning": "Developing multiple chart components with dynamic data, granularity support, and responsive design involves moderate complexity. Industry standards recommend modular chart logic, clear separation of concerns, and thorough visual testing."
+		},
+		{
+			"taskId": 21,
+			"taskTitle": "Develop CSV Export System",
+			"complexityScore": 6,
+			"recommendedSubtasks": 4,
+			"expansionPrompt": "Break into API route for CSV streaming, CSV generation logic, download button UI, and large dataset handling/testing.",
+			"reasoning": "Implementing efficient CSV export with streaming, proper formatting, and UI integration requires backend and frontend coordination. Complexity is moderate, with emphasis on performance and error handling for large datasets."
+		},
+		{
+			"taskId": 22,
+			"taskTitle": "Enable Auto-Refresh and Real-Time Updates",
+			"complexityScore": 8,
+			"recommendedSubtasks": 6,
+			"expansionPrompt": "Decompose into SWR polling setup, Supabase Realtime subscription integration, manual refresh logic, UI feedback states, inactivity handling, and integration testing.",
+			"reasoning": "Combining polling, real-time subscriptions, and manual refresh introduces high complexity due to asynchronous data flows, state management, and UI synchronization. Best practices require robust error handling, user feedback, and efficient resource management."
+		},
+		{
+			"taskId": 23,
+			"taskTitle": "Upgrade Overview Page and Dashboard Layout",
+			"complexityScore": 7,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "Split into layout refactoring, control/component integration, responsive grid setup, data source captioning, and optional top tables integration.",
+			"reasoning": "Integrating multiple new components and controls into a unified dashboard layout requires careful coordination, responsive design, and accessibility considerations. Complexity is moderate to high due to dependency management and UI consistency."
+		},
+		{
+			"taskId": 24,
+			"taskTitle": "Configure Environment and Secure API Credentials",
+			"complexityScore": 5,
+			"recommendedSubtasks": 3,
+			"expansionPrompt": "Divide into environment variable setup, Zod validation implementation, and fallback/error handling logic.",
+			"reasoning": "Securing credentials and validating environment configuration is essential but relatively straightforward. Complexity is low to moderate, with emphasis on security, validation, and developer documentation."
+		},
+		{
+			"taskId": 25,
+			"taskTitle": "Ensure TypeScript Strict Mode and Code Quality Compliance",
+			"complexityScore": 6,
+			"recommendedSubtasks": 4,
+			"expansionPrompt": "Break into strict mode enablement, codebase refactoring for type errors, linting/formatting setup, and code review for conventions.",
+			"reasoning": "Auditing and refactoring for strict typing and code quality involves systematic review and updates across the codebase. Complexity is moderate, with focus on maintainability, consistency, and adherence to industry standards."
+		}
+	]
+}

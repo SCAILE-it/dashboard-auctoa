@@ -1,0 +1,167 @@
+Auctoa Dashboard Analytics Upgrade - Product Requirements Document
+
+OVERVIEW
+The Auctoa Analytics Dashboard needs a comprehensive upgrade to consolidate multiple data sources, enhance visualization capabilities, and provide robust export and refresh functionality. This upgrade transforms the existing basic chatbot analytics into a full-featured analytics platform.
+
+CURRENT STATE
+- Existing Next.js app with /page.tsx (overview), /chatbot, /login
+- Basic Supabase integration via /api/auctoa/chatbot-metrics
+- Password-protected access via ConditionalLayout
+- Data tables: n8n_chat_histories, form_responses, property_requests, form_config
+- Static KPI cards with basic chatbot metrics
+
+TARGET STATE
+A consolidated analytics platform with:
+- Multi-source data integration (GA4, GSC, Chatbot)
+- Interactive date range and granularity controls
+- Professional time-series charts with Recharts
+- CSV export functionality for all data views
+- Auto-refresh with real-time updates
+- Delta calculations vs previous periods
+- German UI with professional styling
+
+TECHNICAL REQUIREMENTS
+
+Data Architecture:
+- Adapter pattern in src/lib/sources/ for each data source
+- Consolidated data aggregation in lib/overview.ts
+- Server-side API routes for external services (GA4)
+- Type-safe interfaces in types/analytics.ts
+
+UI/UX Requirements:
+- Date range picker with Last 7/30/90 days + Custom presets
+- Daily/Weekly granularity toggle
+- Source badges showing data origins
+- "Heute vs Gestern" mini-KPIs for traffic
+- Responsive Recharts visualizations
+- Clean, professional styling matching existing design
+
+Data Sources Integration:
+1. Chatbot Analytics (Supabase) - conversations, response times, completion rates
+2. Google Search Console (Supabase cache) - clicks, impressions, CTR, position
+3. Google Analytics 4 (API) - users, sessions, pageviews, traffic sources
+
+Export & Refresh:
+- CSV download for KPIs and time series data
+- 60-second auto-refresh polling
+- Supabase Realtime subscriptions for instant updates
+- Background cron jobs for metric pre-computation
+
+DETAILED FEATURE SPECIFICATIONS
+
+1. Data Adapters
+Create standardized data adapters in src/lib/sources/:
+- chatbot.ts: getChatbotSeries(), getFunnel() 
+- gsc.ts: getSearchSeries() from Supabase cache
+- ga.ts: getGaSeries() via /api/analytics/ga proxy
+
+Each adapter returns consistent shape:
+{ totals: {...}, series: [{ts, ...}] }
+
+2. Overview Aggregation
+lib/overview.ts getOverview() function:
+- Parallel data fetching from all sources
+- Delta calculations vs previous period
+- German data source attribution
+- Unified KPI structure
+
+3. UI Controls
+- DateRangePicker.tsx with URL state persistence
+- GranularityToggle.tsx (Täglich/Wöchentlich)
+- SourceBadge.tsx showing GA/GSC/Chatbot origin
+- Enhanced KPI cards with delta indicators
+
+4. Charts & Visualization
+Recharts-based components in components/dashboard/charts/:
+- TrafficTimeSeries.tsx: users/sessions/pageviews
+- SearchTimeSeries.tsx: clicks/impressions/CTR
+- ChatbotTimeSeries.tsx: conversations + response time (dual axis)
+All responsive with tooltips and legends
+
+5. CSV Export System
+- API route /api/export returning streamed CSV
+- DownloadCsvButton.tsx with view selection dropdown
+- Proper Content-Disposition headers
+- Data formatted for Excel compatibility
+
+6. Auto-Refresh & Real-time
+- SWR with 60-second polling intervals
+- Supabase Realtime subscriptions on chat/form tables
+- Manual refresh button in header
+- Loading states and error handling
+
+7. Enhanced Overview Page
+Update src/app/page.tsx with:
+- Header controls (date picker, granularity, refresh)
+- Data source attribution caption
+- KPI grid including "Heute vs Gestern"
+- Three time-series chart sections
+- Optional top pages/sources tables
+
+8. Environment & Configuration
+- GA4 service account credentials in .env
+- Environment validation with Zod
+- Graceful fallbacks when APIs unavailable
+- Mock data shapes for development
+
+ACCEPTANCE CRITERIA
+
+✅ Data Integration
+- Overview displays merged KPIs from GA + GSC + Chatbot
+- Source badges clearly indicate data origins
+- Data source caption lists all integrated sources
+
+✅ Interactive Controls  
+- Date range picker updates all cards and charts
+- Daily/Weekly toggle changes chart granularity
+- URL params preserve selected date range
+
+✅ Export Functionality
+- CSV export works for KPIs and time series
+- Downloads include proper filenames with date ranges
+- Data formatted correctly for spreadsheet applications
+
+✅ Auto-Refresh
+- New Supabase rows update charts within 60 seconds
+- Manual refresh button provides immediate updates
+- Polling respects user activity state
+
+✅ Traffic Analytics
+- "Heute vs Gestern" mini-KPI shows daily comparison
+- Delta percentages calculated accurately
+- Previous period comparisons work correctly
+
+✅ Security & Performance
+- GA API secrets remain server-side only
+- Authentication system remains unchanged
+- Charts render smoothly on mobile devices
+
+✅ UI/UX Quality
+- Professional styling matches existing design system
+- German labels throughout interface
+- Loading states provide clear feedback
+- Error states handle API failures gracefully
+
+GERMAN UI COPY
+- Zeitraum (Time Range)
+- Täglich (Daily)
+- Wöchentlich (Weekly)
+- Datenquellen (Data Sources)
+- Export CSV
+- Aktualisieren (Refresh)
+- Live-Daten: Verbunden (Live Data: Connected)
+- Heute vs Gestern (Today vs Yesterday)
+
+TECHNICAL CONSTRAINTS
+- Keep existing ConditionalLayout authentication unchanged
+- Maintain current file structure and styling approach
+- Reuse existing shadcn/ui components where possible
+- Ensure TypeScript strict mode compliance
+- Follow existing code patterns and conventions
+
+SUCCESS METRICS
+- All data sources successfully integrated and displaying
+- Export functionality working for all data types
+- Auto-refresh updating within 60-second target
+- German UI labels correctly implemented
+- Professional visual quality maintained throughout

@@ -8,7 +8,7 @@ export interface TimeSeriesPoint {
 }
 
 // Unified data source response structure
-export interface DataSource<T extends Record<string, any> = Record<string, any>> {
+export interface DataSource<T extends Record<string, unknown> = Record<string, unknown>> {
   totals: T;
   series: (TimeSeriesPoint & T)[];
 }
