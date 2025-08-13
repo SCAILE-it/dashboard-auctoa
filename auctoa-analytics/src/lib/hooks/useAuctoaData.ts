@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 interface AuctoaMetrics {
   totalConversations: {
@@ -68,18 +68,28 @@ interface AuctoaData {
   lastUpdated: string;
 }
 
-export function useAuctoaData() {
+export function useAuctoaData(dateRange?: { from: Date; to: Date }) {
   const [data, setData] = useState<AuctoaData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
       
-      console.log('Fetching Auctoa data from NEW adapter API...');
-      const response = await fetch('/api/chatbot-v2');
+      // Build URL with date parameters if provided
+      let url = '/api/chatbot-v2';
+      if (dateRange) {
+        const params = new URLSearchParams({
+          from: dateRange.from.toISOString().split('T')[0],
+          to: dateRange.to.toISOString().split('T')[0]
+        });
+        url += `?${params.toString()}`;
+      }
+      
+      console.log('Fetching Auctoa data from NEW adapter API with params:', url);
+      const response = await fetch(url);
       
       if (!response.ok) {
         const errorText = await response.text();
@@ -96,11 +106,11 @@ export function useAuctoaData() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [dateRange]);
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   return {
     data,

@@ -1,16 +1,23 @@
 "use client";
 
 import { useState } from "react";
-import { MessageSquare } from "lucide-react";
+import { MessageSquare, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { KPICard, DashboardSection, KPIGrid } from "@/components/dashboard";
+import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { enhancedChatbotKPIs } from "@/lib/auctoa-data";
 import { useAuctoaData } from "@/lib/hooks/useAuctoaData";
+import { useAnalyticsState } from "@/lib/hooks/useAnalyticsState";
 
 
 export default function ChatbotPage() {
-  const { data: auctoaData, loading: dataLoading, error, refetch } = useAuctoaData();
   const [manualLoading, setManualLoading] = useState(false);
+  
+  // Analytics state management with URL persistence
+  const { dateRange, setDateRange } = useAnalyticsState();
+  
+  // Fetch data with current date range
+  const { data: auctoaData, loading: dataLoading, error, refetch } = useAuctoaData(dateRange);
 
   const handleRefresh = () => {
     setManualLoading(true);
@@ -48,7 +55,7 @@ export default function ChatbotPage() {
       case 'user-engagement':
         return {
           ...kpi,
-          value: `${auctoaData.metrics.userEngagement.current}%`,
+          value: auctoaData.metrics.userEngagement.current, // Already has %
           trend: {
             value: `${auctoaData.metrics.userEngagement.trend}%`,
             isPositive: parseFloat(auctoaData.metrics.userEngagement.trend) >= 0,
@@ -58,7 +65,7 @@ export default function ChatbotPage() {
       case 'chat-to-form-conversion':
         return {
           ...kpi,
-          value: `${auctoaData.metrics.chatToFormConversion.current}%`,
+          value: auctoaData.metrics.chatToFormConversion.current, // Already has %
           trend: {
             value: `${auctoaData.metrics.chatToFormConversion.trend}%`,
             isPositive: parseFloat(auctoaData.metrics.chatToFormConversion.trend) >= 0,
@@ -78,7 +85,7 @@ export default function ChatbotPage() {
       case 'completion-rate':
         return {
           ...kpi,
-          value: `${auctoaData.metrics.propertyCompletionRate.current}%`,
+          value: auctoaData.metrics.propertyCompletionRate.current, // Already has %
           trend: {
             value: `${auctoaData.metrics.propertyCompletionRate.trend}%`,
             isPositive: parseFloat(auctoaData.metrics.propertyCompletionRate.trend) >= 0,
@@ -98,7 +105,7 @@ export default function ChatbotPage() {
       case 'weekly-activity':
         return {
           ...kpi,
-          value: `${auctoaData.metrics.weeklyActivity.current}%`,
+          value: auctoaData.metrics.weeklyActivity.current, // Already has %
           trend: {
             value: `${auctoaData.metrics.weeklyActivity.trend}%`,
             isPositive: parseFloat(auctoaData.metrics.weeklyActivity.trend) >= 0,
@@ -112,28 +119,54 @@ export default function ChatbotPage() {
 
   return (
     <div className="space-y-8">
-      {/* Page header with refresh button */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Chatbot Analytics</h2>
-          <p className="text-gray-600 dark:text-gray-400">AI conversation metrics and lead generation performance</p>
+      {/* Page header with controls */}
+      <div className="space-y-4">
+        <div className="flex justify-between items-start">
+          <div>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Chatbot Analytics</h2>
+            <p className="text-gray-600 dark:text-gray-400">AI conversation metrics and lead generation performance</p>
+          </div>
+          <div className="flex gap-2">
+            <Button
+              onClick={handleRefresh}
+              variant="outline"
+              size="sm"
+              disabled={loading}
+            >
+              <RefreshCw className={`mr-2 h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+              {loading ? "Refreshing..." : "Refresh Data"}
+            </Button>
+          </div>
         </div>
-        <div className="flex gap-2">
-          <Button
-            onClick={handleRefresh}
-            variant="outline"
-            disabled={loading}
-          >
-            {loading ? "Refreshing..." : "Refresh Data"}
-          </Button>
-          {error && (
-            <div className="text-sm text-red-600 dark:text-red-400 flex items-center">
-              Error: {error}
-            </div>
-          )}
+
+        {/* Date Controls - Simple & Clean */}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 bg-card rounded-lg border shadow-sm">
+          <DateRangePicker
+            value={dateRange}
+            onChange={(range) => range && setDateRange(range)}
+          />
+          
+          {/* Summary info */}
+          <div className="flex items-center gap-4 text-sm text-muted-foreground sm:ml-auto">
+            <span>
+              {Math.ceil((dateRange.to.getTime() - dateRange.from.getTime()) / (1000 * 60 * 60 * 24))} days selected
+            </span>
+            <span className="text-green-600 dark:text-green-400 flex items-center gap-1">
+              <div className="w-2 h-2 bg-green-600 dark:bg-green-400 rounded-full" />
+              Live data
+            </span>
+          </div>
         </div>
+
+        {/* Error display */}
+        {error && (
+          <div className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 p-3 rounded-lg border border-red-200 dark:border-red-800">
+            <strong>Error:</strong> {error}
+          </div>
+        )}
       </div>
 
+      {/* KPIs Section */}
       <DashboardSection 
         title="Conversation Metrics" 
         description="Chatbot engagement and conversion tracking"
@@ -151,6 +184,50 @@ export default function ChatbotPage() {
             />
           ))}
         </KPIGrid>
+      </DashboardSection>
+
+      {/* Charts Section - Visual Analytics */}
+      <DashboardSection 
+        title="Conversation Trends" 
+        description="Visual overview of chatbot performance over time"
+        icon={MessageSquare}
+      >
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Main Conversation Chart */}
+          <div className="lg:col-span-2">
+            <div className="bg-card rounded-lg border p-6 h-[400px] flex items-center justify-center">
+              <div className="text-center text-muted-foreground">
+                <div className="w-16 h-16 bg-muted rounded-lg mx-auto mb-3 flex items-center justify-center">
+                  📊
+                </div>
+                <h3 className="font-medium mb-1">Conversation Volume Chart</h3>
+                <p className="text-sm">Coming next: Time series visualization of daily/weekly conversations</p>
+              </div>
+            </div>
+          </div>
+          
+          {/* Response Time Chart */}
+          <div className="bg-card rounded-lg border p-6 h-[300px] flex items-center justify-center">
+            <div className="text-center text-muted-foreground">
+              <div className="w-12 h-12 bg-muted rounded-lg mx-auto mb-2 flex items-center justify-center">
+                ⏱️
+              </div>
+              <h3 className="font-medium mb-1">Response Time</h3>
+              <p className="text-sm">Average response time trends</p>
+            </div>
+          </div>
+          
+          {/* Conversion Funnel Chart */}
+          <div className="bg-card rounded-lg border p-6 h-[300px] flex items-center justify-center">
+            <div className="text-center text-muted-foreground">
+              <div className="w-12 h-12 bg-muted rounded-lg mx-auto mb-2 flex items-center justify-center">
+                🔄
+              </div>
+              <h3 className="font-medium mb-1">Conversion Funnel</h3>
+              <p className="text-sm">Lead generation funnel</p>
+            </div>
+          </div>
+        </div>
       </DashboardSection>
 
       {/* Real-time Data Status */}

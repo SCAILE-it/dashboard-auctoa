@@ -43,51 +43,73 @@ export interface AnalyticsParams {
   granularity?: string;
 }
 
-// German labels
-export const GermanLabels = {
+// English labels
+export const Labels = {
   // Date Range Picker
-  dateRange: 'Zeitraum',
-  selectDateRange: 'Zeitraum auswählen',
-  customRange: 'Benutzerdefiniert',
-  apply: 'Anwenden',
-  cancel: 'Abbrechen',
+  dateRange: 'Date Range',
+  selectDateRange: 'Select date range',
+  customRange: 'Custom',
+  apply: 'Apply',
+  cancel: 'Cancel',
   
   // Presets
-  last7Days: 'Letzte 7 Tage',
-  last30Days: 'Letzte 30 Tage',
-  last90Days: 'Letzte 90 Tage',
-  thisMonth: 'Dieser Monat',
-  lastMonth: 'Letzter Monat',
+  last7Days: 'Last 7 days',
+  last30Days: 'Last 30 days',
+  last90Days: 'Last 90 days',
+  thisMonth: 'This month',
+  lastMonth: 'Last month',
   
   // Granularity
-  granularity: 'Darstellung',
-  daily: 'Täglich',
-  weekly: 'Wöchentlich',
+  granularity: 'View',
+  daily: 'Daily',
+  weekly: 'Weekly',
   
   // General
-  from: 'Von',
-  to: 'Bis',
-  today: 'Heute',
-  yesterday: 'Gestern',
+  from: 'From',
+  to: 'To',
+  today: 'Today',
+  yesterday: 'Yesterday',
   
   // Accessibility
   a11y: {
-    dateRangePicker: 'Datumsbereich-Auswahl',
-    granularityToggle: 'Darstellungs-Umschalter',
-    calendarNavigation: 'Kalender-Navigation',
-    selectDate: 'Datum auswählen',
-    openCalendar: 'Kalender öffnen',
-    closeCalendar: 'Kalender schließen'
+    dateRangePicker: 'Date range picker',
+    granularityToggle: 'Granularity toggle',
+    calendarNavigation: 'Calendar navigation',
+    selectDate: 'Select date',
+    openCalendar: 'Open calendar',
+    closeCalendar: 'Close calendar'
   }
 } as const;
+
+// For backward compatibility
+export const GermanLabels = Labels;
 
 // Default date range presets
 export function getDefaultPresets(): DateRangePreset[] {
   return [
     {
+      id: 'today',
+      label: 'Today',
+      labelDE: Labels.today,
+      getValue: () => {
+        const today = new Date();
+        return { from: today, to: today };
+      }
+    },
+    {
+      id: 'yesterday',
+      label: 'Yesterday',
+      labelDE: Labels.yesterday,
+      getValue: () => {
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        return { from: yesterday, to: yesterday };
+      }
+    },
+    {
       id: 'last7days',
       label: 'Last 7 days',
-      labelDE: GermanLabels.last7Days,
+      labelDE: Labels.last7Days,
       getValue: () => {
         const to = new Date();
         const from = new Date();
@@ -98,7 +120,7 @@ export function getDefaultPresets(): DateRangePreset[] {
     {
       id: 'last30days',
       label: 'Last 30 days',
-      labelDE: GermanLabels.last30Days,
+      labelDE: Labels.last30Days,
       getValue: () => {
         const to = new Date();
         const from = new Date();
@@ -109,7 +131,7 @@ export function getDefaultPresets(): DateRangePreset[] {
     {
       id: 'last90days',
       label: 'Last 90 days',
-      labelDE: GermanLabels.last90Days,
+      labelDE: Labels.last90Days,
       getValue: () => {
         const to = new Date();
         const from = new Date();
@@ -120,7 +142,7 @@ export function getDefaultPresets(): DateRangePreset[] {
     {
       id: 'thisMonth',
       label: 'This month',
-      labelDE: GermanLabels.thisMonth,
+      labelDE: Labels.thisMonth,
       getValue: () => {
         const now = new Date();
         const from = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -131,7 +153,7 @@ export function getDefaultPresets(): DateRangePreset[] {
     {
       id: 'lastMonth',
       label: 'Last month',
-      labelDE: GermanLabels.lastMonth,
+      labelDE: Labels.lastMonth,
       getValue: () => {
         const now = new Date();
         const from = new Date(now.getFullYear(), now.getMonth() - 1, 1);
@@ -170,7 +192,7 @@ export function isValidGranularity(value: string): value is Granularity {
 }
 
 // Date formatting utilities
-export function formatDateRange(range: DateRange, locale = 'de-DE'): string {
+export function formatDateRange(range: DateRange, locale = 'en-US'): string {
   const formatter = new Intl.DateTimeFormat(locale, {
     day: '2-digit',
     month: '2-digit',
@@ -180,14 +202,14 @@ export function formatDateRange(range: DateRange, locale = 'de-DE'): string {
   return `${formatter.format(range.from)} - ${formatter.format(range.to)}`;
 }
 
-export function formatRelativeDate(date: Date, locale = 'de-DE'): string {
+export function formatRelativeDate(date: Date, locale = 'en-US'): string {
   const now = new Date();
   const diffTime = now.getTime() - date.getTime();
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   
-  if (diffDays === 0) return GermanLabels.today;
-  if (diffDays === 1) return GermanLabels.yesterday;
-  if (diffDays <= 7) return `vor ${diffDays} Tagen`;
+  if (diffDays === 0) return Labels.today;
+  if (diffDays === 1) return Labels.yesterday;
+  if (diffDays <= 7) return `${diffDays} days ago`;
   
   return new Intl.DateTimeFormat(locale, {
     day: '2-digit',
