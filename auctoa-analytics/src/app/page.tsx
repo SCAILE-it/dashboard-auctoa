@@ -9,6 +9,9 @@ import {
   Activity
 } from "lucide-react";
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
 // Import our dashboard components
 import { 
   KPICard, 

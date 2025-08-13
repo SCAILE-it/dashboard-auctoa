@@ -3,6 +3,9 @@
 import { useState } from "react";
 import { MessageSquare, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 import { DashboardSection } from "@/components/dashboard";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { ChatbotCharts } from "@/components/charts/ChatbotCharts";
