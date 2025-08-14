@@ -1,12 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Static export for Netlify compatibility
-  output: 'export',
-  trailingSlash: true,
-  images: {
-    unoptimized: true,
-  },
+  // Regular Next.js deployment (not static export)
   // Minimal configuration to avoid deployment issues
   eslint: {
     ignoreDuringBuilds: true,
