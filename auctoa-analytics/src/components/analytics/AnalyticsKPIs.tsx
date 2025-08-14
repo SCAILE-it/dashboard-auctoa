@@ -95,14 +95,9 @@ export function AnalyticsKPIs({ kpis, loading = false }: AnalyticsKPIsProps) {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Key Performance Metrics</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-300">Essential insights from your chatbot performance</p>
-        </div>
-        <Badge variant="outline" className="text-green-600 border-green-200 dark:text-green-400 dark:border-green-800">
-          Live data
-        </Badge>
+      <div>
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Key Performance Metrics</h3>
+        <p className="text-sm text-gray-600 dark:text-gray-300">Essential insights from your chatbot performance</p>
       </div>
 
       {/* Key KPIs - Single Row */}

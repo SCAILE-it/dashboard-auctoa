@@ -130,9 +130,9 @@ export default function ChatbotPage() {
       {/* Page header with controls */}
       <div className="space-y-4">
         <div className="flex justify-between items-start">
-      <div>
+          <div>
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Chatbot Analytics</h2>
-            <p className="text-gray-600 dark:text-gray-400">AI conversation metrics and lead generation performance</p>
+            <p className="text-gray-600 dark:text-gray-400">Conversation metrics and performance insights</p>
           </div>
           <div className="flex gap-2">
             <Button
@@ -180,10 +180,10 @@ export default function ChatbotPage() {
         loading={loading}
       />
 
-      {/* Charts Section - Visual Analytics */}
+      {/* Charts Section */}
       <DashboardSection 
-        title="Conversation Trends" 
-        description="Visual overview of chatbot performance over time"
+        title="Analytics" 
+        description="Visual insights and performance metrics"
         icon={MessageSquare}
       >
         {overviewData ? (
@@ -204,73 +204,50 @@ export default function ChatbotPage() {
         )}
       </DashboardSection>
 
-      {/* Real-time Data Status */}
-      <DashboardSection 
-        title="Live Chatbot Data" 
-        description="Real-time conversation data from Auctoa's Supabase database"
-        icon={MessageSquare}
-      >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Connection Status */}
-          <div className="bg-white dark:bg-gray-900 rounded-lg border p-6">
-            <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Database Status</h3>
-            {auctoaData ? (
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Connection</span>
-                  <span className="text-sm text-green-600 dark:text-green-400">🟢 Connected</span>
-                </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">
-                  <p>Total Messages: <strong>{auctoaData.insights?.totalMessages || 0}</strong></p>
-                  <p>Human Messages: <strong>{auctoaData.insights?.humanMessages || 0}</strong></p>
-                  <p>AI Responses: <strong>{auctoaData.insights?.aiMessages || 0}</strong></p>
-                  <p className="text-xs mt-2">Last updated: {new Date(auctoaData.lastUpdated).toLocaleString()}</p>
-                </div>
-              </div>
-            ) : (
-              <div className="text-center text-gray-500">
-                {loading ? 'Connecting to Supabase...' : 'Unable to connect to database'}
-              </div>
-            )}
+      {/* Compact Insights Section */}
+      {auctoaData?.insights && (
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-6 border border-blue-200 dark:border-blue-800">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Quick Insights</h3>
+            <span className="text-xs text-green-600 dark:text-green-400 flex items-center gap-1">
+              <div className="w-2 h-2 bg-green-600 dark:bg-green-400 rounded-full animate-pulse" />
+              Live
+            </span>
+          </div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+            <div className="space-y-1">
+              <p className="text-sm text-gray-500">Messages</p>
+              <p className="text-xl font-bold text-gray-900 dark:text-white">{auctoaData.insights.totalMessages || 0}</p>
+            </div>
+            <div className="space-y-1">
+              <p className="text-sm text-gray-500">Human</p>
+              <p className="text-xl font-bold text-blue-600">{auctoaData.insights.humanMessages || 0}</p>
+            </div>
+            <div className="space-y-1">
+              <p className="text-sm text-gray-500">AI Responses</p>
+              <p className="text-xl font-bold text-indigo-600">{auctoaData.insights.aiMessages || 0}</p>
+            </div>
+            <div className="space-y-1">
+              <p className="text-sm text-gray-500">Properties</p>
+              <p className="text-xl font-bold text-green-600">{auctoaData.insights.completedProperties || 0}</p>
+            </div>
           </div>
 
-          {/* Geographic Insights */}
-          <div className="bg-white dark:bg-gray-900 rounded-lg border p-6">
-            <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Geographic Activity</h3>
-            {auctoaData?.insights ? (
-              <div className="space-y-3">
-                <div className="text-sm text-gray-600 dark:text-gray-400">
-                  <p className="font-medium mb-2">Top German Cities:</p>
-                  {auctoaData.insights.topCities.length > 0 ? (
-                    <ul className="space-y-1">
-                      {auctoaData.insights.topCities.map((city, index) => (
-                        <li key={city} className="flex items-center justify-between">
-                          <span>#{index + 1} {city}</span>
-                          <span className="text-xs text-green-600">🏠</span>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p className="text-gray-500 text-xs">No city data available</p>
-                  )}
-                </div>
-                <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
-                  <p className="text-xs text-gray-500">
-                    Completed Properties: <strong>{auctoaData.insights.completedProperties}</strong>
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    In Progress: <strong>{auctoaData.insights.inProgressProperties}</strong>
-                  </p>
-                </div>
+          {auctoaData.insights.topCities.length > 0 && (
+            <div className="mt-4 pt-4 border-t border-blue-200 dark:border-blue-700">
+              <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">Active Cities:</p>
+              <div className="flex flex-wrap gap-2">
+                {auctoaData.insights.topCities.slice(0, 3).map((city, index) => (
+                  <span key={city} className="px-3 py-1 bg-white dark:bg-gray-800 rounded-full text-xs font-medium border">
+                    #{index + 1} {city}
+                  </span>
+                ))}
               </div>
-            ) : (
-              <div className="text-center text-gray-500">
-                {loading ? 'Loading insights...' : 'No geographic data available'}
-              </div>
-            )}
-          </div>
-      </div>
-      </DashboardSection>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
