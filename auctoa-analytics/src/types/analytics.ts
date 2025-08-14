@@ -60,7 +60,7 @@ export interface SearchSeriesPoint extends TimeSeriesPoint {
 }
 
 // Google Analytics 4 Types
-export interface GATotals {
+export interface GATotals extends Record<string, unknown> {
   users: number;
   sessions: number;
   pageviews: number;
@@ -154,7 +154,8 @@ export interface GAAdapter {
     from: string;
     to: string;
     granularity: Granularity;
-  }): Promise<DataSource<GATotals> & { 
+  }): Promise<{ 
+    totals: GATotals;
     series: GASeriesPoint[];
     topPages: GATopPage[];
     sources: GASource[];

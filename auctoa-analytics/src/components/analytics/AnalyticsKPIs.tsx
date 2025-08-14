@@ -20,6 +20,8 @@ interface KPIData {
 interface AnalyticsKPIsProps {
   kpis: KPIData[];
   loading?: boolean;
+  title?: string;
+  description?: string;
 }
 
 function KPICard({ kpi, loading }: { kpi: KPIData; loading: boolean }) {
@@ -81,28 +83,26 @@ function KPICard({ kpi, loading }: { kpi: KPIData; loading: boolean }) {
   );
 }
 
-export function AnalyticsKPIs({ kpis, loading = false }: AnalyticsKPIsProps) {
-  // Filter to show only the most important KPIs
-  const mostImportantKPIs = [
-    'total-conversations',
-    'user-engagement', 
-    'chat-to-form-conversion',
-    'completion-rate'
-  ];
-  
-  const keyKPIs = kpis.filter(kpi => mostImportantKPIs.includes(kpi.id));
+export function AnalyticsKPIs({ 
+  kpis, 
+  loading = false, 
+  title = "Key Performance Metrics",
+  description = "Essential insights from your analytics performance"
+}: AnalyticsKPIsProps) {
+  // Show first 4 KPIs (most important ones)
+  const displayKPIs = kpis.slice(0, 4);
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Key Performance Metrics</h3>
-        <p className="text-sm text-gray-600 dark:text-gray-300">Essential insights from your chatbot performance</p>
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{title}</h3>
+        <p className="text-sm text-gray-600 dark:text-gray-300">{description}</p>
       </div>
 
       {/* Key KPIs - Single Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {keyKPIs.map((kpi) => (
+        {displayKPIs.map((kpi) => (
           <KPICard key={kpi.id} kpi={kpi} loading={loading} />
         ))}
       </div>

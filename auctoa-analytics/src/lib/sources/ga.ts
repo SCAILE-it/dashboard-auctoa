@@ -1,18 +1,18 @@
 // Google Analytics 4 data adapter - Unified interface for website traffic data
 
+import { ga4Client } from '@/lib/ga4-client';
 import type { 
   GAAdapter, 
   GATotals, 
   GASeriesPoint, 
   GATopPage,
   GASource,
-  Granularity,
-  DataSource 
+  Granularity
 } from '@/types/analytics';
 
 /**
  * Get Google Analytics 4 traffic series data
- * Currently uses mock data - will connect to GA4 API when credentials are available
+ * Uses real GA4 API when credentials are configured, fallback to mock data
  */
 export async function getGaSeries({
   from,
@@ -22,7 +22,8 @@ export async function getGaSeries({
   from: string;
   to: string;
   granularity: Granularity;
-}): Promise<DataSource<GATotals> & { 
+}): Promise<{ 
+  totals: GATotals;
   series: GASeriesPoint[];
   topPages: GATopPage[];
   sources: GASource[];
@@ -32,56 +33,192 @@ export async function getGaSeries({
     const fromDate = new Date(from);
     const toDate = new Date(to);
 
-    // Check for GA4 environment variables
-    const hasGA4Credentials = process.env.GA_PROPERTY_ID && 
-                              process.env.GA_CLIENT_EMAIL && 
-                              process.env.GA_PRIVATE_KEY;
-
-    if (!hasGA4Credentials) {
+    // Check if GA4 client is available
+    if (!ga4Client) {
       console.log('GA4 Adapter: Using mock data - GA4 credentials not configured');
-      return generateMockGA4Data(fromDate, toDate, granularity);
+      return generateFallbackData(fromDate, toDate, granularity);
     }
 
-    // TODO: Implement real GA4 API call when credentials are available
-    // const gaData = await fetchGA4Data(fromDate, toDate, granularity);
-    
-    // For now, return mock data even if credentials exist
-    console.log('GA4 Adapter: Using mock data for development');
-    return generateMockGA4Data(fromDate, toDate, granularity);
+    // Try to fetch real GA4 data
+    try {
+      const ga4Data = await fetchRealGA4Data(fromDate, toDate, granularity);
+      console.log(`GA4 Adapter: Successfully fetched real data from ${from} to ${to}`);
+      return ga4Data;
+    } catch (apiError) {
+      console.error('GA4 API error:', apiError);
+      console.log('GA4 Adapter: Falling back to mock data due to API error');
+      return generateFallbackData(fromDate, toDate, granularity);
+    }
 
   } catch (error) {
     console.error('GA4 adapter error:', error);
-    
-    // Return empty data structure on error
-    return {
-      totals: {
-        users: 0,
-        sessions: 0,
-        pageviews: 0,
-        bounceRate: 0,
-        avgSessionDuration: 0
-      },
-      series: [],
-      topPages: [],
-      sources: [],
-      __mock: true
-    };
+    return generateFallbackData(new Date(from), new Date(to), granularity);
   }
 }
 
 /**
- * Generate realistic mock GA4 data for Auctoa real estate website
+ * Fetch real data from Google Analytics 4 API
  */
-function generateMockGA4Data(
+async function fetchRealGA4Data(
   fromDate: Date,
   toDate: Date,
-  granularity: Granularity
-): DataSource<GATotals> & { 
+  _granularity: Granularity
+): Promise<{ 
+  totals: GATotals;
   series: GASeriesPoint[];
   topPages: GATopPage[];
   sources: GASource[];
-  __mock: boolean;
+  __mock: false;
+}> {
+  if (!ga4Client) {
+    throw new Error('GA4 client not initialized');
+  }
+
+  const propertyId = process.env.GA4_PROPERTY_ID;
+  if (!propertyId) {
+    throw new Error('GA4_PROPERTY_ID not configured');
+  }
+
+  const startDate = fromDate.toISOString().split('T')[0];
+  const endDate = toDate.toISOString().split('T')[0];
+
+  try {
+    // Fetch main metrics with date dimension
+    const [mainResponse] = await ga4Client.runReport({
+      property: `properties/${propertyId}`,
+      dateRanges: [{ startDate, endDate }],
+      dimensions: [{ name: 'date' }],
+      metrics: [
+        { name: 'activeUsers' },
+        { name: 'sessions' },
+        { name: 'screenPageViews' },
+        { name: 'bounceRate' },
+        { name: 'averageSessionDuration' }
+      ],
+      orderBys: [{ dimension: { dimensionName: 'date' }, desc: false }]
+    });
+
+    // Fetch top pages
+    const [pagesResponse] = await ga4Client.runReport({
+      property: `properties/${propertyId}`,
+      dateRanges: [{ startDate, endDate }],
+      dimensions: [{ name: 'pagePath' }],
+      metrics: [
+        { name: 'screenPageViews' },
+        { name: 'sessions' }
+      ],
+      orderBys: [{ metric: { metricName: 'screenPageViews' }, desc: true }],
+      limit: 10
+    });
+
+    // Fetch traffic sources
+    const [sourcesResponse] = await ga4Client.runReport({
+      property: `properties/${propertyId}`,
+      dateRanges: [{ startDate, endDate }],
+      dimensions: [{ name: 'source' }],
+      metrics: [{ name: 'sessions' }],
+      orderBys: [{ metric: { metricName: 'sessions' }, desc: true }],
+      limit: 8
+    });
+
+    // Process main metrics
+    let totalUsers = 0;
+    let totalSessions = 0;
+    let totalPageviews = 0;
+    let totalBounceRate = 0;
+    let totalSessionDuration = 0;
+
+    const series: GASeriesPoint[] = [];
+
+    if (mainResponse.rows) {
+      mainResponse.rows.forEach((row) => {
+        const date = row.dimensionValues?.[0]?.value || '';
+        const users = parseInt(row.metricValues?.[0]?.value || '0');
+        const sessions = parseInt(row.metricValues?.[1]?.value || '0');
+        const pageviews = parseInt(row.metricValues?.[2]?.value || '0');
+
+        totalUsers += users;
+        totalSessions += sessions;
+        totalPageviews += pageviews;
+
+        series.push({
+          ts: date,
+          users,
+          sessions,
+          pageviews
+        });
+      });
+
+      // Calculate averages for bounce rate and session duration
+      const rowCount = mainResponse.rows.length;
+      if (rowCount > 0) {
+        totalBounceRate = mainResponse.rows.reduce((sum, row) => 
+          sum + parseFloat(row.metricValues?.[3]?.value || '0'), 0) / rowCount;
+        totalSessionDuration = mainResponse.rows.reduce((sum, row) => 
+          sum + parseFloat(row.metricValues?.[4]?.value || '0'), 0) / rowCount;
+      }
+    }
+
+    // Process top pages
+    const topPages: GATopPage[] = [];
+    if (pagesResponse.rows) {
+      pagesResponse.rows.forEach((row) => {
+        const path = row.dimensionValues?.[0]?.value || '';
+        const pageviews = parseInt(row.metricValues?.[0]?.value || '0');
+        const sessions = parseInt(row.metricValues?.[1]?.value || '0');
+
+        topPages.push({ path, pageviews, sessions });
+      });
+    }
+
+    // Process traffic sources
+    const sources: GASource[] = [];
+    if (sourcesResponse.rows) {
+      sourcesResponse.rows.forEach((row) => {
+        const source = row.dimensionValues?.[0]?.value || '';
+        const sessions = parseInt(row.metricValues?.[0]?.value || '0');
+
+        sources.push({ source, sessions });
+      });
+    }
+
+    const totals: GATotals = {
+      users: totalUsers,
+      sessions: totalSessions,
+      pageviews: totalPageviews,
+      bounceRate: totalBounceRate,
+      avgSessionDuration: totalSessionDuration
+    };
+
+    return {
+      totals,
+      series,
+      topPages,
+      sources,
+      __mock: false
+    };
+
+  } catch (error) {
+    console.error('GA4 API request failed:', error);
+    throw error;
+  }
+}
+
+/**
+ * Generate realistic fallback GA4 data for Auctoa real estate website
+ */
+function generateFallbackData(
+  fromDate: Date,
+  toDate: Date,
+  granularity: Granularity
+): { 
+  totals: GATotals;
+  series: GASeriesPoint[];
+  topPages: GATopPage[];
+  sources: GASource[];
+  __mock: true;
 } {
+  console.log('GA4 Adapter: Using fallback mock data');
   // Generate realistic totals for a real estate website
   const totalUsers = 3247;
   const totalSessions = 4891;
@@ -260,39 +397,7 @@ export async function getTodayVsYesterday(): Promise<{
   };
 }
 
-/**
- * Future: Real GA4 API implementation
- * This would be implemented when GA4 credentials are available
- */
-async function fetchGA4Data(
-  fromDate: Date,
-  toDate: Date,
-  granularity: Granularity
-): Promise<any> {
-  // TODO: Implement real GA4 Data API call
-  // const { BetaAnalyticsDataClient } = require('@google-analytics/data');
-  // const analyticsDataClient = new BetaAnalyticsDataClient({
-  //   credentials: {
-  //     client_email: process.env.GA_CLIENT_EMAIL,
-  //     private_key: process.env.GA_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-  //   },
-  // });
-  
-  // const [response] = await analyticsDataClient.runReport({
-  //   property: `properties/${process.env.GA_PROPERTY_ID}`,
-  //   dateRanges: [{ startDate: fromDate.toISOString().split('T')[0], endDate: toDate.toISOString().split('T')[0] }],
-  //   dimensions: [{ name: 'date' }],
-  //   metrics: [
-  //     { name: 'activeUsers' },
-  //     { name: 'sessions' },
-  //     { name: 'screenPageViews' },
-  //     { name: 'bounceRate' },
-  //     { name: 'averageSessionDuration' }
-  //   ],
-  // });
-  
-  throw new Error('Real GA4 implementation not yet available');
-}
+
 
 // Export the adapter interface implementation
 export const gaAdapter: GAAdapter = {
