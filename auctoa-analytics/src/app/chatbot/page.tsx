@@ -4,7 +4,7 @@ import { useState } from "react";
 import { MessageSquare, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-// Temporarily remove dynamic forcing for debugging
+
 import { DashboardSection } from "@/components/dashboard";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { ChatbotCharts } from "@/components/charts/ChatbotCharts";

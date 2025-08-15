@@ -28,13 +28,7 @@ export function GA4Charts({ data, loading }: GA4ChartsProps) {
 
   const gaSeries = data?.series?.traffic || [];
 
-  console.log('GA4Charts Debug:', { 
-    dataExists: !!data, 
-    seriesExists: !!data?.series, 
-    trafficExists: !!data?.series?.traffic,
-    gaLength: gaSeries.length,
-    sampleData: gaSeries.slice(0, 2)
-  });
+
 
   if (!gaSeries || gaSeries.length === 0) {
     return (

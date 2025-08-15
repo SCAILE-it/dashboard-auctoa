@@ -6,8 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-// Temporarily remove dynamic forcing for debugging
-
 
 export default function LoginPage() {
   const [password, setPassword] = useState("");
