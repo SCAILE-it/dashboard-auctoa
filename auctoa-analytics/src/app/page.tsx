@@ -2,16 +2,11 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { 
-  BarChart3,
-  MessageSquare,
-  Activity,
   Search,
   TrendingUp,
-  Users,
   MousePointer,
   RefreshCw,
   Database,
@@ -21,13 +16,13 @@ import {
 
 // Import our dashboard components
 import { 
-  KPICard, 
-  DashboardSection, 
-  KPIGrid
+  DashboardSection
 } from "@/components/dashboard";
 import { useOverviewData } from "@/lib/hooks/useOverviewData";
 import { useAnalyticsState } from "@/lib/hooks/useAnalyticsState";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
+import { ExportKPIsButton, ExportOverviewButton } from "@/components/ui/export-button";
+import { exportKPIsToCSV, exportOverviewToCSV } from "@/lib/csv-export";
 
 
 export default function DashboardOverview() {
@@ -45,10 +40,67 @@ export default function DashboardOverview() {
 
   const loading = dataLoading || manualLoading;
 
+  // Export functions
+  const handleExportKPIs = async () => {
+    if (!overviewData?.kpis) {
+      throw new Error('No KPI data available for export');
+    }
+    
+    // Convert kpis object to array format with safe trend parsing
+    const kpiArray = Object.entries(overviewData.kpis).map(([key, value]) => ({
+      id: key,
+      title: key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()), // Convert camelCase to Title Case
+      value: value.current,
+      trend: value.trend ? parseFloat(value.trend.replace('%', '')) : 0,
+      source: value.source
+    }));
+    
+    exportKPIsToCSV(
+      kpiArray,
+      {
+        from: dateRange.from.toISOString().split('T')[0],
+        to: dateRange.to.toISOString().split('T')[0]
+      },
+      { filename: 'analytics_overview_kpis' }
+    );
+  };
+
+  const handleExportOverview = async () => {
+    if (!overviewData) {
+      throw new Error('No overview data available for export');
+    }
+    
+    // Transform overview data to match export function expectations
+    const exportData = {
+      kpis: Object.entries(overviewData.kpis).map(([key, value]) => ({
+        id: key,
+        title: key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()),
+        value: value.current,
+        trend: value.trend ? parseFloat(value.trend.replace('%', '')) : 0,
+        source: value.source
+      })),
+      series: {
+        chatbot: overviewData.series.chatbot,
+        search: overviewData.series.search,
+        traffic: overviewData.series.traffic
+      }
+    };
+    
+    exportOverviewToCSV(
+      exportData,
+      {
+        from: dateRange.from.toISOString().split('T')[0],
+        to: dateRange.to.toISOString().split('T')[0]
+      },
+      { filename: 'complete_analytics_overview' }
+    );
+  };
+
   // Extract key metrics from unified overview data
   const getKPIValue = (key: string) => {
     if (!overviewData?.kpis) return { current: 0, trend: '0%' };
-    return overviewData.kpis[key] || { current: 0, trend: '0%' };
+    const kpis = overviewData.kpis as Record<string, { current: number; trend: string }>;
+    return kpis[key] || { current: 0, trend: '0%' };
   };
 
   const formatTrend = (trend: string) => ({
@@ -69,6 +121,16 @@ export default function DashboardOverview() {
           <DateRangePicker
             value={dateRange}
             onChange={(range) => range && setDateRange(range)}
+          />
+          <ExportKPIsButton
+            onExport={handleExportKPIs}
+            disabled={loading || !overviewData?.kpis}
+            className="text-sm"
+          />
+          <ExportOverviewButton
+            onExport={handleExportOverview}
+            disabled={loading || !overviewData}
+            className="text-sm"
           />
           <Button
             onClick={handleRefresh}

@@ -12,6 +12,8 @@ import { enhancedGSCKPIs } from "@/lib/gsc-data";
 import { useGSCData } from "@/lib/hooks/useGSCData";
 import { useOverviewData } from "@/lib/hooks/useOverviewData";
 import { useAnalyticsState } from "@/lib/hooks/useAnalyticsState";
+import { ExportKPIsButton, ExportChartDataButton } from "@/components/ui/export-button";
+import { exportKPIsToCSV, exportTimeSeriesToCSV } from "@/lib/csv-export";
 
 export default function SearchPage() {
   const [manualLoading, setManualLoading] = useState(false);
@@ -31,6 +33,46 @@ export default function SearchPage() {
   };
 
   const loading = dataLoading || manualLoading;
+
+  // Export functions
+  const handleExportKPIs = async () => {
+    if (!gscData?.metrics) {
+      throw new Error('No GSC KPI data available for export');
+    }
+    
+    const kpiArray = enhancedGSCKPIs.map(kpi => ({
+      id: kpi.id,
+      title: kpi.title,
+      value: (gscData.metrics as any)[kpi.id] || 0,
+      trend: 0, // Would need to calculate trends
+      source: 'GSC'
+    }));
+    
+    exportKPIsToCSV(
+      kpiArray,
+      {
+        from: dateRange.from.toISOString().split('T')[0],
+        to: dateRange.to.toISOString().split('T')[0]
+      },
+      { filename: 'gsc_search_performance_kpis' }
+    );
+  };
+
+  const handleExportChartData = async () => {
+    if (!overviewData?.series?.search) {
+      throw new Error('No GSC chart data available for export');
+    }
+    
+    exportTimeSeriesToCSV(
+      overviewData.series.search,
+      'GSC Search Performance',
+      {
+        from: dateRange.from.toISOString().split('T')[0],
+        to: dateRange.to.toISOString().split('T')[0]
+      },
+      { filename: 'gsc_search_data' }
+    );
+  };
 
   // Get enhanced GSC KPIs with real data mapping
   const searchKPIs = enhancedGSCKPIs.map(kpi => {
@@ -94,6 +136,16 @@ export default function SearchPage() {
             <p className="text-gray-600 dark:text-gray-400">Google Search Console insights and rankings</p>
           </div>
           <div className="flex gap-2">
+            <ExportKPIsButton
+              onExport={handleExportKPIs}
+              disabled={!gscData?.metrics || dataLoading}
+              className="text-sm"
+            />
+            <ExportChartDataButton
+              onExport={handleExportChartData}
+              disabled={!overviewData?.series?.search || overviewLoading}
+              className="text-sm"
+            />
             <Button
               onClick={handleRefresh}
               variant="outline"

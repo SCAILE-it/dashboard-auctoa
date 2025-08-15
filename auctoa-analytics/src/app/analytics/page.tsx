@@ -12,6 +12,8 @@ import { enhancedGA4KPIs } from "@/lib/ga4-data";
 import { useGA4Data } from "@/lib/hooks/useGA4Data";
 import { useOverviewData } from "@/lib/hooks/useOverviewData";
 import { useAnalyticsState } from "@/lib/hooks/useAnalyticsState";
+import { ExportKPIsButton, ExportChartDataButton } from "@/components/ui/export-button";
+import { exportKPIsToCSV, exportTimeSeriesToCSV } from "@/lib/csv-export";
 
 export default function AnalyticsPage() {
   const [manualLoading, setManualLoading] = useState(false);
@@ -27,6 +29,46 @@ export default function AnalyticsPage() {
     Promise.all([refetch(), refetchOverview()]).finally(() => {
       setTimeout(() => setManualLoading(false), 500);
     });
+  };
+
+  // Export functions
+  const handleExportKPIs = async () => {
+    if (!ga4Data?.metrics) {
+      throw new Error('No GA4 KPI data available for export');
+    }
+    
+    const kpiArray = enhancedGA4KPIs.map(kpi => ({
+      id: kpi.id,
+      title: kpi.title,
+      value: (ga4Data.metrics as any)[kpi.id] || 0,
+      trend: 0, // Would need to calculate trends
+      source: 'GA4'
+    }));
+    
+    exportKPIsToCSV(
+      kpiArray,
+      {
+        from: dateRange.from.toISOString().split('T')[0],
+        to: dateRange.to.toISOString().split('T')[0]
+      },
+      { filename: 'ga4_analytics_kpis' }
+    );
+  };
+
+  const handleExportChartData = async () => {
+    if (!overviewData?.series?.traffic) {
+      throw new Error('No GA4 chart data available for export');
+    }
+    
+    exportTimeSeriesToCSV(
+      overviewData.series.traffic,
+      'GA4 Website Traffic',
+      {
+        from: dateRange.from.toISOString().split('T')[0],
+        to: dateRange.to.toISOString().split('T')[0]
+      },
+      { filename: 'ga4_traffic_data' }
+    );
   };
 
   // Map overview data to KPI format for display (or use defaults)
@@ -113,6 +155,16 @@ export default function AnalyticsPage() {
             <DateRangePicker
               value={dateRange}
               onChange={(range) => range && setDateRange(range)}
+            />
+            <ExportKPIsButton
+              onExport={handleExportKPIs}
+              disabled={!ga4Data?.metrics || dataLoading}
+              className="text-sm"
+            />
+            <ExportChartDataButton
+              onExport={handleExportChartData}
+              disabled={!overviewData?.series?.traffic || overviewLoading}
+              className="text-sm"
             />
             <Button 
               onClick={handleRefresh}
