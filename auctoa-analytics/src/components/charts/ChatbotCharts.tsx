@@ -2,8 +2,9 @@
 
 import React from 'react';
 import {
-  AreaChart,
+  ComposedChart,
   Area,
+  Line,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -50,141 +51,138 @@ export function ChatbotCharts({ data, loading = false }: ChatbotChartsProps) {
       }), { s1: 0, s2: 0, s3: 0, s4: 0 })
     : { s1: 0, s2: 0, s3: 0, s4: 0 };
 
+  // Custom tooltip component matching other charts
+  const CustomTooltip = ({ active, payload, label }: {
+    active?: boolean;
+    payload?: Array<{
+      name: string;
+      value: number;
+      color: string;
+      payload?: any;
+    }>;
+    label?: string;
+  }) => {
+    if (active && payload && payload.length && label) {
+      return (
+        <div className="rounded-lg border bg-background p-3 shadow-lg border-border">
+          <div className="text-sm font-bold text-foreground mb-2">
+            {format(parseISO(label.toString()), "MMM dd, yyyy")}
+          </div>
+          {payload.map((entry, index: number) => (
+            <div key={`item-${index}`} className="flex items-center justify-between gap-3 text-sm py-1">
+              <span className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: entry.color }}></div>
+                <span className="text-foreground font-medium">{entry.name}:</span>
+              </span>
+              <span className="font-bold text-foreground">
+                {entry.name === 'Completion Rate' ? `${(entry.value * 100).toFixed(1)}%` : entry.value.toLocaleString()}
+              </span>
+            </div>
+          ))}
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
-    <div className="space-y-6">
-      {/* Charts */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-              Conversation Activity
-            </div>
-            <div className="text-sm text-gray-500 dark:text-gray-400">
-              {chatbotSeries.length > 0 && `${chatbotSeries.length} days of data`}
-            </div>
-          </CardTitle>
-          <CardDescription>
-            Daily conversation volume and user engagement patterns
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {chatbotSeries.length === 0 ? (
-            <div className="h-96 flex items-center justify-center">
-              <div className="text-center text-gray-500 dark:text-gray-400">
-                <div className="text-6xl mb-4">📈</div>
-                <h3 className="text-lg font-medium mb-2">No Data Available</h3>
-                <p className="text-sm">Try selecting a different date range or check your data connection</p>
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+            Conversation Activity
+          </div>
+          <div className="text-sm text-muted-foreground">
+            {chatbotSeries.length > 0 && `${chatbotSeries.length} days of data`}
+          </div>
+        </CardTitle>
+        <CardDescription>
+          Daily conversation volume and engagement patterns
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        {chatbotSeries.length === 0 ? (
+          <div className="bg-muted/50 rounded-lg p-12 flex items-center justify-center">
+            <div className="text-center text-muted-foreground">
+              <div className="w-16 h-16 bg-muted rounded-lg mx-auto mb-4 flex items-center justify-center">
+                💬
               </div>
+              <h3 className="font-medium mb-2">No Conversation Data Available</h3>
+              <p className="text-sm">Adjust your date range or check data sources.</p>
             </div>
-          ) : (
-            <div className="space-y-6">
-              {/* Main Chart */}
-              <div className="h-96">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={chatbotSeries} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
-                    <defs>
-                      <linearGradient id="conversationsGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#3B82F6" stopOpacity={0.4}/>
-                        <stop offset="100%" stopColor="#3B82F6" stopOpacity={0.02}/>
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" opacity={0.6} />
-                    <XAxis 
-                      dataKey="ts" 
-                      tick={{ fontSize: 12, fill: '#6b7280' }}
-                      tickFormatter={(value) => format(parseISO(value), 'MMM dd')}
-                      height={60}
-                      angle={-45}
-                      textAnchor="end"
-                    />
-                    <YAxis 
-                      tick={{ fontSize: 12, fill: '#6b7280' }}
-                      label={{ value: 'Conversations', angle: -90, position: 'insideLeft', style: { textAnchor: 'middle' } }}
-                    />
-                    <Tooltip 
-                      content={({ active, payload, label }) => {
-                        if (active && payload && payload.length && label) {
-                          const data = payload[0].payload;
-                          return (
-                            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl p-4 min-w-[200px]">
-                              <p className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
-                                {format(parseISO(label.toString()), 'EEEE, MMM dd, yyyy')}
-                              </p>
-                              <div className="space-y-2">
-                                <div className="flex items-center justify-between">
-                                  <div className="flex items-center gap-2">
-                                    <div className="w-3 h-3 rounded-full bg-blue-500"/>
-                                    <span className="text-sm text-gray-600 dark:text-gray-300">Conversations</span>
-                                  </div>
-                                  <span className="text-sm font-medium text-gray-900 dark:text-white">
-                                    {data.conversations}
-                                  </span>
-                                </div>
-                                <div className="flex items-center justify-between">
-                                  <div className="flex items-center gap-2">
-                                    <div className="w-3 h-3 rounded-full bg-emerald-500"/>
-                                    <span className="text-sm text-gray-600 dark:text-gray-300">Completion Rate</span>
-                                  </div>
-                                  <span className="text-sm font-medium text-gray-900 dark:text-white">
-                                    {(data.completionRate * 100).toFixed(1)}%
-                                  </span>
-                                </div>
-                                <div className="flex items-center justify-between">
-                                  <div className="flex items-center gap-2">
-                                    <div className="w-3 h-3 rounded-full bg-amber-500"/>
-                                    <span className="text-sm text-gray-600 dark:text-gray-300">Avg Response</span>
-                                  </div>
-                                  <span className="text-sm font-medium text-gray-900 dark:text-white">
-                                    {data.avgResponseTimeSec}s
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
-                          );
-                        }
-                        return null;
-                      }}
-                    />
-                    <Area
-                      type="monotone"
-                      dataKey="conversations"
-                      stroke="#3B82F6"
-                      fill="url(#conversationsGradient)"
-                      strokeWidth={3}
-                      dot={{ fill: '#3B82F6', strokeWidth: 2, r: 4 }}
-                      activeDot={{ r: 6, stroke: '#3B82F6', strokeWidth: 2, fill: '#fff' }}
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
-
-              {/* Quick Stats Row */}
-              <div className="grid grid-cols-3 gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{funnelData.s1}</div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">Total Conversations</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{funnelData.s2}</div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">Form Submissions</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">{funnelData.s4}</div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">Completed</div>
-                </div>
-              </div>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Data Source Badge */}
-      <div className="flex justify-center">
-        <Badge variant="secondary" className="text-xs dark:bg-gray-800 dark:text-gray-300">
-          📊 Powered by real Supabase data from your chatbot conversations
-        </Badge>
-      </div>
-    </div>
+          </div>
+        ) : (
+          <div className="text-foreground">
+            <ResponsiveContainer width="100%" height={350}>
+              <ComposedChart
+                data={chatbotSeries}
+                margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+              >
+                <defs>
+                  <linearGradient id="chatbotConversations" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.1}/>
+                  </linearGradient>
+                  <linearGradient id="chatbotCompletions" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="#10b981" stopOpacity={0.1}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
+                <XAxis
+                  dataKey="ts"
+                  tickFormatter={(value) => format(parseISO(value), "MMM dd")}
+                  minTickGap={30}
+                  tick={{ fill: 'currentColor', fontSize: 12, fontWeight: 500 }}
+                  axisLine={{ stroke: 'hsl(var(--border))' }}
+                  tickLine={{ stroke: 'hsl(var(--border))' }}
+                />
+                <YAxis
+                  yAxisId="left"
+                  tick={{ fill: 'currentColor', fontSize: 12, fontWeight: 500 }}
+                  axisLine={{ stroke: 'hsl(var(--border))' }}
+                  tickLine={{ stroke: 'hsl(var(--border))' }}
+                />
+                <YAxis
+                  yAxisId="right"
+                  orientation="right"
+                  domain={[0, 1]}
+                  tickFormatter={(value) => `${(value * 100).toFixed(0)}%`}
+                  tick={{ fill: 'currentColor', fontSize: 12, fontWeight: 500 }}
+                  axisLine={{ stroke: 'hsl(var(--border))' }}
+                  tickLine={{ stroke: 'hsl(var(--border))' }}
+                />
+                <Tooltip content={<CustomTooltip />} />
+                
+                {/* Conversations - Blue Area */}
+                <Area
+                  yAxisId="left"
+                  type="monotone"
+                  dataKey="conversations"
+                  name="Conversations"
+                  stroke="#3b82f6"
+                  strokeWidth={2}
+                  fillOpacity={1}
+                  fill="url(#chatbotConversations)"
+                />
+                
+                {/* Completion Rate - Green Line */}
+                <Line
+                  yAxisId="right"
+                  type="monotone"
+                  dataKey="completionRate"
+                  name="Completion Rate"
+                  stroke="#10b981"
+                  strokeWidth={3}
+                  dot={{ fill: '#10b981', strokeWidth: 2, r: 4 }}
+                  activeDot={{ r: 6, fill: '#10b981', strokeWidth: 2 }}
+                />
+              </ComposedChart>
+            </ResponsiveContainer>
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 }
