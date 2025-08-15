@@ -13,8 +13,8 @@ import { enhancedChatbotKPIs } from "@/lib/auctoa-data";
 import { useAuctoaData } from "@/lib/hooks/useAuctoaData";
 import { useOverviewData } from "@/lib/hooks/useOverviewData";
 import { useAnalyticsState } from "@/lib/hooks/useAnalyticsState";
-import { ExportKPIsButton, ExportChartDataButton } from "@/components/ui/export-button";
-import { exportKPIsToCSV, exportTimeSeriesToCSV } from "@/lib/csv-export";
+import { ExportChartDataButton } from "@/components/ui/export-button";
+import { exportTimeSeriesToCSV } from "@/lib/csv-export";
 
 
 export default function ChatbotPage() {
@@ -37,29 +37,6 @@ export default function ChatbotPage() {
   const loading = dataLoading || manualLoading;
 
   // Export functions
-  const handleExportKPIs = async () => {
-    if (!auctoaData?.metrics) {
-      throw new Error('No Chatbot KPI data available for export');
-    }
-    
-    const kpiArray = enhancedChatbotKPIs.map(kpi => ({
-      id: kpi.id,
-      title: kpi.title,
-      value: (auctoaData.metrics as any)[kpi.id] || 0,
-      trend: 0, // Would need to calculate trends
-      source: 'Chatbot'
-    }));
-    
-    exportKPIsToCSV(
-      kpiArray,
-      {
-        from: dateRange.from.toISOString().split('T')[0],
-        to: dateRange.to.toISOString().split('T')[0]
-      },
-      { filename: 'chatbot_analytics_kpis' }
-    );
-  };
-
   const handleExportChartData = async () => {
     if (!overviewData?.series?.chatbot) {
       throw new Error('No Chatbot chart data available for export');
@@ -177,11 +154,6 @@ export default function ChatbotPage() {
             <p className="text-gray-600 dark:text-gray-400">Conversation metrics and performance insights</p>
           </div>
           <div className="flex gap-2">
-            <ExportKPIsButton
-              onExport={handleExportKPIs}
-              disabled={!auctoaData?.metrics || dataLoading}
-              className="text-sm"
-            />
             <ExportChartDataButton
               onExport={handleExportChartData}
               disabled={!overviewData?.series?.chatbot || overviewLoading}

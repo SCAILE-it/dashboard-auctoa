@@ -21,8 +21,8 @@ import {
 import { useOverviewData } from "@/lib/hooks/useOverviewData";
 import { useAnalyticsState } from "@/lib/hooks/useAnalyticsState";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
-import { ExportKPIsButton, ExportOverviewButton } from "@/components/ui/export-button";
-import { exportKPIsToCSV, exportOverviewToCSV } from "@/lib/csv-export";
+import { ExportOverviewButton } from "@/components/ui/export-button";
+import { exportOverviewToCSV } from "@/lib/csv-export";
 
 
 export default function DashboardOverview() {
@@ -40,31 +40,7 @@ export default function DashboardOverview() {
 
   const loading = dataLoading || manualLoading;
 
-  // Export functions
-  const handleExportKPIs = async () => {
-    if (!overviewData?.kpis) {
-      throw new Error('No KPI data available for export');
-    }
-    
-    // Convert kpis object to array format with safe trend parsing
-    const kpiArray = Object.entries(overviewData.kpis).map(([key, value]) => ({
-      id: key,
-      title: key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()), // Convert camelCase to Title Case
-      value: value.current,
-      trend: value.trend ? parseFloat(value.trend.replace('%', '')) : 0,
-      source: value.source
-    }));
-    
-    exportKPIsToCSV(
-      kpiArray,
-      {
-        from: dateRange.from.toISOString().split('T')[0],
-        to: dateRange.to.toISOString().split('T')[0]
-      },
-      { filename: 'analytics_overview_kpis' }
-    );
-  };
-
+    // Export functions
   const handleExportOverview = async () => {
     if (!overviewData) {
       throw new Error('No overview data available for export');
@@ -121,11 +97,6 @@ export default function DashboardOverview() {
           <DateRangePicker
             value={dateRange}
             onChange={(range) => range && setDateRange(range)}
-          />
-          <ExportKPIsButton
-            onExport={handleExportKPIs}
-            disabled={loading || !overviewData?.kpis}
-            className="text-sm"
           />
           <ExportOverviewButton
             onExport={handleExportOverview}
