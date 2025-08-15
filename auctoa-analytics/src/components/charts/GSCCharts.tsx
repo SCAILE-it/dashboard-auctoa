@@ -1,5 +1,5 @@
 import React from 'react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
+import { ComposedChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, Line as ComposedLine } from 'recharts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import type { UnifiedOverview } from '@/types/analytics';
@@ -72,7 +72,7 @@ export function GSCCharts({ data, loading }: GSCChartsProps) {
         <CardContent>
           <div className="h-80 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={searchSeries}>
+              <ComposedChart data={searchSeries}>
                 <defs>
                   <linearGradient id="clicksGradient" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#22c55e" stopOpacity={0.3}/>
@@ -92,7 +92,17 @@ export function GSCCharts({ data, loading }: GSCChartsProps) {
                     return `${date.getMonth() + 1}/${date.getDate()}`;
                   }}
                 />
-                <YAxis className="text-xs fill-muted-foreground" />
+                <YAxis 
+                  className="text-xs fill-muted-foreground"
+                  yAxisId="left"
+                  domain={['dataMin - 1', 'dataMax + 1']}
+                />
+                <YAxis 
+                  className="text-xs fill-muted-foreground"
+                  yAxisId="right"
+                  orientation="right"
+                  domain={['dataMin - 1', 'dataMax + 1']}
+                />
                 <Tooltip 
                   contentStyle={{
                     backgroundColor: 'hsl(var(--card))',
@@ -116,6 +126,7 @@ export function GSCCharts({ data, loading }: GSCChartsProps) {
                   stroke="#3b82f6"
                   fill="url(#impressionsGradient)"
                   strokeWidth={2}
+                  yAxisId="left"
                 />
                 <Area
                   type="monotone"
@@ -123,8 +134,9 @@ export function GSCCharts({ data, loading }: GSCChartsProps) {
                   stroke="#22c55e"
                   fill="url(#clicksGradient)"
                   strokeWidth={2}
+                  yAxisId="right"
                 />
-              </AreaChart>
+              </ComposedChart>
             </ResponsiveContainer>
           </div>
         </CardContent>
