@@ -2,7 +2,7 @@ import React from 'react';
 import { ComposedChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, Line as ComposedLine } from 'recharts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import type { UnifiedOverview } from '@/types/analytics';
+import type { UnifiedOverview } from '@/lib/overview';
 
 interface GSCChartsProps {
   data: UnifiedOverview;
@@ -45,10 +45,10 @@ export function GSCCharts({ data, loading }: GSCChartsProps) {
   }
 
   // Calculate some basic stats for the summary
-  const totalClicks = searchSeries.reduce((sum, point) => sum + (point.clicks || 0), 0);
-  const totalImpressions = searchSeries.reduce((sum, point) => sum + (point.impressions || 0), 0);
+  const totalClicks = searchSeries.reduce((sum: number, point: { clicks?: number }) => sum + (point.clicks || 0), 0);
+  const totalImpressions = searchSeries.reduce((sum: number, point: { impressions?: number }) => sum + (point.impressions || 0), 0);
   const avgPosition = searchSeries.length > 0 
-    ? searchSeries.reduce((sum, point) => sum + (point.avgPosition || 0), 0) / searchSeries.length
+    ? searchSeries.reduce((sum: number, point: { avgPosition?: number }) => sum + (point.avgPosition || 0), 0) / searchSeries.length
     : 0;
 
   return (
@@ -83,25 +83,32 @@ export function GSCCharts({ data, loading }: GSCChartsProps) {
                     <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.0}/>
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
                 <XAxis 
                   dataKey="ts" 
-                  className="text-xs fill-muted-foreground"
                   tickFormatter={(value) => {
                     const date = new Date(value);
                     return `${date.getMonth() + 1}/${date.getDate()}`;
                   }}
+                  minTickGap={30}
+                  tick={{ fill: 'currentColor', fontSize: 12, fontWeight: 500 }}
+                  axisLine={{ stroke: 'hsl(var(--border))' }}
+                  tickLine={{ stroke: 'hsl(var(--border))' }}
                 />
                 <YAxis 
-                  className="text-xs fill-muted-foreground"
                   yAxisId="left"
                   domain={['dataMin - 1', 'dataMax + 1']}
+                  tick={{ fill: 'currentColor', fontSize: 12, fontWeight: 500 }}
+                  axisLine={{ stroke: 'hsl(var(--border))' }}
+                  tickLine={{ stroke: 'hsl(var(--border))' }}
                 />
                 <YAxis 
-                  className="text-xs fill-muted-foreground"
                   yAxisId="right"
                   orientation="right"
                   domain={['dataMin - 1', 'dataMax + 1']}
+                  tick={{ fill: 'currentColor', fontSize: 12, fontWeight: 500 }}
+                  axisLine={{ stroke: 'hsl(var(--border))' }}
+                  tickLine={{ stroke: 'hsl(var(--border))' }}
                 />
                 <Tooltip 
                   contentStyle={{
@@ -150,26 +157,31 @@ export function GSCCharts({ data, loading }: GSCChartsProps) {
             Average Search Position
           </CardTitle>
           <CardDescription>
-            Your website's average ranking position in search results (lower is better)
+            Your website&apos;s average ranking position in search results (lower is better)
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={searchSeries}>
-                <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
                 <XAxis 
                   dataKey="ts" 
-                  className="text-xs fill-muted-foreground"
                   tickFormatter={(value) => {
                     const date = new Date(value);
                     return `${date.getMonth() + 1}/${date.getDate()}`;
                   }}
+                  minTickGap={30}
+                  tick={{ fill: 'currentColor', fontSize: 12, fontWeight: 500 }}
+                  axisLine={{ stroke: 'hsl(var(--border))' }}
+                  tickLine={{ stroke: 'hsl(var(--border))' }}
                 />
                 <YAxis 
-                  className="text-xs fill-muted-foreground"
                   domain={['dataMin - 1', 'dataMax + 1']}
                   tickFormatter={(value) => `#${value.toFixed(0)}`}
+                  tick={{ fill: 'currentColor', fontSize: 12, fontWeight: 500 }}
+                  axisLine={{ stroke: 'hsl(var(--border))' }}
+                  tickLine={{ stroke: 'hsl(var(--border))' }}
                 />
                 <Tooltip 
                   contentStyle={{
