@@ -200,6 +200,8 @@ export async function getOverview({
       users: gaData && prevGa ? calculateDelta(gaData.totals.users, prevGa.totals.users) : { percent: '0%' },
       sessions: gaData && prevGa ? calculateDelta(gaData.totals.sessions, prevGa.totals.sessions) : { percent: '0%' },
       pageviews: gaData && prevGa ? calculateDelta(gaData.totals.pageviews, prevGa.totals.pageviews) : { percent: '0%' },
+      avgSessionDuration: gaData && prevGa ? calculateDelta(gaData.totals.avgSessionDuration, prevGa.totals.avgSessionDuration) : { percent: '0%' },
+      bounceRate: gaData && prevGa ? calculateDelta(gaData.totals.bounceRate, prevGa.totals.bounceRate) : { percent: '0%' },
       searchClicks: searchData && prevSearch ? calculateDelta(searchData.totals.clicks, prevSearch.totals.clicks) : { percent: '0%' },
       searchImpressions: searchData && prevSearch ? calculateDelta(searchData.totals.impressions, prevSearch.totals.impressions) : { percent: '0%' },
       searchCTR: searchData && prevSearch ? calculateDelta(searchData.totals.ctr, prevSearch.totals.ctr) : { percent: '0%' },
@@ -229,6 +231,16 @@ export async function getOverview({
       totalPageviews: {
         current: gaData?.totals.pageviews || 0,
         trend: trends.pageviews.percent,
+        source: 'Google Analytics'
+      },
+      avgSessionDuration: {
+        current: gaData?.totals.avgSessionDuration || 0,
+        trend: trends.avgSessionDuration.percent,
+        source: 'Google Analytics'
+      },
+      bounceRate: {
+        current: gaData?.totals.bounceRate || 0,
+        trend: trends.bounceRate.percent,
         source: 'Google Analytics'
       },
       

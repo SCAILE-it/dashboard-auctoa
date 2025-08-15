@@ -1,7 +1,8 @@
 // Google Analytics 4 API client for direct data access
 import { BetaAnalyticsDataClient } from '@google-analytics/data';
 
-const ga4PropertyId = process.env.GA4_PROPERTY_ID;
+// Export GA4 Property ID for use in adapters
+export const ga4PropertyId = process.env.GA4_PROPERTY_ID;
 const ga4ServiceAccountKey = process.env.GA4_SERVICE_ACCOUNT_KEY;
 
 if (!ga4PropertyId || !ga4ServiceAccountKey) {

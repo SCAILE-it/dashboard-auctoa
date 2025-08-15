@@ -70,24 +70,24 @@ export const useGA4Data = (dateRange: DateRange) => {
       // Map overview data to GA4 metrics
       const mappedMetrics: GA4Metrics = {
         totalUsers: {
-          current: ga4KPIs.gaUsers?.current || 0,
-          trend: ga4KPIs.gaUsers?.trend || '0%',
+          current: ga4KPIs.totalUsers?.current || 0,
+          trend: ga4KPIs.totalUsers?.trend || '0%',
         },
         totalSessions: {
-          current: ga4KPIs.gaSessions?.current || 0,
-          trend: ga4KPIs.gaSessions?.trend || '0%',
+          current: ga4KPIs.totalSessions?.current || 0,
+          trend: ga4KPIs.totalSessions?.trend || '0%',
         },
         totalPageviews: {
-          current: ga4KPIs.gaPageviews?.current || 0,
-          trend: ga4KPIs.gaPageviews?.trend || '0%',
+          current: ga4KPIs.totalPageviews?.current || 0,
+          trend: ga4KPIs.totalPageviews?.trend || '0%',
         },
         avgSessionDuration: {
-          current: ga4KPIs.gaAvgSessionDuration?.current || 0,
-          trend: ga4KPIs.gaAvgSessionDuration?.trend || '0%',
+          current: ga4KPIs.avgSessionDuration?.current || 0,
+          trend: ga4KPIs.avgSessionDuration?.trend || '0%',
         },
         bounceRate: {
-          current: ga4KPIs.gaBounceRate?.current || 0,
-          trend: ga4KPIs.gaBounceRate?.trend || '0%',
+          current: ga4KPIs.bounceRate?.current || 0,
+          trend: ga4KPIs.bounceRate?.trend || '0%',
         },
       };
 

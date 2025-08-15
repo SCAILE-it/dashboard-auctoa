@@ -1,6 +1,6 @@
 // Google Analytics 4 data adapter - Unified interface for website traffic data
 
-import { ga4Client } from '@/lib/ga4-client';
+import { ga4Client, ga4PropertyId } from '@/lib/ga4-client';
 import type { 
   GAAdapter, 
   GATotals, 
@@ -74,8 +74,7 @@ async function fetchRealGA4Data(
     throw new Error('GA4 client not initialized');
   }
 
-  const propertyId = process.env.GA4_PROPERTY_ID;
-  if (!propertyId) {
+  if (!ga4PropertyId) {
     throw new Error('GA4_PROPERTY_ID not configured');
   }
 
@@ -83,9 +82,9 @@ async function fetchRealGA4Data(
   const endDate = toDate.toISOString().split('T')[0];
 
   try {
-    // Fetch main metrics with date dimension
+    // Fetch main metrics with date dimension - filtered for Auctoa hostname
     const [mainResponse] = await ga4Client.runReport({
-      property: `properties/${propertyId}`,
+      property: `properties/${ga4PropertyId}`,
       dateRanges: [{ startDate, endDate }],
       dimensions: [{ name: 'date' }],
       metrics: [
@@ -95,31 +94,61 @@ async function fetchRealGA4Data(
         { name: 'bounceRate' },
         { name: 'averageSessionDuration' }
       ],
+      dimensionFilter: {
+        filter: {
+          fieldName: 'hostName',
+          stringFilter: {
+            matchType: 'CONTAINS',
+            value: 'auctoa.de'
+          }
+        }
+      },
       orderBys: [{ dimension: { dimensionName: 'date' }, desc: false }]
     });
 
-    // Fetch top pages
+    // Fetch top pages - filtered for Auctoa hostname
     const [pagesResponse] = await ga4Client.runReport({
-      property: `properties/${propertyId}`,
+      property: `properties/${ga4PropertyId}`,
       dateRanges: [{ startDate, endDate }],
       dimensions: [{ name: 'pagePath' }],
       metrics: [
         { name: 'screenPageViews' },
         { name: 'sessions' }
       ],
+      dimensionFilter: {
+        filter: {
+          fieldName: 'hostName',
+          stringFilter: {
+            matchType: 'CONTAINS',
+            value: 'auctoa.de'
+          }
+        }
+      },
       orderBys: [{ metric: { metricName: 'screenPageViews' }, desc: true }],
       limit: 10
     });
 
-    // Fetch traffic sources
+    // Fetch traffic sources - filtered for Auctoa hostname
     const [sourcesResponse] = await ga4Client.runReport({
-      property: `properties/${propertyId}`,
+      property: `properties/${ga4PropertyId}`,
       dateRanges: [{ startDate, endDate }],
       dimensions: [{ name: 'source' }],
       metrics: [{ name: 'sessions' }],
+      dimensionFilter: {
+        filter: {
+          fieldName: 'hostName',
+          stringFilter: {
+            matchType: 'CONTAINS',
+            value: 'auctoa.de'
+          }
+        }
+      },
       orderBys: [{ metric: { metricName: 'sessions' }, desc: true }],
       limit: 8
     });
+
+    // Debug logging - data is being fetched successfully
+    console.log('GA4 Debug: Fetched', mainResponse.rows?.length || 0, 'data points');
 
     // Process main metrics
     let totalUsers = 0;
@@ -141,8 +170,13 @@ async function fetchRealGA4Data(
         totalSessions += sessions;
         totalPageviews += pageviews;
 
+        // Convert GA4 date format (YYYYMMDD) to ISO format (YYYY-MM-DD)
+        const formattedDate = date.length === 8 
+          ? `${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6, 8)}`
+          : date;
+
         series.push({
-          ts: date,
+          ts: formattedDate,
           users,
           sessions,
           pageviews
@@ -189,6 +223,9 @@ async function fetchRealGA4Data(
       bounceRate: totalBounceRate,
       avgSessionDuration: totalSessionDuration
     };
+
+    console.log('GA4 Debug: Final totals:', totals);
+    console.log('GA4 Debug: Series length:', series.length);
 
     return {
       totals,
