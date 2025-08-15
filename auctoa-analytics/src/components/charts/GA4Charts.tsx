@@ -74,12 +74,15 @@ export function GA4Charts({ data, loading }: GA4ChartsProps) {
   }) => {
     if (active && payload && payload.length) {
       return (
-        <div className="rounded-lg border bg-background p-2 shadow-sm">
-          <div className="text-sm font-bold">{format(new Date(label || ''), "MMM dd, yyyy")}</div>
+        <div className="rounded-lg border bg-background p-3 shadow-lg border-border">
+          <div className="text-sm font-bold text-foreground mb-2">{format(new Date(label || ''), "MMM dd, yyyy")}</div>
           {payload.map((entry, index: number) => (
-            <div key={`item-${index}`} className="flex items-center justify-between gap-2 text-sm">
-              <span style={{ color: entry.color }}>{entry.name}:</span>
-              <span className="font-medium">
+            <div key={`item-${index}`} className="flex items-center justify-between gap-3 text-sm py-1">
+              <span className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: entry.color }}></div>
+                <span className="text-foreground font-medium">{entry.name}:</span>
+              </span>
+              <span className="font-bold text-foreground">
                 {entry.value.toLocaleString()}
               </span>
             </div>
@@ -112,11 +115,12 @@ export function GA4Charts({ data, loading }: GA4ChartsProps) {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <ResponsiveContainer width="100%" height={350}>
-          <ComposedChart
-            data={gaSeries}
-            margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
-          >
+        <div className="text-foreground">
+          <ResponsiveContainer width="100%" height={350}>
+            <ComposedChart
+              data={gaSeries}
+              margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+            >
             <defs>
               <linearGradient id="gaColorUsers" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#a855f7" stopOpacity={0.8}/>
@@ -131,25 +135,25 @@ export function GA4Charts({ data, loading }: GA4ChartsProps) {
                 <stop offset="95%" stopColor="#f59e0b" stopOpacity={0.1}/>
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.5} />
+            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
             <XAxis
               dataKey="ts"
               tickFormatter={(value) => format(new Date(value), "MMM dd")}
               minTickGap={30}
-              tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+              tick={{ fill: 'currentColor', fontSize: 12, fontWeight: 500 }}
               axisLine={{ stroke: 'hsl(var(--border))' }}
               tickLine={{ stroke: 'hsl(var(--border))' }}
             />
             <YAxis
               yAxisId="left"
-              tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+              tick={{ fill: 'currentColor', fontSize: 12, fontWeight: 500 }}
               axisLine={{ stroke: 'hsl(var(--border))' }}
               tickLine={{ stroke: 'hsl(var(--border))' }}
             />
             <YAxis
               yAxisId="right"
               orientation="right"
-              tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+              tick={{ fill: 'currentColor', fontSize: 12, fontWeight: 500 }}
               axisLine={{ stroke: 'hsl(var(--border))' }}
               tickLine={{ stroke: 'hsl(var(--border))' }}
             />
@@ -192,6 +196,7 @@ export function GA4Charts({ data, loading }: GA4ChartsProps) {
             />
           </ComposedChart>
         </ResponsiveContainer>
+        </div>
       </CardContent>
     </Card>
   );
