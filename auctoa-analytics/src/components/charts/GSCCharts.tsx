@@ -1,5 +1,5 @@
 import React from 'react';
-import { ComposedChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, Line as ComposedLine } from 'recharts';
+import { ComposedChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import type { UnifiedOverview } from '@/lib/overview';
@@ -47,9 +47,6 @@ export function GSCCharts({ data, loading }: GSCChartsProps) {
   // Calculate some basic stats for the summary
   const totalClicks = searchSeries.reduce((sum: number, point: { clicks?: number }) => sum + (point.clicks || 0), 0);
   const totalImpressions = searchSeries.reduce((sum: number, point: { impressions?: number }) => sum + (point.impressions || 0), 0);
-  const avgPosition = searchSeries.length > 0 
-    ? searchSeries.reduce((sum: number, point: { avgPosition?: number }) => sum + (point.avgPosition || 0), 0) / searchSeries.length
-    : 0;
 
   return (
     <div className="space-y-6">
@@ -149,65 +146,7 @@ export function GSCCharts({ data, loading }: GSCChartsProps) {
         </CardContent>
       </Card>
 
-      {/* Position Tracking Chart */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-orange-500"></div>
-            Average Search Position
-          </CardTitle>
-          <CardDescription>
-            Your website&apos;s average ranking position in search results (lower is better)
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="h-64 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={searchSeries}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
-                <XAxis 
-                  dataKey="ts" 
-                  tickFormatter={(value) => {
-                    const date = new Date(value);
-                    return `${date.getMonth() + 1}/${date.getDate()}`;
-                  }}
-                  minTickGap={30}
-                  tick={{ fill: 'currentColor', fontSize: 12, fontWeight: 500 }}
-                  axisLine={{ stroke: 'hsl(var(--border))' }}
-                  tickLine={{ stroke: 'hsl(var(--border))' }}
-                />
-                <YAxis 
-                  domain={['dataMin - 1', 'dataMax + 1']}
-                  tickFormatter={(value) => `#${value.toFixed(0)}`}
-                  tick={{ fill: 'currentColor', fontSize: 12, fontWeight: 500 }}
-                  axisLine={{ stroke: 'hsl(var(--border))' }}
-                  tickLine={{ stroke: 'hsl(var(--border))' }}
-                />
-                <Tooltip 
-                  contentStyle={{
-                    backgroundColor: 'hsl(var(--card))',
-                    border: '1px solid hsl(var(--border))',
-                    borderRadius: '8px'
-                  }}
-                  formatter={(value: number) => [`#${value?.toFixed(1)}`, 'Position']}
-                  labelFormatter={(value) => {
-                    const date = new Date(value);
-                    return date.toLocaleDateString();
-                  }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="avgPosition"
-                  stroke="#f97316"
-                  strokeWidth={3}
-                  dot={{ fill: '#f97316', strokeWidth: 2, r: 4 }}
-                  activeDot={{ r: 6 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </CardContent>
-      </Card>
+
 
       {/* Summary Stats */}
       <Card>
@@ -216,7 +155,7 @@ export function GSCCharts({ data, loading }: GSCChartsProps) {
           <CardDescription>Key metrics for the selected period</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="text-center p-4 bg-muted/50 rounded-lg">
               <div className="text-2xl font-bold text-green-600">{totalClicks.toLocaleString()}</div>
               <div className="text-sm text-muted-foreground">Total Clicks</div>
@@ -230,10 +169,6 @@ export function GSCCharts({ data, loading }: GSCChartsProps) {
                 {totalImpressions > 0 ? ((totalClicks / totalImpressions) * 100).toFixed(1) : '0'}%
               </div>
               <div className="text-sm text-muted-foreground">Click-Through Rate</div>
-            </div>
-            <div className="text-center p-4 bg-muted/50 rounded-lg">
-              <div className="text-2xl font-bold text-orange-600">#{avgPosition.toFixed(1)}</div>
-              <div className="text-sm text-muted-foreground">Avg Position</div>
             </div>
           </div>
         </CardContent>
