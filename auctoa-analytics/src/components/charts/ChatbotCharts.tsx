@@ -64,7 +64,7 @@ export function ChatbotCharts({ data, loading = false }: ChatbotChartsProps) {
   }) => {
     if (active && payload && payload.length && label) {
       return (
-        <div className="rounded-lg border bg-background p-3 shadow-lg border-border">
+        <div className="rounded-lg border bg-white dark:bg-gray-900 p-3 shadow-lg border-gray-200 dark:border-gray-700">
           <div className="text-sm font-bold text-foreground mb-2">
             {format(parseISO(label.toString()), "MMM dd, yyyy")}
           </div>

@@ -68,7 +68,7 @@ export function GA4Charts({ data, loading }: GA4ChartsProps) {
   }) => {
     if (active && payload && payload.length) {
       return (
-        <div className="rounded-lg border bg-background p-3 shadow-lg border-border">
+        <div className="rounded-lg border bg-white dark:bg-gray-900 p-3 shadow-lg border-gray-200 dark:border-gray-700">
           <div className="text-sm font-bold text-foreground mb-2">{format(new Date(label || ''), "MMM dd, yyyy")}</div>
           {payload.map((entry, index: number) => (
             <div key={`item-${index}`} className="flex items-center justify-between gap-3 text-sm py-1">

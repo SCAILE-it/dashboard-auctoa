@@ -87,11 +87,12 @@ export function Sidebar() {
               key={item.name}
               href={item.href}
               className={cn(
-                "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
+                "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200",
                 "hover:bg-gray-100 dark:hover:bg-gray-800",
+                "focus:outline-none focus:ring-0", // Remove focus outline
                 isActive 
-                  ? "bg-primary/10 text-primary dark:bg-primary/20" 
-                  : "text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+                  ? "bg-gray-100 text-gray-900 font-semibold dark:bg-gray-800 dark:text-white" 
+                  : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800"
               )}
             >
               <item.icon className="h-5 w-5 flex-shrink-0" />

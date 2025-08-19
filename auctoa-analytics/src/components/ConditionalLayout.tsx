@@ -7,7 +7,7 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
   // Since Vercel Authentication handles all auth at CDN level,
   // we can directly show the dashboard layout
   return (
-    <div className="flex h-screen bg-background">
+    <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
       {/* Sidebar */}
       <Sidebar />
       
