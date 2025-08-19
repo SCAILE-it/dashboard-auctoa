@@ -3,8 +3,6 @@
 import { useState } from "react";
 import { MessageSquare, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-
 import { DashboardSection } from "@/components/dashboard";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { ChatbotCharts } from "@/components/charts/ChatbotCharts";
@@ -15,7 +13,6 @@ import { useOverviewData } from "@/lib/hooks/useOverviewData";
 import { useAnalyticsState } from "@/lib/hooks/useAnalyticsState";
 import { ExportChartDataButton } from "@/components/ui/export-button";
 import { exportTimeSeriesToCSV } from "@/lib/csv-export";
-
 
 export default function ChatbotPage() {
   const [manualLoading, setManualLoading] = useState(false);

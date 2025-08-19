@@ -35,23 +35,22 @@ export async function getGaSeries({
 
     // Check if GA4 client is available
     if (!ga4Client) {
-      console.log('GA4 Adapter: Using mock data - GA4 credentials not configured');
+      // GA4 credentials not configured, using mock data
       return generateFallbackData(fromDate, toDate, granularity);
     }
 
     // Try to fetch real GA4 data
     try {
       const ga4Data = await fetchRealGA4Data(fromDate, toDate, granularity);
-      console.log(`GA4 Adapter: Successfully fetched real data from ${from} to ${to}`);
+
       return ga4Data;
     } catch (apiError) {
-      console.error('GA4 API error:', apiError);
-      console.log('GA4 Adapter: Falling back to mock data due to API error');
+      // API error occurred, falling back to mock data
       return generateFallbackData(fromDate, toDate, granularity);
     }
 
   } catch (error) {
-    console.error('GA4 adapter error:', error);
+    // Log error for debugging but continue with fallback
     return generateFallbackData(new Date(from), new Date(to), granularity);
   }
 }
@@ -148,7 +147,7 @@ async function fetchRealGA4Data(
     });
 
     // Debug logging - data is being fetched successfully
-    console.log('GA4 Debug: Fetched', mainResponse.rows?.length || 0, 'data points');
+
 
     // Process main metrics
     let totalUsers = 0;
@@ -224,8 +223,7 @@ async function fetchRealGA4Data(
       avgSessionDuration: totalSessionDuration
     };
 
-    console.log('GA4 Debug: Final totals:', totals);
-    console.log('GA4 Debug: Series length:', series.length);
+
 
     return {
       totals,
@@ -236,7 +234,7 @@ async function fetchRealGA4Data(
     };
 
   } catch (error) {
-    console.error('GA4 API request failed:', error);
+    // GA4 API request failed, will use fallback data
     throw error;
   }
 }
@@ -255,7 +253,7 @@ function generateFallbackData(
   sources: GASource[];
   __mock: true;
 } {
-  console.log('GA4 Adapter: Using fallback mock data');
+  // Using fallback mock data
   // Generate realistic totals for a real estate website
   const totalUsers = 3247;
   const totalSessions = 4891;

@@ -27,13 +27,13 @@ export async function getSearchSeries({
     const toDate = new Date(to);
 
     // Quick check - if table doesn't exist, immediately return fallback
-    console.log('GSC Adapter: Attempting to fetch from Google_Search_Console table...');
+
     
     let gscData, error;
     
     // Check if GSC Supabase client is available
     if (!gscSupabase) {
-      console.log('GSC Supabase client not configured, using fallback data');
+
       return generateFallbackData(fromDate, toDate, granularity);
     }
 
@@ -50,7 +50,7 @@ export async function getSearchSeries({
       gscData = result.data;
       error = result.error;
     } catch (quickError) {
-      console.log('GSC table access failed quickly, using fallback');
+
       return generateFallbackData(fromDate, toDate, granularity);
     }
 

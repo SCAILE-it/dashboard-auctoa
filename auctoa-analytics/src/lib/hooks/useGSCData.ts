@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { DateRange } from '@/lib/hooks/useAnalyticsState';
+import type { UnifiedOverview } from '../overview';
 
 export interface GSCMetrics {
   totalClicks: { current: number; trend: string };
@@ -79,7 +80,7 @@ export function useGSCData(dateRange?: DateRange) {
   return { data, loading, error, refetch };
 }
 
-function mapOverviewToGSCData(overviewData: any): GSCData {
+function mapOverviewToGSCData(overviewData: UnifiedOverview): GSCData {
   const kpis = overviewData.kpis || {};
   
   return {
