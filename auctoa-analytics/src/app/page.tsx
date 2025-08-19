@@ -88,30 +88,33 @@ export default function DashboardOverview() {
   return (
     <div className="space-y-8">
       {/* Page header */}
-      <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+      <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0">
         <div>
-          <h2 className="text-3xl font-bold">Analytics Overview</h2>
-          <p className="text-muted-foreground">Your complete business performance at a glance</p>
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold">Analytics Overview</h2>
+          <p className="text-sm sm:text-base text-muted-foreground">Your complete business performance at a glance</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
           <DateRangePicker
             value={dateRange}
             onChange={(range) => range && setDateRange(range)}
           />
-          <ExportOverviewButton
-            onExport={handleExportOverview}
-            disabled={loading || !overviewData}
-            className="text-sm"
-          />
-          <Button
-            onClick={handleRefresh}
-            variant="outline"
-            disabled={loading}
-            size="sm"
-          >
-            <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-            {loading ? "Refreshing..." : "Refresh"}
-          </Button>
+          <div className="flex gap-2">
+            <ExportOverviewButton
+              onExport={handleExportOverview}
+              disabled={loading || !overviewData}
+              className="text-sm flex-1 sm:flex-none"
+            />
+            <Button
+              onClick={handleRefresh}
+              variant="outline"
+              disabled={loading}
+              size="sm"
+              className="flex-1 sm:flex-none"
+            >
+              <RefreshCw className={`w-4 h-4 sm:mr-2 ${loading ? 'animate-spin' : ''}`} />
+              <span className="hidden sm:inline">{loading ? "Refreshing..." : "Refresh"}</span>
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -216,7 +219,7 @@ export default function DashboardOverview() {
       </DashboardSection>
 
       {/* Data Sources Overview */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Website Analytics Summary */}
         <Card>
           <CardHeader>
@@ -312,42 +315,42 @@ export default function DashboardOverview() {
           <CardDescription>Real-time connection status for all integrated data sources</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 bg-muted/50 rounded-lg space-y-2 sm:space-y-0">
               <div className="flex items-center gap-3">
                 <Globe className="h-5 w-5 text-purple-500" />
                 <div>
-                  <p className="font-medium">Google Analytics 4</p>
-                  <p className="text-sm text-muted-foreground">Live API connection</p>
+                  <p className="font-medium text-sm sm:text-base">Google Analytics 4</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Live API connection</p>
                 </div>
               </div>
-              <Badge variant="default" className="bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300">
+              <Badge variant="default" className="bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300 self-start sm:self-center">
                 🟢 Connected
               </Badge>
             </div>
             
-            <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 bg-muted/50 rounded-lg space-y-2 sm:space-y-0">
               <div className="flex items-center gap-3">
                 <Search className="h-5 w-5 text-blue-500" />
                 <div>
-                  <p className="font-medium">Search Console</p>
-                  <p className="text-sm text-muted-foreground">Supabase database</p>
+                  <p className="font-medium text-sm sm:text-base">Search Console</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Supabase database</p>
                 </div>
               </div>
-              <Badge variant="default" className="bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300">
+              <Badge variant="default" className="bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300 self-start sm:self-center">
                 🟢 Connected
               </Badge>
             </div>
             
-            <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 bg-muted/50 rounded-lg space-y-2 sm:space-y-0">
               <div className="flex items-center gap-3">
                 <Bot className="h-5 w-5 text-green-500" />
                 <div>
-                  <p className="font-medium">AI Chatbot</p>
-                  <p className="text-sm text-muted-foreground">Supabase database</p>
+                  <p className="font-medium text-sm sm:text-base">AI Chatbot</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Supabase database</p>
                 </div>
               </div>
-              <Badge variant="default" className="bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300">
+              <Badge variant="default" className="bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300 self-start sm:self-center">
                 🟢 Connected
               </Badge>
             </div>

@@ -113,40 +113,43 @@ export default function AnalyticsPage() {
   }).slice(0, 4) : enhancedGA4KPIs.slice(0, 4); // Show only top 4 KPIs
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 lg:space-y-8">
       {/* Header */}
-      <div className="flex flex-col space-y-2">
-        <div className="flex items-center justify-between">
+      <div className="flex flex-col space-y-4">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
-              <BarChart3 className="w-5 h-5 text-white" />
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+              <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold">Website Analytics</h1>
-              <p className="text-muted-foreground">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold">Website Analytics</h1>
+              <p className="text-sm sm:text-base text-muted-foreground">
                 Traffic performance and user engagement insights
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
             <DateRangePicker
               value={dateRange}
               onChange={(range) => range && setDateRange(range)}
             />
-            <ExportChartDataButton
-              onExport={handleExportChartData}
-              disabled={!overviewData?.series?.traffic || overviewLoading}
-              className="text-sm"
-            />
-            <Button 
-              onClick={handleRefresh}
-              disabled={overviewLoading || manualLoading}
-              size="sm"
-              variant="outline"
-            >
-              <RefreshCw className={`w-4 h-4 mr-2 ${(overviewLoading || manualLoading) ? 'animate-spin' : ''}`} />
-              Refresh
-            </Button>
+            <div className="flex gap-2">
+              <ExportChartDataButton
+                onExport={handleExportChartData}
+                disabled={!overviewData?.series?.traffic || overviewLoading}
+                className="text-sm flex-1 sm:flex-none"
+              />
+              <Button 
+                onClick={handleRefresh}
+                disabled={overviewLoading || manualLoading}
+                size="sm"
+                variant="outline"
+                className="flex-1 sm:flex-none"
+              >
+                <RefreshCw className={`w-4 h-4 sm:mr-2 ${(overviewLoading || manualLoading) ? 'animate-spin' : ''}`} />
+                <span className="hidden sm:inline">Refresh</span>
+              </Button>
+            </div>
           </div>
         </div>
       </div>
@@ -174,8 +177,8 @@ export default function AnalyticsPage() {
           </div>
         </div>
         
-        <div className="p-6">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="p-4 sm:p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
             {/* Top Pages */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">

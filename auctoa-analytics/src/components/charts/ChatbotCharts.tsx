@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ComposedChart,
   Area,
@@ -24,6 +24,15 @@ interface ChatbotChartsProps {
 // Removed unused code
 
 export function ChatbotCharts({ data, loading = false }: ChatbotChartsProps) {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 640);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   if (loading) {
     return (
       <Card className="animate-pulse">
@@ -114,10 +123,16 @@ export function ChatbotCharts({ data, loading = false }: ChatbotChartsProps) {
           </div>
         ) : (
           <div className="text-foreground">
-            <ResponsiveContainer width="100%" height={350}>
+            <div className={isMobile ? "overflow-x-auto pb-4" : ""}>
+              <ResponsiveContainer width="100%" height={isMobile ? 280 : 350} minWidth={isMobile ? 500 : undefined}>
               <ComposedChart
                 data={chatbotSeries}
-                margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+                margin={{ 
+                  top: 20, 
+                  right: isMobile ? 10 : 30, 
+                  left: isMobile ? 10 : 20, 
+                  bottom: isMobile ? 60 : 20 
+                }}
               >
                 <defs>
                   <linearGradient id="chatbotConversations" x1="0" y1="0" x2="0" y2="1">
@@ -132,26 +147,35 @@ export function ChatbotCharts({ data, loading = false }: ChatbotChartsProps) {
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
                 <XAxis
                   dataKey="ts"
-                  tickFormatter={(value) => format(parseISO(value), "MMM dd")}
-                  minTickGap={30}
-                  tick={{ fill: 'currentColor', fontSize: 12, fontWeight: 500 }}
+                  tickFormatter={(value) => format(parseISO(value), isMobile ? "M/d" : "MMM dd")}
+                  minTickGap={isMobile ? 20 : 30}
+                  tick={{ 
+                    fill: 'currentColor', 
+                    fontSize: isMobile ? 10 : 12, 
+                    fontWeight: 500
+                  }}
                   axisLine={{ stroke: 'hsl(var(--border))' }}
                   tickLine={{ stroke: 'hsl(var(--border))' }}
+                  angle={isMobile ? -45 : 0}
+                  textAnchor={isMobile ? 'end' : 'middle'}
+                  height={isMobile ? 60 : 40}
                 />
                 <YAxis
                   yAxisId="left"
-                  tick={{ fill: 'currentColor', fontSize: 12, fontWeight: 500 }}
+                  tick={{ fill: 'currentColor', fontSize: isMobile ? 10 : 12, fontWeight: 500 }}
                   axisLine={{ stroke: 'hsl(var(--border))' }}
                   tickLine={{ stroke: 'hsl(var(--border))' }}
+                  width={isMobile ? 40 : 60}
                 />
                 <YAxis
                   yAxisId="right"
                   orientation="right"
                   domain={[0, 1]}
                   tickFormatter={(value) => `${(value * 100).toFixed(0)}%`}
-                  tick={{ fill: 'currentColor', fontSize: 12, fontWeight: 500 }}
+                  tick={{ fill: 'currentColor', fontSize: isMobile ? 10 : 12, fontWeight: 500 }}
                   axisLine={{ stroke: 'hsl(var(--border))' }}
                   tickLine={{ stroke: 'hsl(var(--border))' }}
+                  width={isMobile ? 40 : 60}
                 />
                 <Tooltip content={<CustomTooltip />} />
                 
@@ -179,7 +203,8 @@ export function ChatbotCharts({ data, loading = false }: ChatbotChartsProps) {
                   activeDot={{ r: 6, fill: '#10b981', strokeWidth: 2 }}
                 />
               </ComposedChart>
-            </ResponsiveContainer>
+              </ResponsiveContainer>
+            </div>
           </div>
         )}
       </CardContent>

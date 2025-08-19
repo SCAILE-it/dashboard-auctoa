@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ComposedChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import type { UnifiedOverview } from '@/lib/overview';
 
 interface GSCChartsProps {
@@ -10,6 +9,15 @@ interface GSCChartsProps {
 }
 
 export function GSCCharts({ data, loading }: GSCChartsProps) {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 640);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   if (loading) {
     return (
       <div className="space-y-6">
@@ -67,9 +75,17 @@ export function GSCCharts({ data, loading }: GSCChartsProps) {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="h-80 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <ComposedChart data={searchSeries}>
+          <div className={isMobile ? "overflow-x-auto pb-4" : ""}>
+            <ResponsiveContainer width="100%" height={isMobile ? 280 : 320} minWidth={isMobile ? 500 : undefined}>
+              <ComposedChart 
+                data={searchSeries}
+                margin={{ 
+                  top: 20, 
+                  right: isMobile ? 10 : 30, 
+                  left: isMobile ? 10 : 20, 
+                  bottom: isMobile ? 60 : 20 
+                }}
+              >
                 <defs>
                   <linearGradient id="clicksGradient" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#22c55e" stopOpacity={0.3}/>
@@ -85,17 +101,29 @@ export function GSCCharts({ data, loading }: GSCChartsProps) {
                   dataKey="ts" 
                   tickFormatter={(value) => {
                     const date = new Date(value);
-                    return `${date.getMonth() + 1}/${date.getDate()}`;
+                    return isMobile ? `${date.getMonth() + 1}/${date.getDate()}` : `${date.getMonth() + 1}/${date.getDate()}`;
                   }}
-                  minTickGap={30}
-                  tick={{ fill: 'currentColor', fontSize: 12, fontWeight: 500 }}
+                  minTickGap={isMobile ? 20 : 30}
+                  tick={{ 
+                    fill: 'currentColor', 
+                    fontSize: isMobile ? 10 : 12, 
+                    fontWeight: 500
+                  }}
+                  angle={isMobile ? -45 : 0}
+                  textAnchor={isMobile ? 'end' : 'middle'}
+                  height={isMobile ? 60 : 40}
                   axisLine={{ stroke: 'hsl(var(--border))' }}
                   tickLine={{ stroke: 'hsl(var(--border))' }}
                 />
                 <YAxis 
                   yAxisId="left"
                   domain={['dataMin - 1', 'dataMax + 1']}
-                  tick={{ fill: 'currentColor', fontSize: 12, fontWeight: 500 }}
+                  tick={{ 
+                    fill: 'currentColor', 
+                    fontSize: isMobile ? 10 : 12, 
+                    fontWeight: 500 
+                  }}
+                  width={isMobile ? 40 : 60}
                   axisLine={{ stroke: 'hsl(var(--border))' }}
                   tickLine={{ stroke: 'hsl(var(--border))' }}
                 />
@@ -103,7 +131,12 @@ export function GSCCharts({ data, loading }: GSCChartsProps) {
                   yAxisId="right"
                   orientation="right"
                   domain={['dataMin - 1', 'dataMax + 1']}
-                  tick={{ fill: 'currentColor', fontSize: 12, fontWeight: 500 }}
+                  tick={{ 
+                    fill: 'currentColor', 
+                    fontSize: isMobile ? 10 : 12, 
+                    fontWeight: 500 
+                  }}
+                  width={isMobile ? 40 : 60}
                   axisLine={{ stroke: 'hsl(var(--border))' }}
                   tickLine={{ stroke: 'hsl(var(--border))' }}
                 />
@@ -155,7 +188,7 @@ export function GSCCharts({ data, loading }: GSCChartsProps) {
           <CardDescription>Key metrics for the selected period</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="text-center p-4 bg-muted/50 rounded-lg">
               <div className="text-2xl font-bold text-green-600">{totalClicks.toLocaleString()}</div>
               <div className="text-sm text-muted-foreground">Total Clicks</div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search, Bell, User, Moon, Sun } from "lucide-react";
+import { Search, Bell, User, Moon, Sun, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -12,7 +12,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 
-export function Header() {
+interface HeaderProps {
+  onMenuClick?: () => void;
+}
+
+export function Header({ onMenuClick }: HeaderProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [isDark, setIsDark] = useState(false);
 
@@ -40,35 +44,50 @@ export function Header() {
   };
 
   return (
-    <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-6 py-4">
+    <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-3 sm:px-4 lg:px-6 py-4">
       <div className="flex items-center justify-between">
-        {/* Page title will be dynamic later */}
-        <div>
-          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">Dashboard</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Welcome back! Here&apos;s your analytics overview.</p>
+        {/* Left side - Mobile menu + Title */}
+        <div className="flex items-center gap-3">
+          {/* Mobile menu button */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onMenuClick}
+            className="lg:hidden h-8 w-8 p-0"
+          >
+            <Menu className="h-5 w-5" />
+          </Button>
+          
+          {/* Page title */}
+          <div>
+            <h1 className="text-lg sm:text-xl lg:text-2xl font-semibold text-gray-900 dark:text-white">Dashboard</h1>
+            <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 hidden sm:block">
+              Welcome back! Here&apos;s your analytics overview.
+            </p>
+          </div>
         </div>
 
         {/* Right side actions */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-1 sm:gap-2 lg:gap-3 min-w-0">
           {/* Search */}
-          <div className="relative w-64">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <div className="relative flex-1 max-w-xs sm:max-w-none sm:w-32 md:w-40 lg:w-64 sm:flex-none min-w-0">
+            <Search className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
             <Input
-              placeholder="Search metrics, reports..."
+              placeholder="Search..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
+              className="pl-7 sm:pl-10 text-xs sm:text-sm pr-2 w-full"
             />
           </div>
 
-          {/* Notifications */}
+          {/* Notifications - Hide on mobile */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className="relative">
-                <Bell className="h-5 w-5" />
+              <Button variant="ghost" size="sm" className="relative hidden sm:flex">
+                <Bell className="h-4 w-4 sm:h-5 sm:w-5" />
                 <Badge 
                   variant="destructive" 
-                  className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-xs"
+                  className="absolute -top-1 -right-1 h-4 w-4 sm:h-5 sm:w-5 p-0 flex items-center justify-center text-xs"
                 >
                   3
                 </Badge>
@@ -101,17 +120,17 @@ export function Header() {
             onClick={toggleDarkMode}
             variant="outline"
             size="sm"
-            className="flex items-center gap-2"
+            className="flex items-center gap-1 sm:gap-2 flex-shrink-0"
           >
             {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-            {isDark ? 'Light' : 'Dark'} Mode
+            <span className="hidden sm:inline">{isDark ? 'Light' : 'Dark'} Mode</span>
           </Button>
 
           {/* User menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className="flex items-center gap-2">
-                <div className="h-8 w-8 bg-primary/10 rounded-full flex items-center justify-center">
+              <Button variant="ghost" size="sm" className="flex items-center gap-2 flex-shrink-0 min-w-10">
+                <div className="h-8 w-8 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
                   <User className="h-4 w-4 text-primary" />
                 </div>
               </Button>

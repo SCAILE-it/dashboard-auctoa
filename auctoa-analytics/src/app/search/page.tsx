@@ -107,38 +107,42 @@ export default function SearchPage() {
     <div className="space-y-8">
       {/* Page header with controls */}
       <div className="space-y-4">
-        <div className="flex justify-between items-start">
-          <div>
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Search Performance</h2>
-            <p className="text-gray-600 dark:text-gray-400">Google Search Console insights and rankings</p>
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+          <div className="min-w-0 flex-1">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">Search Performance</h2>
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">Google Search Console insights and rankings</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2 flex-shrink-0">
             <ExportChartDataButton
               onExport={handleExportChartData}
               disabled={!overviewData?.series?.search || overviewLoading}
-              className="text-sm"
+              className="text-sm flex-1 sm:flex-none"
             />
             <Button
               onClick={handleRefresh}
               variant="outline"
               size="sm"
               disabled={loading}
+              className="flex-1 sm:flex-none"
             >
-              <RefreshCw className={`mr-2 h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
-              {loading ? "Refreshing..." : "Refresh Data"}
+              <RefreshCw className={`h-4 w-4 sm:mr-2 ${loading ? 'animate-spin' : ''}`} />
+              <span className="hidden sm:inline">{loading ? "Refreshing..." : "Refresh Data"}</span>
+              <span className="sm:hidden">{loading ? "..." : "Refresh"}</span>
             </Button>
           </div>
         </div>
 
         {/* Date Controls - Simple & Clean */}
-        <div className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 bg-card rounded-lg border shadow-sm">
-          <DateRangePicker
-            value={dateRange}
-            onChange={(range) => range && setDateRange(range)}
-          />
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4 p-3 sm:p-4 bg-card rounded-lg border shadow-sm">
+          <div className="flex-shrink-0">
+            <DateRangePicker
+              value={dateRange}
+              onChange={(range) => range && setDateRange(range)}
+            />
+          </div>
           
           {/* Summary info */}
-          <div className="flex items-center gap-4 text-sm text-muted-foreground sm:ml-auto">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-sm text-muted-foreground sm:ml-auto">
             <span>
               {Math.ceil((dateRange.to.getTime() - dateRange.from.getTime()) / (1000 * 60 * 60 * 24))} days selected
             </span>

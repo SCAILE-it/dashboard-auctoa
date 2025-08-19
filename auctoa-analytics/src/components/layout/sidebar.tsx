@@ -10,7 +10,8 @@ import {
   MessageSquare,
   Settings,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  X
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -43,7 +44,11 @@ const navigation = [
   },
 ];
 
-export function Sidebar() {
+interface SidebarProps {
+  onClose?: () => void;
+}
+
+export function Sidebar({ onClose }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
   const pathname = usePathname();
 
@@ -51,10 +56,11 @@ export function Sidebar() {
     <div 
       className={cn(
         "bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex flex-col transition-all duration-300",
-        collapsed ? "w-16" : "w-64"
+        collapsed ? "w-16" : "w-64",
+        "h-full" // Full height consistently
       )}
     >
-      {/* Logo and collapse button */}
+      {/* Logo and controls */}
       <div className="p-4 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
         {!collapsed && (
           <div className="flex items-center gap-2">
@@ -62,18 +68,32 @@ export function Sidebar() {
             <span className="font-semibold text-lg text-gray-900 dark:text-white">Auctoa</span>
           </div>
         )}
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setCollapsed(!collapsed)}
-          className="h-8 w-8 p-0"
-        >
-          {collapsed ? (
-            <ChevronRight className="h-4 w-4" />
-          ) : (
-            <ChevronLeft className="h-4 w-4" />
-          )}
-        </Button>
+        
+        <div className="flex items-center gap-1">
+          {/* Mobile close button */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onClose}
+            className="h-8 w-8 p-0 lg:hidden"
+          >
+            <X className="h-4 w-4" />
+          </Button>
+          
+          {/* Desktop collapse button */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setCollapsed(!collapsed)}
+            className="h-8 w-8 p-0 hidden lg:flex"
+          >
+            {collapsed ? (
+              <ChevronRight className="h-4 w-4" />
+            ) : (
+              <ChevronLeft className="h-4 w-4" />
+            )}
+          </Button>
+        </div>
       </div>
 
       {/* Navigation */}
@@ -86,6 +106,12 @@ export function Sidebar() {
             <Link
               key={item.name}
               href={item.href}
+              onClick={() => {
+                // Only close sidebar on mobile (when overlay is present)
+                if (window.innerWidth < 1024) {
+                  onClose?.();
+                }
+              }}
               className={cn(
                 "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200",
                 "hover:bg-gray-100 dark:hover:bg-gray-800",
