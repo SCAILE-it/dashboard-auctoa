@@ -121,10 +121,8 @@ export function Header() {
               <DropdownMenuItem>Settings</DropdownMenuItem>
               <DropdownMenuItem 
                 onClick={() => {
-                  import('@/lib/auth').then(({ logout }) => {
-                    logout();
-                    window.location.href = '/login';
-                  });
+                  // With Vercel Authentication, users sign out through Vercel
+                  window.location.href = 'https://vercel.com/logout';
                 }}
               >
                 Sign out
