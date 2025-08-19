@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { DateRange } from '@/lib/hooks/useAnalyticsState';
 import type { UnifiedOverview } from '../overview';
+import { requestCache } from '../utils/request-cache';
 
 export interface GSCMetrics {
   totalClicks: { current: number; trend: string };
@@ -42,13 +43,18 @@ export function useGSCData(dateRange?: DateRange) {
 
       console.log('🔍 [GSC Hook] Fetching data:', params.toString());
 
-      const response = await fetch(`/api/overview?${params.toString()}`);
+      // Use request cache to deduplicate identical calls
+      const cacheKey = `gsc-overview-${params.toString()}`;
       
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
+      const result = await requestCache.get(cacheKey, async () => {
+        const response = await fetch(`/api/overview?${params.toString()}`);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
 
-      const result = await response.json();
+        return response.json();
+      });
       
       if (!result.success) {
         throw new Error(result.error || 'Failed to fetch GSC data');

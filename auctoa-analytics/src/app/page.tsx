@@ -23,6 +23,7 @@ import { useAnalyticsState } from "@/lib/hooks/useAnalyticsState";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { ExportOverviewButton } from "@/components/ui/export-button";
 import { exportOverviewToCSV } from "@/lib/csv-export";
+import { KPISkeleton } from "@/components/ui/loading-skeleton";
 
 
 export default function DashboardOverview() {
@@ -75,7 +76,7 @@ export default function DashboardOverview() {
   // Extract key metrics from unified overview data
   const getKPIValue = (key: string) => {
     if (!overviewData?.kpis) return { current: 0, trend: '0%' };
-    const kpis = overviewData.kpis as Record<string, { current: number; trend: string }>;
+    const kpis = overviewData.kpis as any; // Type assertion for dashboard overview
     return kpis[key] || { current: 0, trend: '0%' };
   };
 
@@ -219,6 +220,9 @@ export default function DashboardOverview() {
       </DashboardSection>
 
       {/* Data Sources Overview */}
+      {loading ? (
+        <KPISkeleton />
+      ) : (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Website Analytics Summary */}
         <Card>
@@ -304,6 +308,7 @@ export default function DashboardOverview() {
           </CardContent>
         </Card>
       </div>
+      )}
 
       {/* Data Connection Status */}
       <Card>

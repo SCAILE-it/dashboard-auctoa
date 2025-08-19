@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { UnifiedOverview } from '../overview';
+import { requestCache } from '../utils/request-cache';
 
 interface AuctoaMetrics {
   totalConversations: {
@@ -184,15 +185,21 @@ export function useAuctoaData(dateRange?: { from: Date; to: Date }) {
       url += `?${params.toString()}`;
       
       console.log('🚀 Fetching REAL trend data from overview API:', url);
-      const response = await fetch(url);
       
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('API Error Response:', errorText);
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+      // Use request cache to deduplicate identical calls
+      const cacheKey = `auctoa-overview-${params.toString()}`;
       
-      const result = await response.json();
+      const result = await requestCache.get(cacheKey, async () => {
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error('API Error Response:', errorText);
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        return response.json();
+      });
       
       if (!result.success || !result.data) {
         throw new Error('Invalid response format from overview API');

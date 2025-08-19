@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { UnifiedOverview } from '../overview';
+import { requestCache } from '../utils/request-cache';
 
 export function useOverviewData(dateRange?: { from: Date; to: Date }) {
   const [data, setData] = useState<UnifiedOverview | null>(null);
@@ -29,13 +30,18 @@ export function useOverviewData(dateRange?: { from: Date; to: Date }) {
       params.set('granularity', 'day');
       url += `?${params.toString()}`;
 
-      const response = await fetch(url);
+      // Use request cache to deduplicate identical calls
+      const cacheKey = `overview-${params.toString()}`;
       
-      if (!response.ok) {
-        throw new Error(`Failed to fetch overview data: ${response.statusText}`);
-      }
+      const result = await requestCache.get(cacheKey, async () => {
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+          throw new Error(`Failed to fetch overview data: ${response.statusText}`);
+        }
 
-      const result = await response.json();
+        return response.json();
+      });
       
       if (result.success && result.data) {
         setData(result.data);

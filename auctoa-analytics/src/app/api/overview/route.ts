@@ -3,7 +3,7 @@ import type { Granularity } from '@/types/analytics';
 
 // Required for static export
 export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const revalidate = 300; // Cache for 5 minutes
 
 export async function GET(request: NextRequest) {
   // Add CORS headers to bypass Vercel protection
@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+    'Cache-Control': 'public, max-age=300, s-maxage=300, stale-while-revalidate=600',
   };
 
   try {
