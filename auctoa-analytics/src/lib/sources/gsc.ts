@@ -191,14 +191,14 @@ function generateSearchTimeSeries(
   
   // Real estate search keywords might have weekly patterns
   const realEstateKeywords = [
-    'immobilien münchen',
-    'wohnung kaufen berlin',
-    'haus mieten hamburg',
-    'immobilienbewertung',
-    'wohnungspreise deutschland',
-    'immobilienmakler',
-    'grundstück kaufen',
-    'mietwohnung finden'
+    'real estate munich',
+    'buy apartment berlin',
+    'rent house hamburg',
+    'property valuation',
+    'apartment prices germany',
+    'real estate agent',
+    'buy land',
+    'find rental apartment'
   ];
 
   let dayIndex = 0;
@@ -271,18 +271,18 @@ export async function getTopKeywords({
   ctr: number;
   position: number;
 }>> {
-  // Mock data for German real estate keywords
+  // Mock data for English real estate keywords
   const mockKeywords = [
-    { query: 'immobilien münchen', clicks: 156, impressions: 2340, ctr: 0.067, position: 4.2 },
-    { query: 'wohnung kaufen berlin', clicks: 134, impressions: 1980, ctr: 0.068, position: 5.1 },
-    { query: 'haus mieten hamburg', clicks: 89, impressions: 1456, ctr: 0.061, position: 6.3 },
-    { query: 'immobilienbewertung', clicks: 78, impressions: 1234, ctr: 0.063, position: 7.1 },
-    { query: 'wohnungspreise deutschland', clicks: 67, impressions: 1890, ctr: 0.035, position: 12.4 },
-    { query: 'immobilienmakler münchen', clicks: 54, impressions: 876, ctr: 0.062, position: 8.9 },
-    { query: 'grundstück kaufen', clicks: 43, impressions: 723, ctr: 0.059, position: 9.2 },
-    { query: 'mietwohnung finden', clicks: 39, impressions: 1123, ctr: 0.035, position: 15.6 },
-    { query: 'hauspreise münchen', clicks: 34, impressions: 567, ctr: 0.060, position: 11.3 },
-    { query: 'wohnung mieten berlin', clicks: 28, impressions: 445, ctr: 0.063, position: 7.8 }
+    { query: 'real estate munich', clicks: 156, impressions: 2340, ctr: 0.067, position: 4.2 },
+    { query: 'buy apartment berlin', clicks: 134, impressions: 1980, ctr: 0.068, position: 5.1 },
+    { query: 'rent house hamburg', clicks: 89, impressions: 1456, ctr: 0.061, position: 6.3 },
+    { query: 'property valuation', clicks: 78, impressions: 1234, ctr: 0.063, position: 7.1 },
+    { query: 'apartment prices germany', clicks: 67, impressions: 1890, ctr: 0.035, position: 12.4 },
+    { query: 'real estate agent munich', clicks: 54, impressions: 876, ctr: 0.062, position: 8.9 },
+    { query: 'buy land', clicks: 43, impressions: 723, ctr: 0.059, position: 9.2 },
+    { query: 'find rental apartment', clicks: 39, impressions: 1123, ctr: 0.035, position: 15.6 },
+    { query: 'house prices munich', clicks: 34, impressions: 567, ctr: 0.060, position: 11.3 },
+    { query: 'rent apartment berlin', clicks: 28, impressions: 445, ctr: 0.063, position: 7.8 }
   ];
 
   return mockKeywords.slice(0, limit);

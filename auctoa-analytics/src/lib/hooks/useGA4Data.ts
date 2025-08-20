@@ -98,16 +98,16 @@ export const useGA4Data = (dateRange: DateRange) => {
       const mappedInsights: GA4Insights = {
         topPages: [
           { path: '/', pageviews: 2456, sessions: 1834 },
-          { path: '/immobilien/muenchen', pageviews: 1789, sessions: 1234 },
-          { path: '/immobilien/berlin', pageviews: 1567, sessions: 1098 },
-          { path: '/bewertung', pageviews: 1234, sessions: 876 },
-          { path: '/ueber-uns', pageviews: 987, sessions: 654 },
+          { path: '/real-estate/munich', pageviews: 1789, sessions: 1234 },
+          { path: '/real-estate/berlin', pageviews: 1567, sessions: 1098 },
+          { path: '/valuation', pageviews: 1234, sessions: 876 },
+          { path: '/about-us', pageviews: 987, sessions: 654 },
         ],
         topSources: [
           { source: 'google', sessions: 1956 },
           { source: 'direct', sessions: 1467 },
           { source: 'facebook', sessions: 489 },
-          { source: 'immobilienscout24', sessions: 391 },
+          { source: 'realtor.com', sessions: 391 },
           { source: 'bing', sessions: 293 },
         ],
         totalPages: 25,

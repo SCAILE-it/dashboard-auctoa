@@ -289,7 +289,7 @@ export async function getOverview({
     // Step 7: Assemble unified response
     const overview: UnifiedOverview = {
       range: { from, to, granularity },
-      sourcesNote: 'Datenquellen: Google Analytics (API), Google Search Console (Supabase), Chatbot (Supabase/n8n)',
+      sourcesNote: 'Data Sources: Google Analytics (API), Google Search Console (Supabase), Chatbot (Supabase/n8n)',
       kpis,
       series: {
         traffic: gaData?.series || [],

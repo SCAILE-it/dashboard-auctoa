@@ -207,19 +207,19 @@ export const germanStatesData = [
 
 // Property type distribution
 export const propertyTypes = [
-  { type: 'Einfamilienhaus', count: 124, percentage: 38.2 },
-  { type: 'Eigentumswohnung', count: 89, percentage: 27.4 },
-  { type: 'Mehrfamilienhaus', count: 56, percentage: 17.3 },
-  { type: 'Reihenhaus', count: 34, percentage: 10.5 },
-  { type: 'Gewerbeimmobilie', count: 21, percentage: 6.6 }
+  { type: 'Single Family Home', count: 124, percentage: 38.2 },
+  { type: 'Condominium', count: 89, percentage: 27.4 },
+  { type: 'Multi-family House', count: 56, percentage: 17.3 },
+  { type: 'Townhouse', count: 34, percentage: 10.5 },
+  { type: 'Commercial Property', count: 21, percentage: 6.6 }
 ];
 
 // Common inquiry topics for Auctoa
 export const inquiryTopics = [
-  { topic: 'Immobilienbewertung', count: 145 },
-  { topic: 'Erbschaftsplanung', count: 98 },
-  { topic: 'Verkauf vs. Vermietung', count: 76 },
-  { topic: 'Steuerliche Aspekte', count: 54 },
-  { topic: 'Expertenempfehlung', count: 43 },
-  { topic: 'Marktanalyse', count: 32 }
+  { topic: 'Property Valuation', count: 145 },
+  { topic: 'Estate Planning', count: 98 },
+  { topic: 'Sale vs. Rental', count: 76 },
+  { topic: 'Tax Aspects', count: 54 },
+  { topic: 'Expert Recommendation', count: 43 },
+  { topic: 'Market Analysis', count: 32 }
 ];

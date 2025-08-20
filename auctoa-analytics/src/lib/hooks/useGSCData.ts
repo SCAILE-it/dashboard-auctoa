@@ -110,21 +110,21 @@ function mapOverviewToGSCData(overviewData: UnifiedOverview): GSCData {
     },
     insights: {
       topQueries: [
-        'immobilien münchen',
-        'wohnung kaufen berlin', 
-        'haus mieten hamburg',
-        'immobilienbewertung',
-        'wohnungspreise deutschland'
+        'real estate munich',
+        'buy apartment berlin', 
+        'rent house hamburg',
+        'property valuation',
+        'apartment prices germany'
       ],
       topPages: [
-        '/immobilien/muenchen',
-        '/services/bewertung',
-        '/blog/marktanalyse',
-        '/kontakt',
+        '/real-estate/munich',
+        '/services/valuation',
+        '/blog/market-analysis',
+        '/contact',
         '/about'
       ],
       totalQueries: 156,
-      bestPerformingQuery: 'immobilien münchen',
+      bestPerformingQuery: 'real estate munich',
       improvementOpportunities: 23
     }
   };

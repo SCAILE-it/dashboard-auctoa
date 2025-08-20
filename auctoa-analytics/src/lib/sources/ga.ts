@@ -273,14 +273,14 @@ function generateFallbackData(
   // Generate top pages for real estate website
   const topPages: GATopPage[] = [
     { path: '/', pageviews: 2456, sessions: 1834 },
-    { path: '/immobilien/muenchen', pageviews: 1789, sessions: 1234 },
-    { path: '/immobilien/berlin', pageviews: 1567, sessions: 1098 },
-    { path: '/bewertung', pageviews: 1234, sessions: 876 },
-    { path: '/ueber-uns', pageviews: 987, sessions: 654 },
-    { path: '/immobilien/hamburg', pageviews: 876, sessions: 543 },
-    { path: '/kontakt', pageviews: 654, sessions: 432 },
+    { path: '/real-estate/munich', pageviews: 1789, sessions: 1234 },
+    { path: '/real-estate/berlin', pageviews: 1567, sessions: 1098 },
+    { path: '/valuation', pageviews: 1234, sessions: 876 },
+    { path: '/about-us', pageviews: 987, sessions: 654 },
+    { path: '/real-estate/hamburg', pageviews: 876, sessions: 543 },
+    { path: '/contact', pageviews: 654, sessions: 432 },
     { path: '/blog', pageviews: 543, sessions: 321 },
-    { path: '/immobilien/frankfurt', pageviews: 432, sessions: 287 },
+    { path: '/real-estate/frankfurt', pageviews: 432, sessions: 287 },
     { path: '/services', pageviews: 321, sessions: 198 }
   ];
 
@@ -289,7 +289,7 @@ function generateFallbackData(
     { source: 'google', sessions: 1956 }, // 40% organic search
     { source: 'direct', sessions: 1467 }, // 30% direct traffic
     { source: 'facebook', sessions: 489 }, // 10% social media
-    { source: 'immobilienscout24', sessions: 391 }, // 8% referrals
+    { source: 'realtor.com', sessions: 391 }, // 8% referrals
     { source: 'bing', sessions: 293 }, // 6% other search engines
     { source: 'instagram', sessions: 146 }, // 3% social
     { source: 'linkedin', sessions: 97 }, // 2% professional networks
