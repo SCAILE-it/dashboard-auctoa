@@ -33,8 +33,7 @@ export async function getSearchSeries({
     
     // Check if GSC Supabase client is available
     if (!gscSupabase) {
-
-      return generateFallbackData(fromDate, toDate, granularity);
+      throw new Error('GSC Supabase client not configured. Please check NEXT_PUBLIC_GSC_SUPABASE_URL and GSC_SUPABASE_SERVICE_ROLE_KEY environment variables.');
     }
 
     // Single quick try - don't waste time on multiple attempts
@@ -50,19 +49,15 @@ export async function getSearchSeries({
       gscData = result.data;
       error = result.error;
     } catch (quickError) {
-
-      return generateFallbackData(fromDate, toDate, granularity);
+      throw new Error(`GSC Supabase Error: ${quickError instanceof Error ? quickError.message : 'Unknown error'}. Please check your GSC Supabase configuration.`);
     }
 
     if (error) {
-      console.error('GSC Supabase error:', error);
-      // Don't throw error, return fallback instead
-      return generateFallbackData(fromDate, toDate, granularity);
+      throw new Error(`GSC Supabase Error: ${error.message || 'Unknown database error'}`);
     }
 
     if (!gscData || gscData.length === 0) {
-      console.log('GSC Adapter: No data found for date range, using fallback');
-      return generateFallbackData(fromDate, toDate, granularity);
+      throw new Error('No GSC data found for the selected date range. Please ensure data exists in the Google_Search_Console table.');
     }
 
     console.log(`GSC Adapter: Fetched ${gscData.length} records from Supabase`);
@@ -144,8 +139,8 @@ export async function getSearchSeries({
   } catch (error) {
     console.error('GSC adapter error:', error);
     
-    // Return fallback data on error
-    return generateFallbackData(new Date(from), new Date(to), granularity);
+    // Re-throw all errors - NO FALLBACK TO MOCK DATA
+    throw error;
   }
 }
 

@@ -35,23 +35,21 @@ export async function getGaSeries({
 
     // Check if GA4 client is available
     if (!ga4Client) {
-      // GA4 credentials not configured, using mock data
-      return generateFallbackData(fromDate, toDate, granularity);
+      throw new Error('GA4 client not configured. Please check GA4_PROPERTY_ID and GA4_SERVICE_ACCOUNT_KEY environment variables.');
     }
 
-    // Try to fetch real GA4 data
+    // Fetch real GA4 data - NO FALLBACK TO MOCK DATA
     try {
       const ga4Data = await fetchRealGA4Data(fromDate, toDate, granularity);
-
       return ga4Data;
     } catch (apiError) {
-      // API error occurred, falling back to mock data
-      return generateFallbackData(fromDate, toDate, granularity);
+      // Re-throw API errors instead of falling back to mock data
+      throw new Error(`GA4 API Error: ${apiError instanceof Error ? apiError.message : 'Unknown error'}. Please check your GA4 configuration and internet connection.`);
     }
 
   } catch (error) {
-    // Log error for debugging but continue with fallback
-    return generateFallbackData(new Date(from), new Date(to), granularity);
+    // Re-throw all errors - NO FALLBACK TO MOCK DATA
+    throw error;
   }
 }
 
