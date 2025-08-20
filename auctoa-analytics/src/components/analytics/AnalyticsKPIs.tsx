@@ -74,7 +74,12 @@ function KPICard({ kpi, loading }: { kpi: KPIData; loading: boolean }) {
           {kpi.trend && (
             <div className={`flex items-center gap-1 text-sm ${getTrendColor()}`}>
               {getTrendIcon()}
-              <span>{kpi.trend.value}</span>
+              <span 
+                title={`Compared to previous period of equal length`}
+                className="cursor-help"
+              >
+                {kpi.trend.value} vs prev period
+              </span>
             </div>
           )}
         </div>

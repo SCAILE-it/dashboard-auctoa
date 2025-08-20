@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { BarChart3, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 import { DashboardSection } from "@/components/dashboard";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
@@ -126,6 +127,14 @@ export default function AnalyticsPage() {
               <p className="text-sm sm:text-base text-muted-foreground">
                 Traffic performance and user engagement insights
               </p>
+              <div className="flex items-center gap-2 mt-1">
+                <Badge variant="outline" className="text-xs">
+                  {dateRange.from.toLocaleDateString()} - {dateRange.to.toLocaleDateString()}
+                </Badge>
+                <span className="text-xs text-muted-foreground">
+                  • Trends vs previous period
+                </span>
+              </div>
             </div>
           </div>
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { MessageSquare, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { DashboardSection } from "@/components/dashboard";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { ChatbotCharts } from "@/components/charts/ChatbotCharts";
@@ -149,6 +150,14 @@ export default function ChatbotPage() {
           <div className="min-w-0 flex-1">
             <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">Chatbot Analytics</h2>
             <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">Conversation metrics and performance insights</p>
+            <div className="flex items-center gap-2 mt-1">
+              <Badge variant="outline" className="text-xs">
+                {dateRange.from.toLocaleDateString()} - {dateRange.to.toLocaleDateString()}
+              </Badge>
+              <span className="text-xs text-muted-foreground">
+                • Trends vs previous period
+              </span>
+            </div>
           </div>
           <div className="flex flex-col sm:flex-row gap-2 flex-shrink-0">
             <ExportChartDataButton

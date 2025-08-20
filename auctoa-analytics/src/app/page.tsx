@@ -122,7 +122,17 @@ export default function DashboardOverview() {
       <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0">
         <div>
           <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold">Analytics Overview</h2>
-          <p className="text-sm sm:text-base text-muted-foreground">Your complete business performance at a glance</p>
+          <p className="text-sm sm:text-base text-muted-foreground">
+            Your complete business performance at a glance
+          </p>
+          <div className="flex items-center gap-2 mt-2">
+            <Badge variant="outline" className="text-xs">
+              {dateRange.from.toLocaleDateString()} - {dateRange.to.toLocaleDateString()}
+            </Badge>
+            <span className="text-xs text-muted-foreground">
+              • Trends vs previous {Math.ceil((dateRange.to.getTime() - dateRange.from.getTime()) / (1000 * 60 * 60 * 24))} days
+            </span>
+          </div>
         </div>
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
           <DateRangePicker
