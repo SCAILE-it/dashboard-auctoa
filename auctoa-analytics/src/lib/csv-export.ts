@@ -28,7 +28,7 @@ export interface TimeSeriesExportData {
 /**
  * Converts array of objects to CSV string with proper escaping
  */
-function arrayToCSV<T extends Record<string, unknown>>(data: T[]): string {
+function arrayToCSV(data: Array<Record<string, unknown>>): string {
   if (!data || data.length === 0) {
     return '';
   }
@@ -144,7 +144,7 @@ export function exportKPIsToCSV(
     period: `${dateRange.from} to ${dateRange.to}`
   }));
 
-  const csvContent = arrayToCSV(exportData);
+  const csvContent = arrayToCSV(exportData as unknown as Array<Record<string, unknown>>);
   const filename = generateFilename(
     options.filename || 'analytics_kpis',
     options.includeTimestamp ?? true
@@ -200,7 +200,7 @@ export function exportTimeSeriesToCSV(
 }
 
 /**
- * Export overview data (all sources combined) to CSV
+ * Export high-level overview (all sources combined) to CSV - Single header row
  */
 export function exportOverviewToCSV(
   overviewData: {
@@ -220,53 +220,74 @@ export function exportOverviewToCSV(
   dateRange: { from: string; to: string },
   options: CSVExportOptions = {}
 ): void {
-  // Create comprehensive overview export with multiple sheets worth of data
-  const exportSections: string[] = [];
+  // Create unified high-level overview with single header
+  const unifiedData: Array<{
+    date: string;
+    metric_type: string;
+    source: string;
+    value: number;
+    period: string;
+  }> = [];
   
-  // 1. KPIs Section
-  const kpiData = overviewData.kpis.map(kpi => ({
-    section: 'KPIs',
-    metric: kpi.title,
-    value: kpi.value,
-    trend: kpi.trend ? `${kpi.trend > 0 ? '+' : ''}${kpi.trend.toFixed(1)}%` : 'N/A',
-    source: kpi.source || 'Combined',
-    period: `${dateRange.from} to ${dateRange.to}`
-  }));
+  const period = `${dateRange.from} to ${dateRange.to}`;
   
-  exportSections.push('=== KEY PERFORMANCE INDICATORS ===');
-  exportSections.push(arrayToCSV(kpiData));
-  exportSections.push(''); // Empty line
-  
-  // 2. Time Series Data Sections
-  if (overviewData.series.traffic && overviewData.series.traffic.length > 0) {
-    exportSections.push('=== WEBSITE TRAFFIC (GA4) ===');
-    exportSections.push(arrayToCSV(overviewData.series.traffic.map(point => ({
-      ...point,
-      source: 'GA4'
-    }))));
-    exportSections.push('');
+  // Add traffic data
+  if (overviewData.series.traffic) {
+    overviewData.series.traffic.forEach(point => {
+      const date = point.date as string;
+      Object.entries(point).forEach(([key, value]) => {
+        if (key !== 'date' && typeof value === 'number') {
+          unifiedData.push({
+            date,
+            metric_type: key,
+            source: 'GA4',
+            value,
+            period
+          });
+        }
+      });
+    });
   }
   
-  if (overviewData.series.search && overviewData.series.search.length > 0) {
-    exportSections.push('=== SEARCH CONSOLE DATA ===');
-    exportSections.push(arrayToCSV(overviewData.series.search.map(point => ({
-      ...point,
-      source: 'GSC'
-    }))));
-    exportSections.push('');
+  // Add search data
+  if (overviewData.series.search) {
+    overviewData.series.search.forEach(point => {
+      const date = point.date as string;
+      Object.entries(point).forEach(([key, value]) => {
+        if (key !== 'date' && typeof value === 'number') {
+          unifiedData.push({
+            date,
+            metric_type: key,
+            source: 'GSC',
+            value,
+            period
+          });
+        }
+      });
+    });
   }
   
-  if (overviewData.series.chatbot && overviewData.series.chatbot.length > 0) {
-    exportSections.push('=== CHATBOT ANALYTICS ===');
-    exportSections.push(arrayToCSV(overviewData.series.chatbot.map(point => ({
-      ...point,
-      source: 'Chatbot'
-    }))));
+  // Add chatbot data
+  if (overviewData.series.chatbot) {
+    overviewData.series.chatbot.forEach(point => {
+      const date = point.date as string;
+      Object.entries(point).forEach(([key, value]) => {
+        if (key !== 'date' && typeof value === 'number') {
+          unifiedData.push({
+            date,
+            metric_type: key,
+            source: 'Chatbot',
+            value,
+            period
+          });
+        }
+      });
+    });
   }
-  
-  const csvContent = exportSections.join('\n');
+
+  const csvContent = arrayToCSV(unifiedData);
   const filename = generateFilename(
-    options.filename || 'complete_analytics_overview',
+    options.filename || 'analytics_overview_all_sources',
     options.includeTimestamp ?? true
   );
 
@@ -274,19 +295,136 @@ export function exportOverviewToCSV(
 }
 
 /**
+ * Export data source-specific CSV files with delays to prevent browser blocking
+ */
+export async function exportDataSourceCSVs(
+  overviewData: {
+    kpis: Array<{
+      id: string;
+      title: string;
+      value: string | number;
+      trend?: number;
+      source?: string;
+    }>;
+    series: {
+      chatbot?: Array<Record<string, unknown>>;
+      search?: Array<Record<string, unknown>>;
+      traffic?: Array<Record<string, unknown>>;
+    };
+  },
+  dateRange: { from: string; to: string },
+  options: CSVExportOptions = {}
+): Promise<void> {
+  const period = `${dateRange.from} to ${dateRange.to}`;
+  let downloadCount = 0;
+  
+  // Helper function to add delay between downloads
+  const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+  
+  // Export GA4 data
+  if (overviewData.series.traffic && overviewData.series.traffic.length > 0) {
+    const ga4Data = overviewData.series.traffic.map(point => ({
+      ...point,
+      data_source: 'Google Analytics 4',
+      period
+    }));
+    
+    const csvContent = arrayToCSV(ga4Data);
+    const filename = generateFilename('analytics_ga4_data', options.includeTimestamp ?? true);
+    downloadCSV(csvContent, filename);
+    downloadCount++;
+    
+    // Add delay if more downloads are coming
+    if (overviewData.series.search || overviewData.series.chatbot) {
+      await delay(500); // 500ms delay
+    }
+  }
+  
+  // Export GSC data
+  if (overviewData.series.search && overviewData.series.search.length > 0) {
+    const gscData = overviewData.series.search.map(point => ({
+      ...point,
+      data_source: 'Google Search Console',
+      period
+    }));
+    
+    const csvContent = arrayToCSV(gscData);
+    const filename = generateFilename('analytics_gsc_data', options.includeTimestamp ?? true);
+    downloadCSV(csvContent, filename);
+    downloadCount++;
+    
+    // Add delay if chatbot download is coming
+    if (overviewData.series.chatbot) {
+      await delay(500); // 500ms delay
+    }
+  }
+  
+  // Export Chatbot data
+  if (overviewData.series.chatbot && overviewData.series.chatbot.length > 0) {
+    const chatbotData = overviewData.series.chatbot.map(point => ({
+      ...point,
+      data_source: 'Chatbot Analytics',
+      period
+    }));
+    
+    const csvContent = arrayToCSV(chatbotData);
+    const filename = generateFilename('analytics_chatbot_data', options.includeTimestamp ?? true);
+    downloadCSV(csvContent, filename);
+    downloadCount++;
+  }
+  
+  // Show user feedback about the downloads
+  if (downloadCount > 1) {
+    showExportNotification(`Successfully downloaded ${downloadCount} data source CSV files!`, 'success');
+  } else if (downloadCount === 1) {
+    showExportNotification('Successfully downloaded 1 data source CSV file!', 'success');
+  } else {
+    throw new Error('No data available for any data sources');
+  }
+}
+
+/**
  * Utility to show user feedback during export
  */
 export function showExportNotification(message: string, type: 'success' | 'error' = 'success'): void {
-  // This could be enhanced with a proper notification system
-  // For now, we'll use a simple approach that works everywhere
+  // Console log for debugging
   console.log(`Export ${type}: ${message}`);
   
-  // You could integrate with react-hot-toast or similar notification library here
+  // Show user-friendly notification
   if (typeof window !== 'undefined') {
     if (type === 'success') {
-      // Could show success toast
+      // Create a temporary success notification
+      const notification = document.createElement('div');
+      notification.innerHTML = `
+        <div style="
+          position: fixed; 
+          top: 20px; 
+          right: 20px; 
+          background: #10b981; 
+          color: white; 
+          padding: 12px 20px; 
+          border-radius: 8px; 
+          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+          z-index: 9999;
+          font-family: system-ui, -apple-system, sans-serif;
+          font-size: 14px;
+          font-weight: 500;
+          max-width: 350px;
+        ">
+          ✅ ${message}
+        </div>
+      `;
+      
+      document.body.appendChild(notification);
+      
+      // Remove after 4 seconds
+      setTimeout(() => {
+        if (document.body.contains(notification)) {
+          document.body.removeChild(notification);
+        }
+      }, 4000);
     } else {
-      // Could show error toast
+      // Show error alert
       alert(`Export Error: ${message}`);
     }
   }

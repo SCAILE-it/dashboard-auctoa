@@ -203,10 +203,34 @@ export function ExportOverviewButton({
       variant="default"
       className={className}
       showBadge={true}
-      badgeText="FULL"
-      exportType="Complete Report"
+      badgeText="ALL"
+      exportType="High-Level Overview"
     >
-      Export Full Report
+      Export Overview
+    </ExportButton>
+  );
+}
+
+export function ExportDataSourcesButton({ 
+  onExport, 
+  disabled = false,
+  className 
+}: { 
+  onExport: () => Promise<void> | void;
+  disabled?: boolean;
+  className?: string;
+}) {
+  return (
+    <ExportButton
+      onExport={onExport}
+      disabled={disabled}
+      variant="outline"
+      className={className}
+      showBadge={true}
+      badgeText="3x"
+      exportType="Data Sources (3 files)"
+    >
+      Export by Source
     </ExportButton>
   );
 }
