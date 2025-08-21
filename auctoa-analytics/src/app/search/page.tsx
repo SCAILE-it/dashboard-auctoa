@@ -118,7 +118,7 @@ export default function SearchPage() {
                 {dateRange.from.toLocaleDateString()} - {dateRange.to.toLocaleDateString()}
               </Badge>
               <span className="text-xs text-muted-foreground">
-                • Trends vs previous period
+                • Trends vs same period prior
               </span>
             </div>
           </div>

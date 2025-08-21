@@ -102,7 +102,7 @@ export default function DashboardOverview() {
               {dateRange.from.toLocaleDateString()} - {dateRange.to.toLocaleDateString()}
             </Badge>
             <span className="text-xs text-muted-foreground">
-              • Trends vs previous {Math.ceil((dateRange.to.getTime() - dateRange.from.getTime()) / (1000 * 60 * 60 * 24))} days
+              • Trends vs same {Math.ceil((dateRange.to.getTime() - dateRange.from.getTime()) / (1000 * 60 * 60 * 24))} days prior
             </span>
           </div>
         </div>

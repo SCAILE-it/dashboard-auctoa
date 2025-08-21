@@ -69,7 +69,7 @@ export function KPICard({
             <Badge 
               variant={getTrendBadgeVariant()}
               className={cn(getTrendBadgeClass(), "cursor-help")}
-              title="Compared to previous period of equal length"
+              title="Compared to same length period immediately before current selection"
             >
               {trend.isNeutral ? null : trend.isPositive ? (
                 <TrendingUp className="h-3 w-3 mr-1" />
