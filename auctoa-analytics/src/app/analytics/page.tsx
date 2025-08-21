@@ -137,28 +137,43 @@ export default function AnalyticsPage() {
               </div>
             </div>
           </div>
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
+          <div className="flex flex-col sm:flex-row gap-2 flex-shrink-0">
+            <ExportChartDataButton
+              onExport={handleExportChartData}
+              disabled={!overviewData?.series?.traffic || overviewLoading}
+              className="text-sm flex-1 sm:flex-none"
+            />
+            <Button 
+              onClick={handleRefresh}
+              disabled={overviewLoading || manualLoading}
+              size="sm"
+              variant="outline"
+              className="flex-1 sm:flex-none"
+            >
+              <RefreshCw className={`w-4 h-4 sm:mr-2 ${(overviewLoading || manualLoading) ? 'animate-spin' : ''}`} />
+              <span className="hidden sm:inline">Refresh</span>
+            </Button>
+          </div>
+        </div>
+
+        {/* Date Controls - GSC Style */}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4 p-3 sm:p-4 bg-card rounded-lg border shadow-sm">
+          <div className="flex-shrink-0">
             <DateRangePicker
               value={dateRange}
               onChange={(range) => range && setDateRange(range)}
             />
-            <div className="flex gap-2">
-              <ExportChartDataButton
-                onExport={handleExportChartData}
-                disabled={!overviewData?.series?.traffic || overviewLoading}
-                className="text-sm flex-1 sm:flex-none"
-              />
-              <Button 
-                onClick={handleRefresh}
-                disabled={overviewLoading || manualLoading}
-                size="sm"
-                variant="outline"
-                className="flex-1 sm:flex-none"
-              >
-                <RefreshCw className={`w-4 h-4 sm:mr-2 ${(overviewLoading || manualLoading) ? 'animate-spin' : ''}`} />
-                <span className="hidden sm:inline">Refresh</span>
-              </Button>
-            </div>
+          </div>
+          
+          {/* Summary info */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-sm text-muted-foreground sm:ml-auto">
+            <span>
+              {Math.ceil((dateRange.to.getTime() - dateRange.from.getTime()) / (1000 * 60 * 60 * 24))} days selected
+            </span>
+            <span className="text-green-600 dark:text-green-400 flex items-center gap-1">
+              <div className="w-2 h-2 bg-green-600 dark:bg-green-400 rounded-full" />
+              Live data
+            </span>
           </div>
         </div>
       </div>
