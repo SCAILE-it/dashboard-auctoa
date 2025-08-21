@@ -4,6 +4,7 @@ import { useState } from "react";
 import { BarChart3, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { InsightsCard } from "@/components/insights/InsightsCard";
 
 import { DashboardSection } from "@/components/dashboard";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
@@ -186,117 +187,6 @@ export default function AnalyticsPage() {
         description="Essential insights from your website traffic and user behavior"
       />
 
-      {/* Analytics Insights Section */}
-      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl shadow-sm">
-        <div className="p-6 border-b border-gray-200 dark:border-gray-800">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Traffic Insights</h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Performance breakdown and top content</p>
-            </div>
-            <div className="flex items-center text-xs text-emerald-600 dark:text-emerald-400">
-              <div className="w-2 h-2 bg-emerald-500 rounded-full mr-2 animate-pulse"></div>
-              {ga4Data?.insights.isUsingRealData ? 'Live Data' : 'Demo Mode'}
-            </div>
-          </div>
-        </div>
-        
-        <div className="p-4 sm:p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-            {/* Top Pages */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h4 className="font-semibold text-gray-900 dark:text-white text-sm">Top Pages</h4>
-                <span className="text-xs text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-full">
-                  {ga4Data?.insights.totalPages || 0} total
-                </span>
-              </div>
-              <div className="space-y-3">
-                {ga4Data?.insights.topPages.slice(0, 3).map((page, index) => (
-                  <div key={index} className="group hover:bg-gray-50 dark:hover:bg-gray-800 p-3 rounded-lg transition-colors">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3 min-w-0 flex-1">
-                        <div className="flex items-center justify-center w-6 h-6 text-xs font-medium text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 rounded-full flex-shrink-0">
-                          {index + 1}
-                        </div>
-                        <span className="font-medium text-gray-900 dark:text-white truncate text-sm" title={page.path}>
-                          {page.path === '/' ? 'Homepage' : page.path}
-                        </span>
-                      </div>
-                      <div className="text-right ml-4 flex-shrink-0">
-                        <div className="text-sm font-semibold text-gray-900 dark:text-white">
-                          {page.pageviews.toLocaleString()}
-                        </div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">views</div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            
-            {/* Top Sources */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h4 className="font-semibold text-gray-900 dark:text-white text-sm">Top Sources</h4>
-                <span className="text-xs text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-full">
-                  {ga4Data?.insights.totalSources || 0} sources
-                </span>
-              </div>
-              <div className="space-y-3">
-                {ga4Data?.insights.topSources.slice(0, 3).map((source, index) => (
-                  <div key={index} className="group hover:bg-gray-50 dark:hover:bg-gray-800 p-3 rounded-lg transition-colors">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3 min-w-0 flex-1">
-                        <div className="flex items-center justify-center w-6 h-6 text-xs font-medium text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 rounded-full flex-shrink-0">
-                          {index + 1}
-                        </div>
-                        <span className="font-medium text-gray-900 dark:text-white capitalize text-sm">
-                          {source.source}
-                        </span>
-                      </div>
-                      <div className="text-right ml-4 flex-shrink-0">
-                        <div className="text-sm font-semibold text-gray-900 dark:text-white">
-                          {source.sessions.toLocaleString()}
-                        </div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">sessions</div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Summary Stats */}
-            <div className="space-y-4">
-              <h4 className="font-semibold text-gray-900 dark:text-white text-sm">Quick Summary</h4>
-              <div className="space-y-4">
-                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-blue-900 dark:text-blue-100">Total Pages</span>
-                    <span className="text-lg font-bold text-blue-900 dark:text-blue-100">{ga4Data?.insights.totalPages || 0}</span>
-                  </div>
-                </div>
-                <div className="bg-gradient-to-r from-emerald-50 to-green-50 dark:from-emerald-900/20 dark:to-green-900/20 p-4 rounded-lg border border-emerald-200 dark:border-emerald-800">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-emerald-900 dark:text-emerald-100">Traffic Sources</span>
-                    <span className="text-lg font-bold text-emerald-900 dark:text-emerald-100">{ga4Data?.insights.totalSources || 0}</span>
-                  </div>
-                </div>
-                <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 p-4 rounded-lg border border-amber-200 dark:border-amber-800">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-amber-900 dark:text-amber-100">Data Source</span>
-                    <span className="text-sm font-semibold text-amber-900 dark:text-amber-100">
-                      {ga4Data?.insights.isUsingRealData ? 'Live GA4' : 'Demo'}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Charts Section */}
       <DashboardSection
         title="Analytics"
@@ -318,6 +208,33 @@ export default function AnalyticsPage() {
           loading={!overviewData || overviewLoading || manualLoading}
         />
       </DashboardSection>
+
+      {/* Traffic Insights Section - At the End */}
+      {ga4Data?.insights && (
+        <InsightsCard
+          title="Traffic Insights"
+          description="Performance breakdown and top content"
+          icon={BarChart3}
+          items={[
+            ...(ga4Data.insights.topPages || []).map(page => ({
+              label: page.path === '/' ? 'Homepage' : page.path,
+              value: page.pageviews,
+              subtitle: 'page'
+            }))
+          ]}
+          quickStats={[
+            { label: 'Total Pages', value: ga4Data.insights.totalPages || 0 },
+            { label: 'Traffic Sources', value: ga4Data.insights.totalSources || 0 }
+          ]}
+          bestPerforming={
+            ga4Data.insights.topPages?.[0] ? {
+              label: 'Best Performing Page',
+              value: ga4Data.insights.topPages[0].path === '/' ? 'Homepage' : ga4Data.insights.topPages[0].path
+            } : undefined
+          }
+          isLiveData={ga4Data.insights.isUsingRealData}
+        />
+      )}
 
       {error && (
         <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
