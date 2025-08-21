@@ -21,8 +21,8 @@ import {
 import { useOverviewData } from "@/lib/hooks/useOverviewData";
 import { useAnalyticsState } from "@/lib/hooks/useAnalyticsState";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
-import { ExportOverviewButton, ExportDataSourcesButton } from "@/components/ui/export-button";
-import { exportOverviewToCSV, exportDataSourceCSVs } from "@/lib/csv-export";
+import { ExportOverviewButton } from "@/components/ui/export-button";
+import { exportOverviewToCSV } from "@/lib/csv-export";
 import { KPISkeleton } from "@/components/ui/loading-skeleton";
 
 
@@ -73,35 +73,7 @@ export default function DashboardOverview() {
     );
   };
 
-  const handleExportDataSources = async () => {
-    if (!overviewData) {
-      throw new Error('No overview data available for export');
-    }
-    
-    // Transform overview data to match export function expectations
-    const exportData = {
-      kpis: Object.entries(overviewData.kpis).map(([key, value]) => ({
-        id: key,
-        title: key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()),
-        value: value.current,
-        trend: value.trend ? parseFloat(value.trend.replace('%', '')) : 0,
-        source: value.source
-      })),
-      series: {
-        chatbot: overviewData.series.chatbot,
-        search: overviewData.series.search,
-        traffic: overviewData.series.traffic
-      }
-    };
-    
-    exportDataSourceCSVs(
-      exportData,
-      {
-        from: dateRange.from.toISOString().split('T')[0],
-        to: dateRange.to.toISOString().split('T')[0]
-      }
-    );
-  };
+
 
   // Extract key metrics from unified overview data
   const getKPIValue = (key: string) => {
@@ -142,11 +114,6 @@ export default function DashboardOverview() {
           <div className="flex gap-2">
             <ExportOverviewButton
               onExport={handleExportOverview}
-              disabled={loading || !overviewData}
-              className="text-sm flex-1 sm:flex-none"
-            />
-            <ExportDataSourcesButton
-              onExport={handleExportDataSources}
               disabled={loading || !overviewData}
               className="text-sm flex-1 sm:flex-none"
             />
