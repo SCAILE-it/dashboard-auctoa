@@ -12,7 +12,8 @@ import {
   ChevronLeft,
   ChevronRight,
   X,
-  Users
+  Users,
+  Search
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -37,6 +38,11 @@ const navigation = [
     name: "Chatbot Analytics",
     href: "/chatbot",
     icon: MessageSquare,
+  },
+  {
+    name: "SEO Healthcheck",
+    href: "/seo-audit",
+    icon: Search,
   },
   {
     name: "PostHog Analytics",
