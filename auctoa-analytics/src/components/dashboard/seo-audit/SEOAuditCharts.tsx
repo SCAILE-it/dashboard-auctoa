@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useTheme } from "next-themes";
 import {
   BarChart,
   Bar,
@@ -9,16 +10,9 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  RadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
-  Radar,
-  Legend,
-  LineChart,
-  Line
+  Legend
 } from "recharts";
-import { SEOAuditComparison, SEOAuditRecommendation } from "@/types/seo-audit";
+import { SEOAuditComparison } from "@/types/seo-audit";
 import { AlertTriangle, CheckCircle, Clock, ExternalLink } from "lucide-react";
 
 interface SEOAuditChartsProps {
@@ -27,6 +21,9 @@ interface SEOAuditChartsProps {
 }
 
 export function SEOAuditCharts({ data, loading = false }: SEOAuditChartsProps) {
+  const { theme } = useTheme();
+  const textColor = theme === 'dark' ? '#ffffff' : '#000000';
+  
   if (loading) {
     return (
       <div className="grid gap-6 md:grid-cols-2">
@@ -45,7 +42,7 @@ export function SEOAuditCharts({ data, loading = false }: SEOAuditChartsProps) {
     );
   }
 
-  if (!data) {
+  if (!data || (!data.mobile && !data.desktop)) {
     return (
       <Card>
         <CardContent className="flex items-center justify-center h-64">
@@ -59,46 +56,46 @@ export function SEOAuditCharts({ data, loading = false }: SEOAuditChartsProps) {
   const scoresComparison = [
     {
       category: 'Performance',
-      mobile: data.mobile.scores.performance,
-      desktop: data.desktop.scores.performance
+      mobile: data.mobile?.scores.performance || 0,
+      desktop: data.desktop?.scores.performance || 0
     },
     {
       category: 'SEO',
-      mobile: data.mobile.scores.seo,
-      desktop: data.desktop.scores.seo
+      mobile: data.mobile?.scores.seo || 0,
+      desktop: data.desktop?.scores.seo || 0
     },
     {
       category: 'Accessibility',
-      mobile: data.mobile.scores.accessibility,
-      desktop: data.desktop.scores.accessibility
+      mobile: data.mobile?.scores.accessibility || 0,
+      desktop: data.desktop?.scores.accessibility || 0
     },
     {
       category: 'Best Practices',
-      mobile: data.mobile.scores.bestPractices,
-      desktop: data.desktop.scores.bestPractices
+      mobile: data.mobile?.scores.bestPractices || 0,
+      desktop: data.desktop?.scores.bestPractices || 0
     }
   ];
 
   const coreWebVitalsData = [
     {
       metric: 'LCP',
-      mobile: data.mobile.coreWebVitals.lcp.value,
-      desktop: data.desktop.coreWebVitals.lcp.value,
-      threshold: data.mobile.coreWebVitals.lcp.threshold.good,
+      mobile: data.mobile?.coreWebVitals.lcp.value || 0,
+      desktop: data.desktop?.coreWebVitals.lcp.value || 0,
+      threshold: data.mobile?.coreWebVitals.lcp.threshold.good || 2500,
       unit: 'ms'
     },
     {
       metric: 'INP',
-      mobile: data.mobile.coreWebVitals.inp.value,
-      desktop: data.desktop.coreWebVitals.inp.value,
-      threshold: data.mobile.coreWebVitals.inp.threshold.good,
+      mobile: data.mobile?.coreWebVitals.inp.value || 0,
+      desktop: data.desktop?.coreWebVitals.inp.value || 0,
+      threshold: data.mobile?.coreWebVitals.inp.threshold.good || 200,
       unit: 'ms'
     },
     {
       metric: 'CLS',
-      mobile: Math.round(data.mobile.coreWebVitals.cls.value * 1000) / 1000,
-      desktop: Math.round(data.desktop.coreWebVitals.cls.value * 1000) / 1000,
-      threshold: data.mobile.coreWebVitals.cls.threshold.good,
+      mobile: Math.round((data.mobile?.coreWebVitals.cls.value || 0) * 1000) / 1000,
+      desktop: Math.round((data.desktop?.coreWebVitals.cls.value || 0) * 1000) / 1000,
+      threshold: data.mobile?.coreWebVitals.cls.threshold.good || 0.1,
       unit: ''
     }
   ];
@@ -106,57 +103,155 @@ export function SEOAuditCharts({ data, loading = false }: SEOAuditChartsProps) {
   const performanceMetricsData = [
     {
       metric: 'FCP',
-      mobile: data.mobile.performanceMetrics.fcp.value,
-      desktop: data.desktop.performanceMetrics.fcp.value,
+      mobile: data.mobile?.performanceMetrics.fcp.value || 0,
+      desktop: data.desktop?.performanceMetrics.fcp.value || 0,
       unit: 'ms'
     },
     {
       metric: 'Speed Index',
-      mobile: data.mobile.performanceMetrics.speedIndex.value,
-      desktop: data.desktop.performanceMetrics.speedIndex.value,
+      mobile: data.mobile?.performanceMetrics.speedIndex.value || 0,
+      desktop: data.desktop?.performanceMetrics.speedIndex.value || 0,
       unit: 'ms'
     },
     {
       metric: 'TBT',
-      mobile: data.mobile.performanceMetrics.tbt.value,
-      desktop: data.desktop.performanceMetrics.tbt.value,
+      mobile: data.mobile?.performanceMetrics.tbt.value || 0,
+      desktop: data.desktop?.performanceMetrics.tbt.value || 0,
       unit: 'ms'
     },
     {
       metric: 'TTI',
-      mobile: data.mobile.performanceMetrics.tti.value,
-      desktop: data.desktop.performanceMetrics.tti.value,
+      mobile: data.mobile?.performanceMetrics.tti.value || 0,
+      desktop: data.desktop?.performanceMetrics.tti.value || 0,
       unit: 'ms'
     }
   ];
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
+  const CustomTooltip = ({ active, payload, label }: {
+    active?: boolean;
+    payload?: Array<{
+      color: string;
+      dataKey: string;
+      value: number;
+      payload?: { unit?: string };
+    }>;
+    label?: string;
+  }) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-background border rounded-lg shadow-lg p-3">
-          <p className="font-medium">{label}</p>
-          {payload.map((entry: any, index: number) => (
-            <p key={index} style={{ color: entry.color }}>
-              {entry.dataKey}: {entry.value}
-              {entry.payload?.unit && entry.payload.unit}
-            </p>
-          ))}
+        <div
+          style={{
+            backgroundColor: 'hsl(var(--card))',
+            border: '1px solid hsl(var(--border))',
+            borderRadius: '8px',
+            boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+            padding: '16px',
+            minWidth: '200px',
+            color: 'hsl(var(--card-foreground))'
+          }}
+        >
+          <p style={{
+            fontWeight: '600',
+            marginBottom: '8px',
+            fontSize: '14px',
+            color: 'hsl(var(--card-foreground))'
+          }}>
+            {label}
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            {payload.map((entry, index: number) => (
+              <div key={index} style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: '12px'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <div
+                    style={{
+                      width: '12px',
+                      height: '12px',
+                      borderRadius: '2px',
+                      backgroundColor: entry.color
+                    }}
+                  />
+                  <span style={{
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    color: 'hsl(var(--card-foreground))'
+                  }}>
+                    {entry.dataKey === 'mobile' ? 'Mobile' : 'Desktop'}:
+                  </span>
+                </div>
+                <span style={{
+                  fontSize: '14px',
+                  fontWeight: '700',
+                  color: 'hsl(var(--card-foreground))'
+                }}>
+                  {entry.value}
+                  {entry.payload?.unit ? entry.payload.unit : '/100'}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
       );
     }
     return null;
   };
 
+  const CustomYAxisTick = ({ x, y, payload }: {
+    x?: number;
+    y?: number;
+    payload?: { value: string | number };
+  }) => {
+    return (
+      <g transform={`translate(${x},${y})`}>
+        <text
+          x={0}
+          y={0}
+          dy={16}
+          textAnchor="end"
+          fill={textColor}
+          fontSize="12"
+        >
+          {payload?.value}
+        </text>
+      </g>
+    );
+  };
+
+  const CustomXAxisTick = ({ x, y, payload }: {
+    x?: number;
+    y?: number;
+    payload?: { value: string | number };
+  }) => {
+    return (
+      <g transform={`translate(${x},${y})`}>
+        <text
+          x={0}
+          y={0}
+          dy={16}
+          textAnchor="middle"
+          fill={textColor}
+          fontSize="12"
+        >
+          {payload?.value}
+        </text>
+      </g>
+    );
+  };
+
   const getImpactColor = (impact: string) => {
     switch (impact) {
       case 'high':
-        return 'bg-red-50 text-red-700 border-red-200';
+        return 'bg-red-50 text-red-700 border-red-200 dark:bg-red-950 dark:text-red-300 dark:border-red-800';
       case 'medium':
-        return 'bg-yellow-50 text-yellow-700 border-yellow-200';
+        return 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-800';
       case 'low':
-        return 'bg-green-50 text-green-700 border-green-200';
+        return 'bg-green-50 text-green-700 border-green-200 dark:bg-green-950 dark:text-green-300 dark:border-green-800';
       default:
-        return 'bg-gray-50 text-gray-700 border-gray-200';
+        return 'bg-gray-50 text-gray-700 border-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600';
     }
   };
 
@@ -184,25 +279,46 @@ export function SEOAuditCharts({ data, loading = false }: SEOAuditChartsProps) {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <ResponsiveContainer width="100%" height={300}>
+          <div className="text-foreground" style={{ color: 'hsl(var(--foreground))' }}>
+            <ResponsiveContainer width="100%" height={300}>
             <BarChart data={scoresComparison} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
               <XAxis 
                 dataKey="category" 
-                tick={{ fill: 'currentColor', fontSize: 12 }}
+                tick={<CustomXAxisTick />}
                 axisLine={{ stroke: 'hsl(var(--border))' }}
+                tickLine={{ stroke: 'hsl(var(--foreground))' }}
               />
               <YAxis 
                 domain={[0, 100]}
-                tick={{ fill: 'currentColor', fontSize: 12 }}
+                tick={<CustomYAxisTick />}
                 axisLine={{ stroke: 'hsl(var(--border))' }}
+                tickLine={{ stroke: 'hsl(var(--foreground))' }}
               />
               <Tooltip content={<CustomTooltip />} />
-              <Legend />
-              <Bar dataKey="mobile" fill="hsl(var(--primary))" name="Mobile" radius={[2, 2, 0, 0]} />
-              <Bar dataKey="desktop" fill="hsl(var(--secondary))" name="Desktop" radius={[2, 2, 0, 0]} />
+              <Legend 
+                wrapperStyle={{
+                  paddingTop: '16px',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  color: 'hsl(var(--foreground))'
+                }}
+              />
+              <Bar 
+                dataKey="mobile" 
+                fill="#3b82f6" 
+                name="Mobile" 
+                radius={[4, 4, 0, 0]}
+              />
+              <Bar 
+                dataKey="desktop" 
+                fill="#10b981" 
+                name="Desktop" 
+                radius={[4, 4, 0, 0]}
+              />
             </BarChart>
           </ResponsiveContainer>
+          </div>
         </CardContent>
       </Card>
 
@@ -216,24 +332,45 @@ export function SEOAuditCharts({ data, loading = false }: SEOAuditChartsProps) {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={coreWebVitalsData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+            <div className="text-foreground" style={{ color: 'hsl(var(--foreground))' }}>
+              <ResponsiveContainer width="100%" height={250}>
+                <BarChart data={coreWebVitalsData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
                 <XAxis 
                   dataKey="metric" 
-                  tick={{ fill: 'currentColor', fontSize: 12 }}
+                  tick={<CustomXAxisTick />}
                   axisLine={{ stroke: 'hsl(var(--border))' }}
+                  tickLine={{ stroke: 'hsl(var(--foreground))' }}
                 />
                 <YAxis 
-                  tick={{ fill: 'currentColor', fontSize: 12 }}
+                  tick={<CustomYAxisTick />}
                   axisLine={{ stroke: 'hsl(var(--border))' }}
+                  tickLine={{ stroke: 'hsl(var(--foreground))' }}
                 />
                 <Tooltip content={<CustomTooltip />} />
-                <Legend />
-                <Bar dataKey="mobile" fill="#ef4444" name="Mobile" radius={[2, 2, 0, 0]} />
-                <Bar dataKey="desktop" fill="#22c55e" name="Desktop" radius={[2, 2, 0, 0]} />
+                <Legend 
+                  wrapperStyle={{
+                    paddingTop: '16px',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    color: 'hsl(var(--foreground))'
+                  }}
+                />
+                <Bar 
+                  dataKey="mobile" 
+                  fill="#f59e0b" 
+                  name="Mobile" 
+                  radius={[4, 4, 0, 0]}
+                />
+                <Bar 
+                  dataKey="desktop" 
+                  fill="#8b5cf6" 
+                  name="Desktop" 
+                  radius={[4, 4, 0, 0]}
+                />
               </BarChart>
             </ResponsiveContainer>
+            </div>
           </CardContent>
         </Card>
 
@@ -246,24 +383,45 @@ export function SEOAuditCharts({ data, loading = false }: SEOAuditChartsProps) {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={performanceMetricsData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+            <div className="text-foreground" style={{ color: 'hsl(var(--foreground))' }}>
+              <ResponsiveContainer width="100%" height={250}>
+                <BarChart data={performanceMetricsData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
                 <XAxis 
                   dataKey="metric" 
-                  tick={{ fill: 'currentColor', fontSize: 12 }}
+                  tick={<CustomXAxisTick />}
                   axisLine={{ stroke: 'hsl(var(--border))' }}
+                  tickLine={{ stroke: 'hsl(var(--foreground))' }}
                 />
                 <YAxis 
-                  tick={{ fill: 'currentColor', fontSize: 12 }}
+                  tick={<CustomYAxisTick />}
                   axisLine={{ stroke: 'hsl(var(--border))' }}
+                  tickLine={{ stroke: 'hsl(var(--foreground))' }}
                 />
                 <Tooltip content={<CustomTooltip />} />
-                <Legend />
-                <Bar dataKey="mobile" fill="hsl(var(--primary))" name="Mobile" radius={[2, 2, 0, 0]} />
-                <Bar dataKey="desktop" fill="hsl(var(--secondary))" name="Desktop" radius={[2, 2, 0, 0]} />
+                <Legend 
+                  wrapperStyle={{
+                    paddingTop: '16px',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    color: 'hsl(var(--foreground))'
+                  }}
+                />
+                <Bar 
+                  dataKey="mobile" 
+                  fill="#ef4444" 
+                  name="Mobile" 
+                  radius={[4, 4, 0, 0]}
+                />
+                <Bar 
+                  dataKey="desktop" 
+                  fill="#06b6d4" 
+                  name="Desktop" 
+                  radius={[4, 4, 0, 0]}
+                />
               </BarChart>
             </ResponsiveContainer>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -283,33 +441,33 @@ export function SEOAuditCharts({ data, loading = false }: SEOAuditChartsProps) {
               <TabsTrigger value="desktop">Desktop</TabsTrigger>
             </TabsList>
             
-            <TabsContent value="mobile" className="space-y-4 mt-4">
-              {data.mobile.recommendations.map((rec) => (
-                <div key={rec.id} className="flex items-start space-x-4 p-4 border rounded-lg">
-                  <div className="flex-shrink-0">
+            <TabsContent value="mobile" className="space-y-3 mt-6">
+              {(data.mobile?.recommendations || []).map((rec) => (
+                <div key={rec.id} className="flex items-start space-x-4 p-5 border border-border rounded-lg bg-card hover:bg-accent/50 transition-colors">
+                  <div className="flex-shrink-0 mt-1">
                     {getEffortIcon(rec.effort)}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between">
-                      <h4 className="text-sm font-medium text-foreground">{rec.title}</h4>
-                      <div className="flex items-center space-x-2">
-                        <Badge variant="outline" className={`text-xs ${getImpactColor(rec.impact)}`}>
+                    <div className="flex items-start justify-between gap-4">
+                      <h4 className="text-sm font-semibold text-card-foreground leading-tight">{rec.title}</h4>
+                      <div className="flex items-center space-x-2 flex-shrink-0">
+                        <Badge variant="outline" className={`text-xs font-medium ${getImpactColor(rec.impact)}`}>
                           {rec.impact} impact
                         </Badge>
                         {rec.savings && (
-                          <Badge variant="secondary" className="text-xs">
+                          <Badge variant="secondary" className="text-xs font-medium bg-green-100 text-green-700 border-green-200 dark:bg-green-900 dark:text-green-300 dark:border-green-700">
                             Save {rec.savings}
                           </Badge>
                         )}
                       </div>
                     </div>
-                    <p className="text-sm text-muted-foreground mt-1">{rec.description}</p>
+                    <p className="text-sm text-muted-foreground mt-2 leading-relaxed">{rec.description}</p>
                     {rec.learnMoreUrl && (
                       <a 
                         href={rec.learnMoreUrl} 
                         target="_blank" 
                         rel="noopener noreferrer"
-                        className="inline-flex items-center text-xs text-primary hover:underline mt-2"
+                        className="inline-flex items-center text-xs text-primary hover:text-primary/80 hover:underline mt-3 font-medium"
                       >
                         Learn more <ExternalLink className="ml-1 h-3 w-3" />
                       </a>
@@ -319,33 +477,33 @@ export function SEOAuditCharts({ data, loading = false }: SEOAuditChartsProps) {
               ))}
             </TabsContent>
             
-            <TabsContent value="desktop" className="space-y-4 mt-4">
-              {data.desktop.recommendations.map((rec) => (
-                <div key={rec.id} className="flex items-start space-x-4 p-4 border rounded-lg">
-                  <div className="flex-shrink-0">
+            <TabsContent value="desktop" className="space-y-3 mt-6">
+              {(data.desktop?.recommendations || []).map((rec) => (
+                <div key={rec.id} className="flex items-start space-x-4 p-5 border border-border rounded-lg bg-card hover:bg-accent/50 transition-colors">
+                  <div className="flex-shrink-0 mt-1">
                     {getEffortIcon(rec.effort)}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between">
-                      <h4 className="text-sm font-medium text-foreground">{rec.title}</h4>
-                      <div className="flex items-center space-x-2">
-                        <Badge variant="outline" className={`text-xs ${getImpactColor(rec.impact)}`}>
+                    <div className="flex items-start justify-between gap-4">
+                      <h4 className="text-sm font-semibold text-card-foreground leading-tight">{rec.title}</h4>
+                      <div className="flex items-center space-x-2 flex-shrink-0">
+                        <Badge variant="outline" className={`text-xs font-medium ${getImpactColor(rec.impact)}`}>
                           {rec.impact} impact
                         </Badge>
                         {rec.savings && (
-                          <Badge variant="secondary" className="text-xs">
+                          <Badge variant="secondary" className="text-xs font-medium bg-green-100 text-green-700 border-green-200 dark:bg-green-900 dark:text-green-300 dark:border-green-700">
                             Save {rec.savings}
                           </Badge>
                         )}
                       </div>
                     </div>
-                    <p className="text-sm text-muted-foreground mt-1">{rec.description}</p>
+                    <p className="text-sm text-muted-foreground mt-2 leading-relaxed">{rec.description}</p>
                     {rec.learnMoreUrl && (
                       <a 
                         href={rec.learnMoreUrl} 
                         target="_blank" 
                         rel="noopener noreferrer"
-                        className="inline-flex items-center text-xs text-primary hover:underline mt-2"
+                        className="inline-flex items-center text-xs text-primary hover:text-primary/80 hover:underline mt-3 font-medium"
                       >
                         Learn more <ExternalLink className="ml-1 h-3 w-3" />
                       </a>

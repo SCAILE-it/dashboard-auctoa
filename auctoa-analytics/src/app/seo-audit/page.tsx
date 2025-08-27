@@ -32,10 +32,13 @@ export default function SEOAuditPage() {
         apiUrl.searchParams.set('url', targetUrl);
       }
 
+
       console.log('🔍 [SEO Audit] Fetching data for:', targetUrl);
       
       const response = await fetch(apiUrl.toString());
       const result: SEOAuditApiResponse = await response.json();
+
+
 
       if (result.success && result.data) {
         setData(result.data);
@@ -70,8 +73,10 @@ export default function SEOAuditPage() {
     if (!data) return;
 
     // Prepare data for export
-    const exportData = [
-      {
+    const exportData = [];
+    
+    if (data.mobile) {
+      exportData.push({
         date: new Date().toISOString().split('T')[0],
         device: 'Mobile',
         performanceScore: data.mobile.scores.performance,
@@ -85,8 +90,11 @@ export default function SEOAuditPage() {
         speedIndex: data.mobile.performanceMetrics.speedIndex.value,
         tbt: data.mobile.performanceMetrics.tbt.value,
         tti: data.mobile.performanceMetrics.tti.value
-      },
-      {
+      });
+    }
+    
+    if (data.desktop) {
+      exportData.push({
         date: new Date().toISOString().split('T')[0],
         device: 'Desktop',
         performanceScore: data.desktop.scores.performance,
@@ -100,10 +108,13 @@ export default function SEOAuditPage() {
         speedIndex: data.desktop.performanceMetrics.speedIndex.value,
         tbt: data.desktop.performanceMetrics.tbt.value,
         tti: data.desktop.performanceMetrics.tti.value
-      }
-    ];
+      });
+    }
 
-    exportTimeSeriesToCSV(exportData, 'seo-audit-data');
+    exportTimeSeriesToCSV(exportData, 'seo-audit-data', { 
+      from: new Date().toISOString().split('T')[0], 
+      to: new Date().toISOString().split('T')[0] 
+    });
   };
 
   // Check if SEO Audit is enabled
@@ -226,7 +237,7 @@ export default function SEOAuditPage() {
                 </div>
                 <div className="flex items-center space-x-2 text-muted-foreground">
                   <Globe className="h-4 w-4" />
-                  <span className="text-sm">{data.mobile.url}</span>
+                  <span className="text-sm">{data.mobile?.url || data.desktop?.url || testUrl}</span>
                 </div>
               </div>
               <div className="flex items-center space-x-4 text-sm text-muted-foreground">
@@ -238,7 +249,7 @@ export default function SEOAuditPage() {
                   <Monitor className="h-4 w-4" />
                   <span>Desktop</span>
                 </div>
-                {data.mobile.hasFieldData && (
+                {(data.mobile?.hasFieldData || data.desktop?.hasFieldData) && (
                   <Badge variant="secondary" className="text-xs">
                     Real User Data
                   </Badge>
@@ -258,7 +269,7 @@ export default function SEOAuditPage() {
       {data && (
         <div>
           <h3 className="text-lg font-semibold mb-4">Key Metrics</h3>
-          <SEOAuditKPIs kpis={data.mobile.kpis} loading={loading} />
+          <SEOAuditKPIs kpis={data.mobile?.kpis || data.desktop?.kpis || []} loading={loading} />
         </div>
       )}
 
@@ -280,7 +291,7 @@ export default function SEOAuditPage() {
                 <h4 className="font-medium mb-2">Data Sources</h4>
                 <ul className="text-sm text-muted-foreground space-y-1">
                   <li>• Lighthouse (Lab Data): Simulated performance metrics</li>
-                  {data.mobile.hasFieldData && (
+                  {(data.mobile?.hasFieldData || data.desktop?.hasFieldData) && (
                     <li>• Chrome User Experience Report: Real user metrics</li>
                   )}
                   <li>• PageSpeed Insights API: Google&apos;s performance analysis</li>

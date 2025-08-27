@@ -75,8 +75,8 @@ export interface SEOAuditData {
 }
 
 export interface SEOAuditComparison {
-  mobile: SEOAuditData;
-  desktop: SEOAuditData;
+  mobile: SEOAuditData | null;
+  desktop: SEOAuditData | null;
   lastUpdated: string;
 }
 

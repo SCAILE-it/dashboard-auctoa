@@ -38,11 +38,22 @@ export async function GET(request: NextRequest) {
     console.log(`🔍 [SEO Audit] Analyzing ${targetUrl}`);
 
     try {
-      // Fetch data for both mobile and desktop
-      const [mobileData, desktopData] = await Promise.all([
-        fetchPageSpeedData(targetUrl, 'mobile'),
-        fetchPageSpeedData(targetUrl, 'desktop')
-      ]);
+      // Fetch data for both mobile and desktop with individual error handling
+      const mobilePromise = fetchPageSpeedData(targetUrl, 'mobile').catch(err => {
+        console.warn('Mobile PageSpeed failed:', err.message);
+        return null;
+      });
+      const desktopPromise = fetchPageSpeedData(targetUrl, 'desktop').catch(err => {
+        console.warn('Desktop PageSpeed failed:', err.message);
+        return null;
+      });
+      
+      const [mobileData, desktopData] = await Promise.all([mobilePromise, desktopPromise]);
+      
+      // If both failed, throw error
+      if (!mobileData && !desktopData) {
+        throw new Error('Both mobile and desktop PageSpeed requests failed');
+      }
 
       const auditComparison: SEOAuditComparison = {
         mobile: mobileData,
@@ -56,6 +67,8 @@ export async function GET(request: NextRequest) {
         timestamp: now
       };
 
+
+
       return NextResponse.json({
         success: true,
         data: auditComparison,
@@ -66,7 +79,19 @@ export async function GET(request: NextRequest) {
     } catch (apiError) {
       console.error('PageSpeed Insights API Error:', apiError);
       
-      // Return mock data on API failure
+      // Check if we have cached data to return instead of mock data
+      if (cachedData && (now - cachedData.timestamp) < (CACHE_DURATION * 3)) { // Extended cache for errors
+        console.log('🔄 [SEO Audit] Returning cached data due to API error');
+        return NextResponse.json({
+          success: true,
+          data: cachedData.data,
+          cached: true,
+          lastRefresh: new Date(cachedData.timestamp).toISOString(),
+          error: 'Using cached data due to API error'
+        });
+      }
+      
+      // Return mock data only as last resort
       return NextResponse.json({
         success: true,
         data: getMockData(),
@@ -103,10 +128,19 @@ async function fetchPageSpeedData(url: string, strategy: 'mobile' | 'desktop'): 
   const response = await fetch(apiUrl.toString());
   
   if (!response.ok) {
-    throw new Error(`PageSpeed API error: ${response.status}`);
+    const errorText = await response.text();
+    console.error(`PageSpeed API Error Details:`, {
+      status: response.status,
+      statusText: response.statusText,
+      error: errorText,
+      url: apiUrl.toString()
+    });
+    throw new Error(`PageSpeed API error: ${response.status} - ${errorText}`);
   }
 
   const data: PageSpeedInsightsResponse = await response.json();
+  
+
   
   return processPageSpeedData(data, strategy);
 }
