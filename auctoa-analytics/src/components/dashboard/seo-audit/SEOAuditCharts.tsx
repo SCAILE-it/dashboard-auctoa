@@ -1,7 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useTheme } from "next-themes";
 import {
   BarChart,
   Bar,
@@ -21,8 +20,8 @@ interface SEOAuditChartsProps {
 }
 
 export function SEOAuditCharts({ data, loading = false }: SEOAuditChartsProps) {
-  const { theme } = useTheme();
-  const textColor = theme === 'dark' ? '#ffffff' : '#000000';
+  // Use CSS custom properties that automatically adapt to theme changes
+  // This approach is more reliable than JavaScript theme detection
   
   if (loading) {
     return (
@@ -212,8 +211,11 @@ export function SEOAuditCharts({ data, loading = false }: SEOAuditChartsProps) {
           y={0}
           dy={16}
           textAnchor="end"
-          fill={textColor}
           fontSize="12"
+          className="fill-slate-900 dark:fill-white"
+          style={{
+            stroke: 'none'
+          }}
         >
           {payload?.value}
         </text>
@@ -233,8 +235,11 @@ export function SEOAuditCharts({ data, loading = false }: SEOAuditChartsProps) {
           y={0}
           dy={16}
           textAnchor="middle"
-          fill={textColor}
           fontSize="12"
+          className="fill-slate-900 dark:fill-white"
+          style={{
+            stroke: 'none'
+          }}
         >
           {payload?.value}
         </text>
@@ -279,7 +284,13 @@ export function SEOAuditCharts({ data, loading = false }: SEOAuditChartsProps) {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="text-foreground" style={{ color: 'hsl(var(--foreground))' }}>
+          <div 
+            className="text-foreground" 
+            style={{ 
+              color: 'hsl(var(--foreground))',
+              '--chart-text-color': 'hsl(var(--foreground))'
+            } as React.CSSProperties & { '--chart-text-color': string }}
+          >
             <ResponsiveContainer width="100%" height={300}>
             <BarChart data={scoresComparison} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
@@ -332,7 +343,13 @@ export function SEOAuditCharts({ data, loading = false }: SEOAuditChartsProps) {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-foreground" style={{ color: 'hsl(var(--foreground))' }}>
+            <div 
+              className="text-foreground" 
+              style={{ 
+                color: 'hsl(var(--foreground))',
+                '--chart-text-color': 'hsl(var(--foreground))'
+              } as React.CSSProperties & { '--chart-text-color': string }}
+            >
               <ResponsiveContainer width="100%" height={250}>
                 <BarChart data={coreWebVitalsData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
@@ -383,7 +400,13 @@ export function SEOAuditCharts({ data, loading = false }: SEOAuditChartsProps) {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-foreground" style={{ color: 'hsl(var(--foreground))' }}>
+            <div 
+              className="text-foreground" 
+              style={{ 
+                color: 'hsl(var(--foreground))',
+                '--chart-text-color': 'hsl(var(--foreground))'
+              } as React.CSSProperties & { '--chart-text-color': string }}
+            >
               <ResponsiveContainer width="100%" height={250}>
                 <BarChart data={performanceMetricsData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
