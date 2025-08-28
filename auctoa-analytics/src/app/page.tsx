@@ -246,6 +246,110 @@ export default function DashboardOverview() {
         </div>
       </DashboardSection>
 
+      {/* Business Value Metrics */}
+      <DashboardSection 
+        title="Business Impact & Growth" 
+        description="Key business metrics that drive revenue and growth"
+        icon={TrendingUp}
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+          {/* Monthly Recurring Revenue */}
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Monthly Revenue</CardTitle>
+              <div className="flex items-center gap-2">
+                <TrendingUp className="h-4 w-4 text-green-500" />
+                <Badge variant="secondary" className="text-xs">Business</Badge>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">€12.4K</div>
+              <p className="text-xs text-muted-foreground">
+                <span className="inline-flex items-center text-green-600">
+                  +15.2% from last month
+                </span>
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Customer Acquisition Cost */}
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Customer Acq. Cost</CardTitle>
+              <div className="flex items-center gap-2">
+                <MousePointer className="h-4 w-4 text-blue-500" />
+                <Badge variant="secondary" className="text-xs">Marketing</Badge>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">€89</div>
+              <p className="text-xs text-muted-foreground">
+                <span className="inline-flex items-center text-green-600">
+                  -12.3% improvement
+                </span>
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Lead Quality Score */}
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Lead Quality</CardTitle>
+              <div className="flex items-center gap-2">
+                <Database className="h-4 w-4 text-purple-500" />
+                <Badge variant="secondary" className="text-xs">CRM</Badge>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">8.2/10</div>
+              <p className="text-xs text-muted-foreground">
+                <span className="inline-flex items-center text-green-600">
+                  +0.8 points this month
+                </span>
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Pipeline Value */}
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Pipeline Value</CardTitle>
+              <div className="flex items-center gap-2">
+                <TrendingUp className="h-4 w-4 text-orange-500" />
+                <Badge variant="secondary" className="text-xs">Sales</Badge>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">€45.2K</div>
+              <p className="text-xs text-muted-foreground">
+                <span className="inline-flex items-center text-green-600">
+                  +23.1% this quarter
+                </span>
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* ROI */}
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Marketing ROI</CardTitle>
+              <div className="flex items-center gap-2">
+                <TrendingUp className="h-4 w-4 text-emerald-500" />
+                <Badge variant="secondary" className="text-xs">ROI</Badge>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">4.2x</div>
+              <p className="text-xs text-muted-foreground">
+                <span className="inline-flex items-center text-green-600">
+                  +0.6x improvement
+                </span>
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      </DashboardSection>
+
       {/* Data Sources Overview */}
       {loading ? (
         <KPISkeleton />
