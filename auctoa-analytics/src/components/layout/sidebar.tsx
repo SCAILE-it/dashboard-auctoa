@@ -77,7 +77,7 @@ export function Sidebar({ onClose }: SidebarProps) {
         {!collapsed && (
           <div className="flex items-center gap-2">
             <Activity className="h-6 w-6 text-primary" />
-            <span className="font-semibold text-lg text-gray-900 dark:text-white">Auctoa</span>
+            <span className="font-semibold text-lg text-gray-900 dark:text-white">Analytics Dashboard</span>
           </div>
         )}
         
@@ -145,11 +145,11 @@ export function Sidebar({ onClose }: SidebarProps) {
         <div className="p-4 border-t border-gray-200 dark:border-gray-800">
           <div className="flex items-center gap-3 px-3 py-2">
             <div className="h-8 w-8 bg-primary/10 rounded-full flex items-center justify-center">
-              <span className="text-sm font-medium text-primary">U</span>
+              <span className="text-sm font-medium text-primary">A</span>
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-900 dark:text-white">User</p>
-              <p className="text-xs text-gray-500 dark:text-gray-400 truncate">user@example.com</p>
+              <p className="text-sm font-medium text-gray-900 dark:text-white">Admin</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 truncate">Dashboard Access</p>
             </div>
           </div>
         </div>
